@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/admin_layout::adminLayout(~{::title}, ~{::section})}" xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head>
+    <title>Hello World</title>
+</head>
+<body>
+<section class="content">
+    <table th:each="prod : ${prods}">
+        <tr><td th:text="*{prod}"></td></tr>
+    </table>
+    <div th:with="visitor=${user}">
+        <p th:text="${visitor.username}"></p>
+        <p th:text="${visitor.password}"></p>
+    </div>
+    <!--    <h3 th:text="${#calendars.format(new java.util.Date().getTime(), 'dd MMMM yyyy')}"></h3>-->
+</section>
+</body>
+</html>
