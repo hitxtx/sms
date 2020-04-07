@@ -6,13 +6,9 @@
 </head>
 <body>
 <section class="content">
-    <table th:each="prod : ${prods}">
-        <tr><td th:text="*{prod}"></td></tr>
-    </table>
-    <div th:with="visitor=${user}">
-        <p th:text="${visitor.username}"></p>
-        <p th:text="${visitor.password}"></p>
-    </div>
+<!--    <table th:each="prod : ${user}">-->
+<!--        <tr><td th:text="*{prod}"></td></tr>-->
+<!--    </table>-->
     <!--    <h3 th:text="${#calendars.format(new java.util.Date().getTime(), 'dd MMMM yyyy')}"></h3>-->
 </section>
 </body>
