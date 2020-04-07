@@ -1,31 +1,34 @@
 package com.example.ms.controller;
 
 import com.example.ms.model.User;
+import com.example.ms.repository.UserRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @RequestMapping("/")
 @Controller
 public class IndexController {
 
+    final UserRepository repo;
+
+    public IndexController(UserRepository repo) {
+        this.repo = repo;
+    }
+
     @GetMapping("/")
     public String index(Model model) {
-        List<String> prods = new ArrayList<>(15);
-        for (int i = 0; i < 10; i++) {
-            prods.add("hello " + i + " world");
-        }
-        model.addAttribute("prods", prods);
-
-        User user = new User();
-        user.setUsername("hello");
-        user.setPassword("world");
+        User user = repo.getOne(1L);
         model.addAttribute("user", user);
 
         return "index";
+    }
+
+    @GetMapping("/json")
+    @ResponseBody
+    public User json() {
+        return repo.getOne(1L);
     }
 }
