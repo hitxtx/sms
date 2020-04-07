@@ -1,12 +1,17 @@
 package com.example.ms.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@EqualsAndHashCode(exclude = {"roles"})
+@ToString(exclude = {"roles"})
 @Entity
 @Table(name = "sys_user")
 public class User {
@@ -16,10 +21,9 @@ public class User {
 
     @ManyToMany
     @JoinTable(name = "sys_user_role",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "role_id")})
-//    @JSONField(serialize = false)
-    private Set<Role> roles;
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
     @Column(name = "username")
     private String username;

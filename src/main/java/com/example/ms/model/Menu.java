@@ -1,6 +1,11 @@
 package com.example.ms.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -8,6 +13,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@EqualsAndHashCode(exclude = {"roles", "submenus"})
+@ToString(exclude = {"roles", "submenus"})
 @Entity
 @Table(name = "sys_menu")
 public class Menu {
@@ -15,12 +22,19 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
+    @NotFound(action = NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_menu", referencedColumnName = "id")
     private Menu parentMenu;
 
+    @NotFound(action = NotFoundAction.IGNORE)
     @OneToMany(mappedBy = "parentMenu")
     private Set<Menu> submenus = new HashSet<>();
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "menus")
+    private Set<Role> roles = new HashSet<>();
 
     @Column(name = "menu_name")
     private String menuName;
