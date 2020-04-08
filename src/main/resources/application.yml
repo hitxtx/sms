@@ -14,5 +14,7 @@ spring:
     cache: false
 
   jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
     serialization:
       fail-on-empty-beans: false

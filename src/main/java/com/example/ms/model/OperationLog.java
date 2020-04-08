@@ -3,7 +3,7 @@ package com.example.ms.model;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.util.Date;
 
 @Data
 @Entity
@@ -32,11 +32,11 @@ public class OperationLog {
     private String createId;
 
     @Column(name = "created_time")
-    private Timestamp createdTime;
+    private Date createdTime;
 
     @Column(name = "update_id")
     private String updateId;
 
     @Column(name = "updated_time")
-    private Timestamp updatedTime;
+    private Date updatedTime;
 }

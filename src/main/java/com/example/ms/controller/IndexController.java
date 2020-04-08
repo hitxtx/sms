@@ -1,6 +1,8 @@
 package com.example.ms.controller;
 
+import com.example.ms.model.Role;
 import com.example.ms.model.User;
+import com.example.ms.repository.RoleRepository;
 import com.example.ms.repository.UserRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,23 +14,31 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class IndexController {
 
-    final UserRepository repo;
+    final UserRepository userRepository;
+    final RoleRepository roleRepository;
 
-    public IndexController(UserRepository repo) {
-        this.repo = repo;
+    public IndexController(UserRepository userRepository, RoleRepository roleRepository) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     @GetMapping("/")
     public String index(Model model) {
-        User user = repo.getOne(1L);
+        User user = userRepository.getOne(1L);
         model.addAttribute("user", user);
 
         return "index";
     }
 
-    @GetMapping("/json")
+    @GetMapping("/user")
     @ResponseBody
-    public User json() {
-        return repo.getOne(1L);
+    public User user() {
+        return userRepository.getOne(1L);
+    }
+
+    @GetMapping("/role")
+    @ResponseBody
+    public Role role() {
+        return roleRepository.getOne(1L);
     }
 }

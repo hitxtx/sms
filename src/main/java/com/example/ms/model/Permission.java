@@ -1,15 +1,17 @@
 package com.example.ms.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Data
 @EqualsAndHashCode(exclude = {"roles"})
 @ToString(exclude = {"roles"})
@@ -40,11 +42,11 @@ public class Permission {
     private String createId;
 
     @Column(name = "created_time")
-    private Timestamp createdTime;
+    private Date createdTime;
 
     @Column(name = "update_id")
     private String updateId;
 
     @Column(name = "updated_time")
-    private Timestamp updatedTime;
+    private Date updatedTime;
 }
