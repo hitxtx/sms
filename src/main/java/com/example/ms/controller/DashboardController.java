@@ -4,13 +4,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@RequestMapping("/dashboard")
 @Controller
+@RequestMapping("/dashboard")
 public class DashboardController {
 
-    @GetMapping("/v1")
+    @GetMapping("/")
     public String v1() {
-
-        return "v1";
+        return "dashboard";
     }
 }
