@@ -80,7 +80,7 @@
             <!--/*--> left aside <!--*/-->
             <aside class="main-sidebar sidebar-dark-primary elevation-4">
                 <!--/*--> brand <!--*/-->
-                <a href="#" class="brand-link">
+                <a class="brand-link" href="/" th:href="@{/}">
                     <img class="brand-image img-circle elevation-3" src="/images/logo.png" th:src="@{/images/logo.png}"
                          alt="LOGO" style="opacity: .8">
                     <span class="brand-text font-weight-light">Management System</span>
@@ -161,7 +161,7 @@
                             <div class="col-sm-6">
                                 <ol class="breadcrumb float-sm-right">
                                     <li class="breadcrumb-item">
-                                        <a href="#">Home</a>
+                                        <a href="/" th:href="@{/}">Home</a>
                                     </li>
                                     <li class="breadcrumb-item active">Menu Name</li>
                                 </ol>
