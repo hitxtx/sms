@@ -4,9 +4,11 @@ import com.example.ms.model.Menu;
 import com.example.ms.repository.MenuRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("/menu")
@@ -24,9 +26,29 @@ public class MenuController {
     }
 
     @GetMapping("/list")
-    public List<Menu> list() {
+    @ResponseBody
+    public Object list(Long pageIndex, Long pageSize) {
+        List<Menu> menus = new ArrayList<>();
+        for (long i = (pageIndex - 1L) * pageSize; i < pageIndex * pageSize; i++) {
+            Menu menu = new Menu();
+            menu.setId(i);
+            menu.setParentMenu(new Menu());
+            menu.setMenuName("菜单名称" + i);
+            menu.setMenuCode("Menu-" + i);
+            menu.setPath("#");
+            menu.setIcon("fa fa-smile");
+            menu.setSort(1L);
+            menu.setRemark("");
+            menu.setDeletedFlag(false);
+            menu.setCreateId("admin");
+            menu.setCreatedTime(new Date());
 
-        return null;
+            menus.add(menu);
+        }
+        Map<String, Object> json = new HashMap<>();
+        json.put("data", menus);
+        json.put("itemsCount", 20);
+        return json;
     }
 
 }
