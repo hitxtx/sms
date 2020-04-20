@@ -12,6 +12,9 @@
         <link rel="stylesheet" th:href="@{/plugins/jsgrid/jsgrid-theme.min.css}">
         <link rel="stylesheet" th:href="@{/plugins/adminlte/css/adminlte.min.css}">
         <th:block th:replace="${links}"/>
+        <script th:inline="javascript">
+            const _root = /*[[@{/}]]*/''; // context path
+        </script>
     </head>
     <body class="hold-transition sidebar-mini layout-fixed text-sm">
         <!--/*--> page <!--*/-->
@@ -154,7 +157,7 @@
             <div class="content-wrapper">
                 <section class="content-header">
                     <div class="container-fluid">
-                        <div class="row mb-2">
+                        <div class="row">
                             <div class="col-sm-6">
                                 <h1>Menu Name</h1>
                             </div>
@@ -189,6 +192,7 @@
         <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
         <script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
         <script th:src="@{/plugins/jsgrid/jsgrid.min.js}"></script>
+        <script th:src="@{/plugins/jsgrid/i18n/jsgrid-zh-cn.js}"></script>
         <script th:src="@{/plugins/adminlte/js/adminlte.min.js}"></script>
         <th:block th:replace="${scripts}"/>
     </body>
