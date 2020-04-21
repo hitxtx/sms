@@ -55,11 +55,12 @@
 </section>
 <script th:inline="javascript">
     $(function () {
+        let $datagrid = $("#datagrid");
         jsGrid.locale("zh-cn");
-        $("#datagrid").jsGrid({
+        $datagrid.jsGrid({
             height: "auto",
             width: "100%",
-            editing: true,
+            // editing: true,
             // inserting:true,
             // filtering: false,
             // sorting: false,
@@ -77,41 +78,60 @@
                         data: filter,
                         dataType: "json"
                     }).done(function (response) {
-                        // server-side pagination
-                        // {data:[{},{}], itemsCount:number}
                         d.resolve(response);
                     });
                     return d.promise();
                 }
             },
+            // rowRenderer: function(item, itemIndex) {
+            //     console.log(item);
+            //     console.log(itemIndex);
+            // },
             fields: [
                 {name: "id", type: "text", width: 20},
                 // {name: "submenus", type: "text", width: 50},
                 {name: "menuName", type: "text", width: 50},
                 {name: "menuCode", type: "text", width: 50},
                 {name: "path", type: "text", width: 50},
-                {name: "icon", type: "text", width: 50},
-                {name: "sort", type: "text", width: 50},
+                {name: "icon", type: "text", width: 60},
+                {name: "sort", type: "text", width: 20},
                 {name: "remark", type: "text", width: 50},
                 {name: "deletedFlag", type: "text", width: 50},
                 {name: "createId", type: "text", width: 50},
-                {name: "createdTime", type: "text", width: 50},
+                {name: "createdTime", type: "text", width: 100},
                 // {name: "updateId", type: "text", width: 50},
                 // {name: "updatedTime", type: "text", width: 50},
+                {
+                    type: "control",
+                    title: "操作",
+                    width: 90,
+                    itemTemplate: function (value, time) {
+                        return "<div class=\"card-tools\">" +
+                            "<a class=\"btn btn-xs btn-tool text-info control-modify\"><i class=\"fas fa-edit\"></i> 编辑</a>" +
+                            "<a class=\"btn btn-xs btn-tool text-danger control-remove\"><i class=\"fas fa-trash\"></i> 删除</a>" +
+                            "</div>";
+                    }
+                }
             ],
             onPageChanged: function (args) {
                 console.log(args);
             }
         });
+        $datagrid.on("click", ".control-modify", function () {
+            toggleEditModal("show", $(this).html());
+        });
+        $datagrid.on("click", ".control-remove", function () {
 
+        });
         let $addBtn = $('#addBtn');
         let toggleEditModal = function (action, title) {
             $('#editTitle').html(title);
             $('#editModal').modal(action);
         };
-        $addBtn.on('click', function () {
-            toggleEditModal('show', $(this).html());
+        $addBtn.on("click", function () {
+            toggleEditModal("show", $(this).html());
         });
+
     });
 </script>
 </body>
