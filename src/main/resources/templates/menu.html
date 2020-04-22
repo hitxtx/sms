@@ -43,7 +43,15 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    ...
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <label for="inputPassword6">Password</label>
+                            <input type="password" id="inputPassword6" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+                            <small id="passwordHelpInline" class="text-muted">
+                                Must be 8-20 characters long.
+                            </small>
+                        </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -88,28 +96,38 @@
             //     console.log(itemIndex);
             // },
             fields: [
-                {name: "id", type: "text", width: 20},
-                // {name: "submenus", type: "text", width: 50},
-                {name: "menuName", type: "text", width: 50},
-                {name: "menuCode", type: "text", width: 50},
-                {name: "path", type: "text", width: 50},
-                {name: "icon", type: "text", width: 60},
-                {name: "sort", type: "text", width: 20},
-                {name: "remark", type: "text", width: 50},
-                {name: "deletedFlag", type: "text", width: 50},
-                {name: "createId", type: "text", width: 50},
-                {name: "createdTime", type: "text", width: 100},
-                // {name: "updateId", type: "text", width: 50},
-                // {name: "updatedTime", type: "text", width: 50},
+                {name: "id", type: "text", title: "ID", align: "center", width: 20},
+                // {name: "submenus", type: "text", title: "", align: "center", width: 50},
+                {name: "menuName", type: "text", title: "菜单名称", align: "center", width: 60},
+                {name: "menuCode", type: "text", title: "菜单编码", align: "center", width: 60},
+                {name: "path", type: "text", title: "路径", align: "center", width: 50},
+                {name: "icon", type: "text", title: "图标", align: "center", width: 60},
+                {name: "sort", type: "number", title: "排序", align: "center", width: 30},
+                {name: "remark", type: "text", title: "备注", align: "center", width: 50},
+                {name: "deletedFlag", type: "text", title: "状态", align: "center", width: 50},
+                {name: "createId", type: "text", title: "创建者", align: "center", width: 50},
+                {name: "createdTime", type: "text", title: "创建时间", align: "center", width: 100},
+                // {name: "updateId", type: "text", title: "修改者", align: "center", width: 50},
+                // {name: "updatedTime", type: "text", title: "修改时间", align: "center", width: 50},
                 {
                     type: "control",
                     title: "操作",
-                    width: 90,
-                    itemTemplate: function (value, time) {
-                        return "<div class=\"card-tools\">" +
-                            "<a class=\"btn btn-xs btn-tool text-info control-modify\"><i class=\"fas fa-edit\"></i> 编辑</a>" +
-                            "<a class=\"btn btn-xs btn-tool text-danger control-remove\"><i class=\"fas fa-trash\"></i> 删除</a>" +
-                            "</div>";
+                    width: 88,
+                    itemTemplate: function (value, item) {
+                        let operation = $("<a class=\"btn btn-xs btn-tool text-info control-modify\"><i class=\"fas fa-edit\"></i> 编辑</a><a class=\"btn btn-xs btn-tool text-danger control-remove\"><i class=\"fas fa-trash\"></i> 删除</a>")
+                            .on('click', function (e) {
+                                if ($(e.target).hasClass("control-modify")) {
+                                    toggleEditModal("show", $(this).html());
+                                    console.log(item); //You can access all data based on item clicked
+                                    e.stopPropagation();
+                                } else if($(e.target).hasClass("control-remove")) {
+                                    //Based on button click you can make your customization
+                                    console.log('Delete');
+                                    e.stopPropagation();
+                                }
+                            });
+
+                        return $("<div class=\"card-tools\"></div>").append(operation); //
                     }
                 }
             ],
@@ -117,16 +135,11 @@
                 console.log(args);
             }
         });
-        $datagrid.on("click", ".control-modify", function () {
-            toggleEditModal("show", $(this).html());
-        });
-        $datagrid.on("click", ".control-remove", function () {
-
-        });
         let $addBtn = $('#addBtn');
-        let toggleEditModal = function (action, title) {
+        let toggleEditModal = function (action, title, row) {
             $('#editTitle').html(title);
             $('#editModal').modal(action);
+            //
         };
         $addBtn.on("click", function () {
             toggleEditModal("show", $(this).html());
