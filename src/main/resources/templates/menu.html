@@ -8,7 +8,7 @@
 <section class="content">
     <div class="card">
         <div class="card-body">
-            <div class="row mb-3">
+            <div class="row mb-2">
                 <div class="col-lg-9">
                     <form class="form-inline">
                         <label class="sr-only" for="keywords">keywords</label>
@@ -33,29 +33,53 @@
             <div id="datagrid"></div>
         </div>
     </div>
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editTitle" aria-hidden="true">
+    <div class="modal fade" id="basicModal" tabindex="-1" role="dialog" data-backdrop="static">
         <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editTitle">Modal title</h5>
+                    <h5 class="modal-title" id="basicTitle">Modal title</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form class="form-inline">
-                        <div class="form-group">
-                            <label for="inputPassword6">Password</label>
-                            <input type="password" id="inputPassword6" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
-                            <small id="passwordHelpInline" class="text-muted">
-                                Must be 8-20 characters long.
-                            </small>
+                    <form class="needs-validation" novalidate>
+                        <div class="form-group row">
+                            <label for="menuName" class="col-sm-2 col-form-label col-form-label-sm text-right">菜单名称</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control form-control-sm" id="menuName" name="menuName" autocomplete="off" required>
+                            </div>
                         </div>
+                        <div class="form-group row">
+                            <label for="menuCode" class="col-sm-2 col-form-label col-form-label-sm text-right">菜单代码</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control form-control-sm" id="menuCode" name="menuCode" autocomplete="off" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="path" class="col-sm-2 col-form-label col-form-label-sm text-right">链接路径</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control form-control-sm" id="path" name="path" autocomplete="off" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="icon" class="col-sm-2 col-form-label col-form-label-sm text-right">菜单图标</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control form-control-sm" id="icon" name="icon" autocomplete="off" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="deleteFlag" class="col-sm-2 col-form-label col-form-label-sm text-right">状态</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control form-control-sm" id="deleteFlag" name="deleteFlag" autocomplete="off" required>
+                            </div>
+                        </div>
+
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
                 </div>
             </div>
         </div>
@@ -91,10 +115,6 @@
                     return d.promise();
                 }
             },
-            // rowRenderer: function(item, itemIndex) {
-            //     console.log(item);
-            //     console.log(itemIndex);
-            // },
             fields: [
                 {name: "id", type: "text", title: "ID", align: "center", width: 20},
                 // {name: "submenus", type: "text", title: "", align: "center", width: 50},
@@ -103,24 +123,21 @@
                 {name: "path", type: "text", title: "路径", align: "center", width: 50},
                 {name: "icon", type: "text", title: "图标", align: "center", width: 60},
                 {name: "sort", type: "number", title: "排序", align: "center", width: 30},
-                {name: "remark", type: "text", title: "备注", align: "center", width: 50},
                 {name: "deletedFlag", type: "text", title: "状态", align: "center", width: 50},
-                {name: "createId", type: "text", title: "创建者", align: "center", width: 50},
                 {name: "createdTime", type: "text", title: "创建时间", align: "center", width: 100},
-                // {name: "updateId", type: "text", title: "修改者", align: "center", width: 50},
-                // {name: "updatedTime", type: "text", title: "修改时间", align: "center", width: 50},
+                {name: "updatedTime", type: "text", title: "修改时间", align: "center", width: 100},
                 {
                     type: "control",
                     title: "操作",
-                    width: 88,
+                    width: 85,
                     itemTemplate: function (value, item) {
                         let operation = $("<a class=\"btn btn-xs btn-tool text-info control-modify\"><i class=\"fas fa-edit\"></i> 编辑</a><a class=\"btn btn-xs btn-tool text-danger control-remove\"><i class=\"fas fa-trash\"></i> 删除</a>")
                             .on('click', function (e) {
                                 if ($(e.target).hasClass("control-modify")) {
-                                    toggleEditModal("show", $(this).html());
+                                    toggleBasicModal("show", $(this).html());
                                     console.log(item); //You can access all data based on item clicked
                                     e.stopPropagation();
-                                } else if($(e.target).hasClass("control-remove")) {
+                                } else if ($(e.target).hasClass("control-remove")) {
                                     //Based on button click you can make your customization
                                     console.log('Delete');
                                     e.stopPropagation();
@@ -136,15 +153,34 @@
             }
         });
         let $addBtn = $('#addBtn');
-        let toggleEditModal = function (action, title, row) {
-            $('#editTitle').html(title);
-            $('#editModal').modal(action);
+        let toggleBasicModal = function (action, title, row) {
+            $('#basicTitle').html(title);
+            $('#basicModal').modal(action);
             //
         };
         $addBtn.on("click", function () {
-            toggleEditModal("show", $(this).html());
+            toggleBasicModal("show", $(this).html());
         });
 
+
+// Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                let forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                let validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
     });
 </script>
 </body>

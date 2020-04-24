@@ -4,7 +4,6 @@ import com.example.ms.model.Menu;
 import com.example.ms.repository.MenuRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -38,9 +37,7 @@ public class MenuController {
             menu.setPath("#");
             menu.setIcon("fa fa-smile");
             menu.setSort(1L);
-            menu.setRemark("");
             menu.setDeletedFlag(false);
-            menu.setCreateId("admin");
             menu.setCreatedTime(new Date());
 
             menus.add(menu);
