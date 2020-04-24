@@ -47,20 +47,11 @@ public class Role {
     @Column(name = "sort")
     private Long sort;
 
-    @Column(name = "remark")
-    private String remark;
-
     @Column(name = "deleted_flag")
     private Boolean deletedFlag;
 
-    @Column(name = "create_id")
-    private String createId;
-
     @Column(name = "created_time")
     private Date createdTime;
-
-    @Column(name = "update_id")
-    private String updateId;
 
     @Column(name = "updated_time")
     private Date updatedTime;
