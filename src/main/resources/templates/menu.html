@@ -69,12 +69,18 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="deleteFlag" class="col-sm-2 col-form-label col-form-label-sm text-right">状态</label>
+                            <label for="sort" class="col-sm-2 col-form-label col-form-label-sm text-right">排序</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control form-control-sm" id="deleteFlag" name="deleteFlag" autocomplete="off" required>
+                                <input type="text" class="form-control form-control-sm" id="sort" name="sort" autocomplete="off" required>
                             </div>
                         </div>
-
+                        <div class="form-group row">
+                            <label for="deletedFlag" class="col-sm-2 col-form-label col-form-label-sm text-right">状态</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control form-control-sm" id="deletedFlag" name="deletedFlag" autocomplete="off" required>
+                            </div>
+                        </div>
+                        <input type="hidden" id="id" name="id">
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -123,7 +129,7 @@
                 {name: "path", type: "text", title: "路径", align: "center", width: 50},
                 {name: "icon", type: "text", title: "图标", align: "center", width: 60},
                 {name: "sort", type: "number", title: "排序", align: "center", width: 30},
-                {name: "deletedFlag", type: "text", title: "状态", align: "center", width: 50},
+                {name: "deletedFlag", type: "boolean", title: "状态", align: "center", width: 50},
                 {name: "createdTime", type: "text", title: "创建时间", align: "center", width: 100},
                 {name: "updatedTime", type: "text", title: "修改时间", align: "center", width: 100},
                 {
@@ -132,9 +138,9 @@
                     width: 85,
                     itemTemplate: function (value, item) {
                         let operation = $("<a class=\"btn btn-xs btn-tool text-info control-modify\"><i class=\"fas fa-edit\"></i> 编辑</a><a class=\"btn btn-xs btn-tool text-danger control-remove\"><i class=\"fas fa-trash\"></i> 删除</a>")
-                            .on('click', function (e) {
+                            .on("click", function (e) {
                                 if ($(e.target).hasClass("control-modify")) {
-                                    toggleBasicModal("show", $(this).html());
+                                    toggleBasicModal("show", $(this).html(), item);
                                     console.log(item); //You can access all data based on item clicked
                                     e.stopPropagation();
                                 } else if ($(e.target).hasClass("control-remove")) {
@@ -152,11 +158,18 @@
                 console.log(args);
             }
         });
-        let $addBtn = $('#addBtn');
+        let $addBtn = $("#addBtn");
         let toggleBasicModal = function (action, title, row) {
-            $('#basicTitle').html(title);
-            $('#basicModal').modal(action);
-            //
+            $("#basicTitle").html(title);
+            $("#basicModal").modal(action);
+            // set value
+            $("#id").val(row.id);
+            $("#menuName").val(row.menuName);
+            $("#menuCode").val(row.menuCode);
+            $("#path").val(row.path);
+            $("#icon").val(row.icon);
+            $("#sort").val(row.sort);
+            $("#deletedFlag").val(row.deletedFlag);
         };
         $addBtn.on("click", function () {
             toggleBasicModal("show", $(this).html());
