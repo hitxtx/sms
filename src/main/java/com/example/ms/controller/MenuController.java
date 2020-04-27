@@ -4,6 +4,7 @@ import com.example.ms.model.Menu;
 import com.example.ms.repository.MenuRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -46,6 +47,20 @@ public class MenuController {
         json.put("data", menus);
         json.put("itemsCount", 20);
         return json;
+    }
+
+    @PostMapping("/save")
+    @ResponseBody
+    public Menu save(Menu menu) {
+
+        return null;
+    }
+
+    @PostMapping("/delete")
+    @ResponseBody
+    public Long delete(Long id) {
+
+        return 0L;
     }
 
 }

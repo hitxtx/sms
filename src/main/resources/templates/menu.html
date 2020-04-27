@@ -9,41 +9,35 @@
     <div class="card">
         <div class="card-body">
             <div class="row mb-2">
-                <div class="col-lg-9">
+                <div class="col-sm-9">
                     <form class="form-inline">
                         <label class="sr-only" for="keywords">keywords</label>
                         <div class="input-group input-group-sm mr-sm-2">
-                            <input type="text" class="form-control form-control-sm" id="keywords" autocomplete="off"
-                                   placeholder="keywords">
+                            <input type="text" class="form-control form-control-sm" id="keywords" autocomplete="off" placeholder="请输入关键词查询">
                         </div>
-
-                        <button type="button" class="btn btn-primary btn-sm">
-                            <i class="fas fa-search"></i> 查询
-                        </button>
+                        <button type="button" class="btn btn-primary btn-sm"><i class="fas fa-search"></i> 查询</button>
                     </form>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-sm-3">
                     <div class="text-lg-right">
-                        <button type="button" class="btn btn-success btn-sm" id="addBtn">
-                            <i class="fas fa-plus"></i> 新增
-                        </button>
+                        <button type="button" class="btn btn-success btn-sm" id="createBtn"><i class="fas fa-plus"></i> 新增</button>
                     </div>
                 </div>
             </div>
             <div id="datagrid"></div>
         </div>
     </div>
-    <div class="modal fade" id="basicModal" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" data-backdrop="static">
         <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="basicTitle">Modal title</h5>
+                    <h5 class="modal-title" id="saveTitle">Title</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form class="needs-validation" novalidate>
+                    <form class="needs-validation" novalidate id="saveForm">
                         <div class="form-group row">
                             <label for="menuName" class="col-sm-2 col-form-label col-form-label-sm text-right">菜单名称</label>
                             <div class="col-sm-10">
@@ -80,12 +74,34 @@
                                 <input type="text" class="form-control form-control-sm" id="deletedFlag" name="deletedFlag" autocomplete="off" required>
                             </div>
                         </div>
-                        <input type="hidden" id="id" name="id">
+                        <input type="hidden" id="saveId" name="id">
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                    <button type="submit" class="btn btn-primary">保存</button>
+                    <button type="submit" class="btn btn-primary" id="saveBtn">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteTitle">Title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" novalidate id="deleteForm">
+                        <p>确定要删除吗？</p>
+                        <input type="hidden" id="deleteId" name="id" required>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="deleteBtn">确定</button>
                 </div>
             </div>
         </div>
@@ -98,10 +114,7 @@
         $datagrid.jsGrid({
             height: "auto",
             width: "100%",
-            // editing: true,
-            // inserting:true,
-            // filtering: false,
-            // sorting: false,
+            sorting: false,
             paging: true,
             autoload: true,
             pageLoading: true,
@@ -109,16 +122,17 @@
             pageIndex: 1,
             controller: {
                 loadData: function (filter) {
-                    let d = $.Deferred();
+                    let defer = $.Deferred();
                     $.ajax({
                         type: "GET",
                         url: _root + "menu/list",
                         data: filter,
                         dataType: "json"
                     }).done(function (response) {
-                        d.resolve(response);
+                        defer.resolve(response);
                     });
-                    return d.promise();
+
+                    return defer.promise();
                 }
             },
             fields: [
@@ -137,54 +151,85 @@
                     title: "操作",
                     width: 85,
                     itemTemplate: function (value, item) {
-                        let operation = $("<a class=\"btn btn-xs btn-tool text-info control-modify\"><i class=\"fas fa-edit\"></i> 编辑</a><a class=\"btn btn-xs btn-tool text-danger control-remove\"><i class=\"fas fa-trash\"></i> 删除</a>")
+                        let buttons = $("<a class=\"btn btn-xs btn-tool text-info control-modify\"><i class=\"fas fa-edit\"></i> 编辑</a>" +
+                            "<a class=\"btn btn-xs btn-tool text-danger control-remove\"><i class=\"fas fa-trash\"></i> 删除</a>")
                             .on("click", function (e) {
                                 if ($(e.target).hasClass("control-modify")) {
-                                    toggleBasicModal("show", $(this).html(), item);
-                                    console.log(item); //You can access all data based on item clicked
+                                    saveModal("show", $(this).html(), item);
+
                                     e.stopPropagation();
                                 } else if ($(e.target).hasClass("control-remove")) {
-                                    //Based on button click you can make your customization
-                                    console.log('Delete');
+                                    deleteModal("show", $(this).html(), item.id);
+
                                     e.stopPropagation();
                                 }
                             });
 
-                        return $("<div class=\"card-tools\"></div>").append(operation); //
+                        return $("<div class=\"card-tools\"></div>").append(buttons);
                     }
                 }
-            ],
-            onPageChanged: function (args) {
-                console.log(args);
+            ]
+        });
+
+        let $createBtn = $("#createBtn");
+        let $saveForm = $("#saveForm");
+        let $saveBtn = $("#saveBtn");
+        let $deleteForm = $("#deleteForm");
+        let $deleteBtn = $("#deleteBtn");
+        let saveModal = function (action, title, row) {
+            $saveForm.reset();
+            if (row) {
+                $("#saveId").val(row.id);
+                $("#menuName").val(row.menuName);
+                $("#menuCode").val(row.menuCode);
+                $("#path").val(row.path);
+                $("#icon").val(row.icon);
+                $("#sort").val(row.sort);
+                $("#deletedFlag").val(row.deletedFlag);
             }
-        });
-        let $addBtn = $("#addBtn");
-        let toggleBasicModal = function (action, title, row) {
-            $("#basicTitle").html(title);
-            $("#basicModal").modal(action);
-            // set value
-            $("#id").val(row.id);
-            $("#menuName").val(row.menuName);
-            $("#menuCode").val(row.menuCode);
-            $("#path").val(row.path);
-            $("#icon").val(row.icon);
-            $("#sort").val(row.sort);
-            $("#deletedFlag").val(row.deletedFlag);
+
+            $("#saveTitle").html(title);
+            $("#saveModal").modal(action === "show" ? "show" : "hide");
         };
-        $addBtn.on("click", function () {
-            toggleBasicModal("show", $(this).html());
+        let deleteModal = function (action, title, id) {
+            $deleteForm.reset();
+            $("#deleteId").val(id);
+
+            $("#deleteTitle").html(title);
+            $("#deleteModal").modal(action === "show" ? "show" : "hide");
+        };
+        $createBtn.on("click", function () {
+            saveModal("show", $(this).html());
+        });
+        $saveBtn.on("click", function () {
+            $.ajax({
+                type: "POST",
+                url: _root + "menu/save",
+                data: $saveForm.serializeArray(),
+            }).done(function (data) {
+                // defer.resolve(response);
+            });
+            saveModal("hide", "");
+        });
+        $deleteBtn.on("click", function () {
+            $.ajax({
+                type: "POST",
+                url: _root + "menu/delete",
+                data: $deleteForm.serializeArray(),
+            }).done(function (data) {
+                // defer.resolve(response);
+            });
+            deleteModal("hide", "");
         });
 
-
-// Example starter JavaScript for disabling form submissions if there are invalid fields
-        (function() {
+        (function () {
             'use strict';
-            window.addEventListener('load', function() {
+            window.addEventListener('load', function () {
                 // Fetch all the forms we want to apply custom Bootstrap validation styles to
                 let forms = document.getElementsByClassName('needs-validation');
                 // Loop over them and prevent submission
-                let validation = Array.prototype.filter.call(forms, function(form) {
-                    form.addEventListener('submit', function(event) {
+                let validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
                         if (form.checkValidity() === false) {
                             event.preventDefault();
                             event.stopPropagation();
