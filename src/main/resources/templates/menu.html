@@ -151,8 +151,8 @@
                     title: "操作",
                     width: 85,
                     itemTemplate: function (value, item) {
-                        let buttons = $("<a class=\"btn btn-xs btn-tool text-info control-modify\"><i class=\"fas fa-edit\"></i> 编辑</a>" +
-                            "<a class=\"btn btn-xs btn-tool text-danger control-remove\"><i class=\"fas fa-trash\"></i> 删除</a>")
+                        let buttons = $("<a class=\"btn btn-xs text-info control-modify\"><i class=\"fas fa-edit\"></i> 编辑</a>" +
+                            "<a class=\"btn btn-xs text-danger control-remove\"><i class=\"fas fa-trash\"></i> 删除</a>")
                             .on("click", function (e) {
                                 if ($(e.target).hasClass("control-modify")) {
                                     saveModal("show", $(this).html(), item);
@@ -165,19 +165,21 @@
                                 }
                             });
 
-                        return $("<div class=\"card-tools\"></div>").append(buttons);
+                        return $("<div class=\"btn-group btn-group-sm\"></div>").append(buttons);
                     }
                 }
             ]
         });
 
         let $createBtn = $("#createBtn");
-        let $saveForm = $("#saveForm");
         let $saveBtn = $("#saveBtn");
-        let $deleteForm = $("#deleteForm");
         let $deleteBtn = $("#deleteBtn");
+        let $saveForm = $("#saveForm");
+        let $deleteForm = $("#deleteForm");
+
         let saveModal = function (action, title, row) {
             $saveForm.reset();
+            $saveForm.removeClass("was-validated");
             if (row) {
                 $("#saveId").val(row.id);
                 $("#menuName").val(row.menuName);
@@ -193,8 +195,9 @@
         };
         let deleteModal = function (action, title, id) {
             $deleteForm.reset();
-            $("#deleteId").val(id);
+            $deleteForm.removeClass("was-validated");
 
+            $("#deleteId").val(id);
             $("#deleteTitle").html(title);
             $("#deleteModal").modal(action === "show" ? "show" : "hide");
         };
@@ -202,14 +205,21 @@
             saveModal("show", $(this).html());
         });
         $saveBtn.on("click", function () {
+            let $form = $saveForm;
+            if (!$form[0].checkValidity()) {
+                $form.addClass('was-validated');
+                return false;
+            }
             $.ajax({
                 type: "POST",
                 url: _root + "menu/save",
-                data: $saveForm.serializeArray(),
+                data: $form.serializeArray(),
             }).done(function (data) {
-                // defer.resolve(response);
+                console.log(data);
+                saveModal("hide");
+            }).fail(function (err) {
+
             });
-            saveModal("hide", "");
         });
         $deleteBtn.on("click", function () {
             $.ajax({
@@ -217,28 +227,12 @@
                 url: _root + "menu/delete",
                 data: $deleteForm.serializeArray(),
             }).done(function (data) {
-                // defer.resolve(response);
-            });
-            deleteModal("hide", "");
-        });
+                console.log(data);
+                deleteModal("hide");
+            }).fail(function (err) {
 
-        (function () {
-            'use strict';
-            window.addEventListener('load', function () {
-                // Fetch all the forms we want to apply custom Bootstrap validation styles to
-                let forms = document.getElementsByClassName('needs-validation');
-                // Loop over them and prevent submission
-                let validation = Array.prototype.filter.call(forms, function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (form.checkValidity() === false) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                        }
-                        form.classList.add('was-validated');
-                    }, false);
-                });
-            }, false);
-        })();
+            });
+        });
     });
 </script>
 </body>

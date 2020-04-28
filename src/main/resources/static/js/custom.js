@@ -10,6 +10,5 @@ $(function () {
             select2.val("").trigger("change");
         }
         $('input[type="hidden"]').val("");
-    }
-
+    };
 });
