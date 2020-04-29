@@ -27,7 +27,7 @@ public class MenuController {
 
     @GetMapping("/list")
     @ResponseBody
-    public Object list(Long pageIndex, Long pageSize) {
+    public Object list(Long pageIndex, Long pageSize, String keyword) {
         List<Menu> menus = new ArrayList<>();
         for (long i = (pageIndex - 1L) * pageSize; i < pageIndex * pageSize; i++) {
             Menu menu = new Menu();
@@ -40,6 +40,9 @@ public class MenuController {
             menu.setSort(1L);
             menu.setDeletedFlag(false);
             menu.setCreatedTime(new Date());
+            if (keyword != null && keyword.length() > 0) {
+                menu.setMenuName(keyword + i);
+            }
 
             menus.add(menu);
         }
