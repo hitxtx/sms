@@ -10,12 +10,12 @@
         <div class="card-body">
             <div class="row mb-2">
                 <div class="col-sm-9">
-                    <form class="form-inline">
-                        <label class="sr-only" for="keywords">keywords</label>
+                    <form class="form-inline" id="searchForm">
+                        <label class="sr-only" for="keyword">keyword</label>
                         <div class="input-group input-group-sm mr-sm-2">
-                            <input type="text" class="form-control form-control-sm" id="keywords" autocomplete="off" placeholder="请输入关键词查询">
+                            <input type="text" class="form-control form-control-sm" id="keyword" name="keyword" autocomplete="off" placeholder="请输入关键词查询">
                         </div>
-                        <button type="button" class="btn btn-primary btn-sm"><i class="fas fa-search"></i> 查询</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="searchBtn"><i class="fas fa-search"></i> 查询</button>
                     </form>
                 </div>
                 <div class="col-sm-3">
@@ -109,7 +109,54 @@
 </section>
 <script th:inline="javascript">
     $(function () {
+        let $searchBtn = $("#searchBtn");
+        let $createBtn = $("#createBtn");
+        let $saveBtn = $("#saveBtn");
+        let $deleteBtn = $("#deleteBtn");
+        let $searchForm = $("#searchForm");
+        let $saveForm = $("#saveForm");
+        let $deleteForm = $("#deleteForm");
         let $datagrid = $("#datagrid");
+
+        let searchData = function (filter) {
+            let defer = $.Deferred();
+            filter.keyword = $("#keyword").val();
+            $.ajax({
+                type: "GET",
+                url: _root + "menu/list",
+                data: filter,
+                dataType: "json"
+            }).done(function (response) {
+                defer.resolve(response);
+            });
+
+            return defer.promise();
+        };
+        let saveModal = function (action, title, row) {
+            $saveForm.reset();
+            $saveForm.removeClass("was-validated");
+            if (row) {
+                $("#saveId").val(row.id);
+                $("#menuName").val(row.menuName);
+                $("#menuCode").val(row.menuCode);
+                $("#path").val(row.path);
+                $("#icon").val(row.icon);
+                $("#sort").val(row.sort);
+                $("#deletedFlag").val(row.deletedFlag);
+            }
+
+            $("#saveTitle").html(title);
+            $("#saveModal").modal(action === "show" ? "show" : "hide");
+        };
+        let deleteModal = function (action, title, id) {
+            $deleteForm.reset();
+            $deleteForm.removeClass("was-validated");
+
+            $("#deleteId").val(id);
+            $("#deleteTitle").html(title);
+            $("#deleteModal").modal(action === "show" ? "show" : "hide");
+        };
+
         jsGrid.locale("zh-cn");
         $datagrid.jsGrid({
             height: "auto",
@@ -122,17 +169,7 @@
             pageIndex: 1,
             controller: {
                 loadData: function (filter) {
-                    let defer = $.Deferred();
-                    $.ajax({
-                        type: "GET",
-                        url: _root + "menu/list",
-                        data: filter,
-                        dataType: "json"
-                    }).done(function (response) {
-                        defer.resolve(response);
-                    });
-
-                    return defer.promise();
+                    return searchData(filter);
                 }
             },
             fields: [
@@ -171,36 +208,11 @@
             ]
         });
 
-        let $createBtn = $("#createBtn");
-        let $saveBtn = $("#saveBtn");
-        let $deleteBtn = $("#deleteBtn");
-        let $saveForm = $("#saveForm");
-        let $deleteForm = $("#deleteForm");
-
-        let saveModal = function (action, title, row) {
-            $saveForm.reset();
-            $saveForm.removeClass("was-validated");
-            if (row) {
-                $("#saveId").val(row.id);
-                $("#menuName").val(row.menuName);
-                $("#menuCode").val(row.menuCode);
-                $("#path").val(row.path);
-                $("#icon").val(row.icon);
-                $("#sort").val(row.sort);
-                $("#deletedFlag").val(row.deletedFlag);
-            }
-
-            $("#saveTitle").html(title);
-            $("#saveModal").modal(action === "show" ? "show" : "hide");
-        };
-        let deleteModal = function (action, title, id) {
-            $deleteForm.reset();
-            $deleteForm.removeClass("was-validated");
-
-            $("#deleteId").val(id);
-            $("#deleteTitle").html(title);
-            $("#deleteModal").modal(action === "show" ? "show" : "hide");
-        };
+        $searchBtn.on("click", function () {
+            let filter = $datagrid.jsGrid("getFilter");
+            filter.keyword = $("#keyword").val();
+            $datagrid.jsGrid("search", filter);
+        });
         $createBtn.on("click", function () {
             saveModal("show", $(this).html());
         });
@@ -238,6 +250,8 @@
 
             });
         });
+
+
     });
 </script>
 </body>
