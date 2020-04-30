@@ -38,7 +38,7 @@ public class MenuController {
             menu.setPath("#");
             menu.setIcon("fa fa-smile");
             menu.setSort(1L);
-            menu.setDeletedFlag(false);
+            menu.setDeletedFlag(i % 2 == 0);
             menu.setCreatedTime(new Date());
             if (keyword != null && keyword.length() > 0) {
                 menu.setMenuName(keyword + i);

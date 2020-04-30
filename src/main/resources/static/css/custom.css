@@ -1,3 +1,7 @@
 .text-sm .btn {
     font-size: .75rem !important;
 }
+
+.custom-switch-sm {
+    padding: .25rem 2.5rem;
+}

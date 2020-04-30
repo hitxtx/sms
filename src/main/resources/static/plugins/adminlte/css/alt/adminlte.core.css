@@ -3760,7 +3760,7 @@ input[type="button"].btn-block {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
   padding-left: 0.5rem;
-  font-size: 75%;
+  font-size: .875rem;
 }
 
 .custom-select-lg {
