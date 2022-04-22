@@ -22,12 +22,7 @@ public class Log {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "deleted_flag")
-    private Boolean deletedFlag;
-
     @Column(name = "created_time")
     private Date createdTime;
 
-    @Column(name = "updated_time")
-    private Date updatedTime;
 }
