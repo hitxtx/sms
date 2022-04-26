@@ -36,15 +36,6 @@ public class User {
     @Column(name = "nickname")
     private String nickname;
 
-    @Column(name = "id_card_no")
-    private String idCardNo;
-
-    @Column(name = "phone")
-    private String phone;
-
-    @Column(name = "email")
-    private String email;
-
     @Column(name = "gender")
     private Integer gender;
 

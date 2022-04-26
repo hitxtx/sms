@@ -10,6 +10,6 @@ public class DashboardController {
 
     @GetMapping("/")
     public String v1() {
-        return "dashboard";
+        return "dashboard/v1";
     }
 }

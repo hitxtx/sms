@@ -2,6 +2,8 @@ package com.example.ms.controller;
 
 import com.example.ms.model.Menu;
 import com.example.ms.repository.MenuRepository;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,19 +12,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.*;
 
+@Slf4j
+@Setter
 @Controller
 @RequestMapping("/menu")
 public class MenuController {
 
-    final MenuRepository menuRepository;
-
-    public MenuController(MenuRepository menuRepository) {
-        this.menuRepository = menuRepository;
-    }
+    MenuRepository menuRepository;
 
     @GetMapping("/")
     public String index() {
-        return "menu";
+        return "system/menu";
     }
 
     @GetMapping("/list")
