@@ -1,4 +1,4 @@
-package com.example.ms.service;
+package com.example.ms.security;
 
 import com.example.ms.model.Permission;
 import com.example.ms.model.Role;

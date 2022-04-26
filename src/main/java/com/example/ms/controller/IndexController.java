@@ -10,11 +10,12 @@ public class IndexController {
 
     @GetMapping("/")
     public String index() {
-        return "system/index";
+        return "dashboard/v1";
     }
 
     @GetMapping("/login")
     public String login() {
         return "login";
     }
+
 }

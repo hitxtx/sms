@@ -57,12 +57,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling();*/
     }
 
-//    PersistentTokenRepository persistentTokenRepository(){
-//        JdbcTokenRepositoryImpl tokenRepositoryImpl = new JdbcTokenRepositoryImpl();
-//        tokenRepositoryImpl.setDataSource(dataSource);
-//        return tokenRepositoryImpl;
-//    }
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(authenticationProvider());
@@ -80,6 +74,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.setPasswordEncoder(passwordEncoder());
         return auth;
     }
+
+//    PersistentTokenRepository persistentTokenRepository(){
+//        JdbcTokenRepositoryImpl tokenRepositoryImpl = new JdbcTokenRepositoryImpl();
+//        tokenRepositoryImpl.setDataSource(dataSource);
+//        return tokenRepositoryImpl;
+//    }
 
     public static void main(String[] args) {
         System.err.println(new BCryptPasswordEncoder().encode("123456"));

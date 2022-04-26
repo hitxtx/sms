@@ -1,4 +1,4 @@
-package com.example.ms.service;
+package com.example.ms.security;
 
 import com.example.ms.model.User;
 import org.springframework.security.core.GrantedAuthority;
