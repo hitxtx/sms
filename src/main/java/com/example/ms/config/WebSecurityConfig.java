@@ -43,14 +43,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .invalidateHttpSession(true)
                 .clearAuthentication(true)
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login?logout")
-//                .deleteCookies("KEY")
+                .logoutSuccessUrl("/login")
+//                .deleteCookies("remember-me-cookie")
                 .permitAll();
                 // remember me
 /*                .and()
                 .rememberMe()
                 //.key("my-secure-key")
-                .rememberMeCookieName("my-remember-me-cookie")
+                .rememberMeCookieName("remember-me-cookie")
                 .tokenRepository(persistentTokenRepository())
                 .tokenValiditySeconds(24 * 60 * 60)
                 .and()

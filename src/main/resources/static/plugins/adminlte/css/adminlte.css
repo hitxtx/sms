@@ -4779,7 +4779,7 @@ input[type="button"].btn-block {
   flex-direction: column;
   min-width: 0;
   word-wrap: break-word;
-  background-color: #ffffff;
+  background-color: #ffffffc2;
   background-clip: border-box;
   border: 0 solid rgba(0, 0, 0, 0.125);
   border-radius: 0.25rem;
@@ -20231,10 +20231,11 @@ html.maximized-card {
 
 .login-card-body,
 .register-card-body {
-  background: #ffffff;
+  /*background: #ffffff;*/
   border-top: 0;
   color: #666;
   padding: 20px;
+  border-radius:.25rem;
 }
 
 .login-card-body .input-group .form-control,

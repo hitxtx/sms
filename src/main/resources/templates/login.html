@@ -10,6 +10,7 @@
     <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
     <link rel="stylesheet" th:href="@{/plugins/ionicons/2.0.1/css/ionicons.min.css}">
     <link rel="stylesheet" th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/toastr/toastr.min.css}">
     <link rel="stylesheet" th:href="@{/plugins/adminlte/css/adminlte.min.css}">
     <style>
         body {
@@ -31,20 +32,22 @@
             }
         }
     </style>
+    <script th:inline="javascript">
+        const _root = /*[[@{/}]]*/''; // context path
+    </script>
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="login-logo">
         <a href="#"><b>Admin</b>管理系统</a>
     </div>
-    <!-- /.login-logo -->
     <div class="card">
         <div class="card-body login-card-body">
             <p class="login-box-msg">欢迎回来</p>
 
-            <form th:action="@{/login}" method="post">
+            <form th:action="@{/login}" method="post" id="loginForm">
                 <div class="input-group mb-3">
-                    <input type="text" name="username" class="form-control" placeholder="账号">
+                    <input type="text" id="username" name="username" class="form-control" placeholder="账号" required>
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-user"></span>
@@ -52,7 +55,7 @@
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input type="password" name="password" class="form-control" placeholder="密码">
+                    <input type="password" id="password" name="password" class="form-control" placeholder="密码" required>
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-lock"></span>
@@ -68,28 +71,40 @@
                             </label>
                         </div>
                     </div>
-                    <!-- /.col -->
                     <div class="col-4">
-                        <button type="submit" class="btn btn-primary btn-block">登录</button>
+                        <button type="button" class="btn btn-primary btn-block" id="loginBtn">登录</button>
                     </div>
-                    <!-- /.col -->
                 </div>
             </form>
-            <!-- /.social-auth-links -->
-
 <!--            <p class="mb-1">-->
 <!--                <a href="forgot-password.html">I forgot my password</a>-->
 <!--            </p>-->
+            <div class="dialog-row">
+                <label th:if="${param.error}" th:text="${session['SPRING_SECURITY_LAST_EXCEPTION']['message']}" class="text-center redText">Mot de passe inconnu</label>
+            </div>
         </div>
-        <!-- /.login-card-body -->
     </div>
 </div>
-<!-- /.login-box -->
 
 <!--/*--> js <!--*/-->
 <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
 <script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/plugins/toastr/toastr.min.js}"></script>
 <script th:src="@{/plugins/adminlte/js/adminlte.min.js}"></script>
+<script th:inline="javascript">
+    let $loginForm = $("#loginForm");
+    let $loginBtn = $("#loginBtn");
+    $loginBtn.on("click", function () {
+        let $form = $loginForm;
+        if (!$form[0].checkValidity()) {
+            $form.addClass('was-validated');
+            toastr.warning('请先输入您的账号和密码！')
+            return false;
+        }
+        $loginForm.submit();
+    });
+
+</script>
 
 </body>
 </html>
