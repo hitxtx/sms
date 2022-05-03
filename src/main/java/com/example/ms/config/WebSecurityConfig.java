@@ -1,5 +1,10 @@
 package com.example.ms.config;
 
+import com.example.ms.security.CustomAuthenticationFailureHandler;
+import com.example.ms.security.CustomAuthenticationSuccessHandler;
+import com.example.ms.security.UserDetailsServiceImpl;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -12,19 +17,21 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+@AllArgsConstructor
+@Slf4j
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserDetailsService userDetailsService;
+    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
-    public WebSecurityConfig(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        http
+                .csrf().disable()
+                .authorizeRequests()
                 .antMatchers(
                         "/css/**",
                         "/images/**",
@@ -35,6 +42,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // login
                 .and()
                 .formLogin()
+                .successHandler(customAuthenticationSuccessHandler)
+                .failureHandler(customAuthenticationFailureHandler)
                 .loginPage("/login")
                 .permitAll()
                 // logout
@@ -43,18 +52,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .invalidateHttpSession(true)
                 .clearAuthentication(true)
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login")
+                .logoutSuccessUrl("/login?logout")
 //                .deleteCookies("remember-me-cookie")
                 .permitAll();
                 // remember me
-/*                .and()
-                .rememberMe()
-                //.key("my-secure-key")
-                .rememberMeCookieName("remember-me-cookie")
-                .tokenRepository(persistentTokenRepository())
-                .tokenValiditySeconds(24 * 60 * 60)
-                .and()
-                .exceptionHandling();*/
+//                .and()
+//                .rememberMe()
+//                //.key("my-secure-key")
+//                .rememberMeCookieName("remember-me-cookie")
+//                .tokenRepository(persistentTokenRepository())
+//                .tokenValiditySeconds(24 * 60 * 60)
+//                .and()
+//                .exceptionHandling();
     }
 
     @Override
@@ -69,10 +78,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
-        auth.setUserDetailsService(userDetailsService);
-        auth.setPasswordEncoder(passwordEncoder());
-        return auth;
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService());
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return new UserDetailsServiceImpl();
     }
 
 //    PersistentTokenRepository persistentTokenRepository(){

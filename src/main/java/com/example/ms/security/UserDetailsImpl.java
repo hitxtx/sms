@@ -5,30 +5,23 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 自定义用户信息
  */
 public class UserDetailsImpl implements UserDetails {
 
-    private static final long serialVersionUID = 1L;
-
-    private String userName;
-    private String password;
-    private boolean status;
-    private List<GrantedAuthority> authorities;
-
-    public UserDetailsImpl(User user) {
-        this.userName = user.getUsername();
-        this.password = user.getPassword();
-        this.status = user.getStatus();
-//		this.authorities = user.getRoles().stream().filter(Role::getRoleName)
-//				.map(SimpleGrantedAuthority::new)
-//				.collect(Collectors.toList());
-    }
+    private User user;
+    private Collection<? extends GrantedAuthority> authorities;
 
     public UserDetailsImpl() {
+    }
+
+    public UserDetailsImpl(User user, Collection<? extends GrantedAuthority> authorities) {
+        this.user = user;
+        this.authorities = authorities;
     }
 
     @Override
@@ -38,13 +31,12 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-
-        return userName;
+        return user.getUsername();
     }
 
     @Override
@@ -64,7 +56,14 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return status;
+        return user.getStatus();
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

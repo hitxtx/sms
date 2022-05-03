@@ -42,14 +42,14 @@ public class User {
     @Column(name = "avatar")
     private String avatar;
 
-    @Column(name = "count")
-    private Integer count;
+    @Column(name = "lock_time")
+    private Date lockTime;
 
-    @Column(name = "last_login_time")
-    private Date lastLoginTime;
+    @Column(name = "failed_count")
+    private Integer failedCount;
 
-    @Column(name = "login_time")
-    private Date loginTime;
+    @Column(name = "unlock_flag")
+    private Boolean unlockFlag;
 
     @Column(name = "status")
     private Boolean status;
