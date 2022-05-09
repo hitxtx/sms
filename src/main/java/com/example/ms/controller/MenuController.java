@@ -15,7 +15,7 @@ import java.util.*;
 @Slf4j
 @Setter
 @Controller
-@RequestMapping("/menu")
+@RequestMapping("/system/menu")
 public class MenuController {
 
     MenuRepository menuRepository;

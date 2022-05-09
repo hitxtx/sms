@@ -46,6 +46,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return new UserDetailsImpl(user.get(), getAuthorities(user.get().getRoles()));
     }
 
+    // https://programming.vip/docs/spring-security-dynamic-url-permission-control.html
     private Collection<? extends GrantedAuthority> getAuthorities(Collection<Role> roleList) {
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
         if (roleList != null && !roleList.isEmpty()) {

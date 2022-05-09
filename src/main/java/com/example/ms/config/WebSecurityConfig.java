@@ -1,13 +1,12 @@
 package com.example.ms.config;
 
-import com.example.ms.security.CustomAuthenticationFailureHandler;
-import com.example.ms.security.CustomAuthenticationSuccessHandler;
-import com.example.ms.security.UserDetailsServiceImpl;
+import com.example.ms.security.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @AllArgsConstructor
@@ -26,6 +26,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+
+    private final CustomAccessDecisionManager customAccessDecisionManager;
+
+    private final CustomSecurityMetadataSource customSecurityMetadataSource;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -39,6 +43,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/plugins/**"
                 ).permitAll()
                 .anyRequest().authenticated()
+                .and().authorizeRequests()
+                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+                    @Override
+                    public <O extends FilterSecurityInterceptor> O postProcess(O object) {
+                        object.setSecurityMetadataSource(customSecurityMetadataSource);
+                        object.setAccessDecisionManager(customAccessDecisionManager);
+                        return object;
+                    }
+                })
                 // login
                 .and()
                 .formLogin()
@@ -55,7 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/login?logout")
 //                .deleteCookies("remember-me-cookie")
                 .permitAll();
-                // remember me
+        // remember me
 //                .and()
 //                .rememberMe()
 //                //.key("my-secure-key")
