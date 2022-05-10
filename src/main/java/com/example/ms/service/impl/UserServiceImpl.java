@@ -4,6 +4,7 @@ import com.example.ms.component.constant.UserConst;
 import com.example.ms.model.User;
 import com.example.ms.repository.UserRepository;
 import com.example.ms.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,9 +15,10 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
+    private UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

@@ -3,14 +3,14 @@ package com.example.ms.security;
 import com.example.ms.component.constant.UserConst;
 import com.example.ms.model.User;
 import com.example.ms.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -18,20 +18,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
-@Component
+@AllArgsConstructor
+@NoArgsConstructor
 public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
     private UserService userService;
 
-    @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
-
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {
-
         if (exception.getClass().isAssignableFrom(UsernameNotFoundException.class)) {
             exception = new UsernameNotFoundException("该账号不存在");
         } else if (exception.getClass().isAssignableFrom(DisabledException.class)) {

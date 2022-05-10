@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/")
+//@RequestMapping("/")
 public class IndexController {
 
     @GetMapping("/")
@@ -16,6 +16,16 @@ public class IndexController {
     @GetMapping("/login")
     public String login() {
         return "login";
+    }
+
+    @GetMapping("/system/")
+    public String system() {
+        return "dashboard/v1";
+    }
+
+    @GetMapping("/hello/")
+    public String hello() {
+        return "dashboard/v1";
     }
 
 }
