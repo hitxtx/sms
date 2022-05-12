@@ -1,6 +1,10 @@
 package com.example.ms.component.startup;
 
+import com.example.ms.component.annotation.Tag;
+import com.example.ms.model.Permission;
+import com.example.ms.model.Role;
 import com.example.ms.repository.PermissionRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -11,14 +15,16 @@ import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ClassUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
+import java.util.*;
 
+@Transactional(rollbackFor = Exception.class)
+@Slf4j
 @Component
 public class Runner implements ApplicationRunner {
 
@@ -30,12 +36,14 @@ public class Runner implements ApplicationRunner {
     }
 
     private static final String BASE_PACKAGE = "com.example.ms.controller";
-    private static final String RESOURCE_PATTERN = "/**/*.class";
+    private static final String RESOURCE_PATTERN = "/**/*Controller.class";
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 
+        Map<String, Permission> permissionMap = new HashMap<>();
         try {
             String pattern = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
                     ClassUtils.convertClassNameToResourcePath(BASE_PACKAGE) + RESOURCE_PATTERN;
@@ -43,23 +51,91 @@ public class Runner implements ApplicationRunner {
             MetadataReaderFactory readerFactory = new CachingMetadataReaderFactory(resolver);
             for (Resource resource : resources) {
                 MetadataReader reader = readerFactory.getMetadataReader(resource);
-                String classname = reader.getClassMetadata().getClassName();
-                Class<?> clazz = Class.forName(classname);
+                String className = reader.getClassMetadata().getClassName();
+                Class<?> clazz = Class.forName(className);
+
+                // 获取ClassShortName
+                String simpleName = clazz.getSimpleName();
+                String moduleName = simpleName.replace("Controller", "");
+
+                // 获取Class路径
                 RequestMapping classAnnotation = clazz.getAnnotation(RequestMapping.class);
-                if (classAnnotation != null) {
-                    //将注解中的类型值作为key，对应的类作为 value
-                    System.err.println(Arrays.toString(classAnnotation.value()));
-                    for (Method method : clazz.getDeclaredMethods()) {
-                        GetMapping methodAnnotation = method.getAnnotation(GetMapping.class);
-                        if (methodAnnotation != null) {
-                            System.err.println(Arrays.toString(methodAnnotation.value()));
-                        }
+                String classPath = classAnnotation != null ? classAnnotation.value()[0] : "";
+
+                for (Method method : clazz.getDeclaredMethods()) {
+                    // 请求路径
+                    String path;
+                    Tag tag = method.getAnnotation(Tag.class);
+                    if (tag == null) {
+                        continue;
                     }
+                    // 路径备注
+                    String tagName = tag.value();
+                    RequestMapping mapping = method.getAnnotation(RequestMapping.class);
+                    GetMapping getMapping = method.getAnnotation(GetMapping.class);
+                    PostMapping postMapping = method.getAnnotation(PostMapping.class);
+                    PutMapping putMapping = method.getAnnotation(PutMapping.class);
+                    DeleteMapping deleteMapping = method.getAnnotation(DeleteMapping.class);
+                    if (postMapping != null) {
+                        path = classPath + postMapping.value()[0];
+                    } else if (getMapping != null) {
+                        path = classPath + getMapping.value()[0];
+                    } else if (putMapping != null) {
+                        path = classPath + putMapping.value()[0];
+                    } else if (deleteMapping != null) {
+                        path = classPath + deleteMapping.value()[0];
+                    } else if (mapping != null) {
+                        path = classPath + mapping.value()[0];
+                    } else {
+                        continue;
+                    }
+
+                    Permission permission = new Permission();
+                    permission.setModule(moduleName);
+                    permission.setTag(tagName);
+                    permission.setPath(path);
+                    permission.setDeletedFlag(false);
+                    permission.setCreatedTime(new Date());
+
+                    permissionMap.put(permission.getPath(), permission);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        updatePermissions(permissionMap);
+
+    }
+
+    public void updatePermissions(Map<String, Permission> permissionMap) {
+        List<Permission> permissionList = permissionRepository.findAll();
+        for (Permission oldPermission : permissionList) {
+            Permission newPermission = permissionMap.get(oldPermission.getPath());
+            if (newPermission == null) {
+                // 解除角色关联
+                Set<Role> roles = oldPermission.getRoles();
+                for (Role role : roles) {
+//                    Hibernate.initialize(oldPermission.getRoles());
+                    role.getPermissions().remove(oldPermission);
+                }
+                // 删除
+                permissionRepository.updateDeletedFlag(oldPermission.getId());
+            } else {
+                // 更新
+                if (!oldPermission.equals(newPermission)) {
+                    oldPermission.setModule(newPermission.getModule());
+                    oldPermission.setTag(newPermission.getTag());
+                    oldPermission.setDeletedFlag(false);
+                    oldPermission.setUpdatedTime(new Date());
+                    permissionRepository.saveAndFlush(oldPermission);
+                }
+
+                permissionMap.remove(oldPermission.getPath()); // 移除更新记录
+            }
+        }
+        // 新增
+        permissionRepository.saveAll(permissionMap.values());
     }
 
 }

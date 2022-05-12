@@ -1,4 +1,4 @@
-package com.example.ms.controller;
+package com.example.ms.controller.system;
 
 import com.example.ms.model.Menu;
 import com.example.ms.repository.MenuRepository;

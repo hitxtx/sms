@@ -13,7 +13,7 @@ import java.util.Set;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Data
-@EqualsAndHashCode(exclude = {"roles"})
+@EqualsAndHashCode(exclude = {"roles", "id", "updatedTime", "createdTime"})
 @ToString(exclude = {"roles"})
 @Entity
 @Table(name = "sys_permission")
@@ -26,8 +26,11 @@ public class Permission {
     @ManyToMany(mappedBy = "permissions")
     private Set<Role> roles = new HashSet<>();
 
-    @Column(name = "group")
-    private String group;
+    @Column(name = "module")
+    private String module;
+
+    @Column(name = "tag")
+    private String tag;
 
     @Column(name = "path")
     private String path;
@@ -40,4 +43,6 @@ public class Permission {
 
     @Column(name = "updated_time")
     private Date updatedTime;
+
+
 }
