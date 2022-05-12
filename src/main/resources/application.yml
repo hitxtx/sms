@@ -1,7 +1,7 @@
 server:
   port: 8989
-  servlet:
-    context-path: /sms
+#  servlet:
+#    context-path: /sms
 
 spring:
   datasource:
@@ -26,3 +26,14 @@ spring:
     time-zone: GMT+8
     serialization:
       fail-on-empty-beans: false
+
+white:
+  list:
+    uris:
+      - /authentication
+      - /login
+      - /logout
+      - /css/**
+      - /js/**
+      - /images/**
+      - /plugins/**

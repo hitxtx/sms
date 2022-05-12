@@ -1,6 +1,6 @@
 package com.example.ms.security;
 
-import com.example.ms.config.IgnoreUrlsConfig;
+import com.example.ms.config.WhiteListConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.SecurityMetadataSource;
 import org.springframework.security.access.intercept.AbstractSecurityInterceptor;
@@ -19,7 +19,7 @@ public class DynamicSecurityFilter extends AbstractSecurityInterceptor implement
     private DynamicSecurityMetadataSource dynamicSecurityMetadataSource;
 
     @Autowired
-    private IgnoreUrlsConfig ignoreUrlsConfig;
+    private WhiteListConfig whiteListConfig;
 
     @Autowired
     public void setMyAccessDecisionManager(DynamicAccessDecisionManager dynamicAccessDecisionManager) {
@@ -36,7 +36,7 @@ public class DynamicSecurityFilter extends AbstractSecurityInterceptor implement
         FilterInvocation fi = new FilterInvocation(servletRequest, servletResponse, filterChain);
         // 白名单请求直接放行
         PathMatcher pathMatcher = new AntPathMatcher();
-        for (String path : ignoreUrlsConfig.getUrls()) {
+        for (String path : whiteListConfig.getUris()) {
             if (pathMatcher.match(path, request.getRequestURI())) {
                 fi.getChain().doFilter(fi.getRequest(), fi.getResponse());
                 return;
