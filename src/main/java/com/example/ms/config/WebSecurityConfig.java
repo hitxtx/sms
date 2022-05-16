@@ -2,13 +2,11 @@ package com.example.ms.config;
 
 import com.example.ms.security.*;
 import com.example.ms.service.UserService;
-import com.example.ms.service.impl.UserServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,6 +26,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private WhiteListConfig whiteListConfig;
 
     @Override
@@ -40,14 +41,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .anyRequest().authenticated()
-                .and().authorizeRequests()
                 // login
                 .and()
                 .formLogin()
                 .successHandler(customAuthenticationSuccessHandler())
                 .failureHandler(customAuthenticationFailureHandler())
                 .loginPage("/login").permitAll()
-                .loginProcessingUrl("/authentication")
+                .loginProcessingUrl("/login")
                 // logout
                 .and()
                 .logout()
@@ -94,11 +94,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public UserService userService() {
-        return new UserServiceImpl();
-    }
-
-    @Bean
     public DynamicSecurityMetadataSource dynamicSecurityMetadataSource() {
         return new DynamicSecurityMetadataSource();
     }
@@ -110,12 +105,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AuthenticationFailureHandler customAuthenticationFailureHandler() {
-        return new CustomAuthenticationFailureHandler(userService());
+        return new CustomAuthenticationFailureHandler(userService);
     }
 
     @Bean
     public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
-        return new CustomAuthenticationSuccessHandler(userService());
+        return new CustomAuthenticationSuccessHandler(userService);
     }
 
     @Bean

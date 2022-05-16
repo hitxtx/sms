@@ -1,18 +1,60 @@
 package com.example.ms.service;
 
+import com.example.ms.component.constant.UserConst;
 import com.example.ms.model.User;
+import com.example.ms.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.Optional;
 
-public interface UserService {
+@Transactional
+@Service
+public class UserService {
 
-    void increaseFailedCount(User user);
+    private UserRepository userRepository;
 
-    void resetFailedCount(Long userId);
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
-    void lockAccount(User user);
+    public void increaseFailedCount(User user) {
+        int failCount = user.getFailedCount() + 1;
+        userRepository.updateFailedCount(failCount, user.getId());
+    }
 
-    boolean unlockWhenLockExpired(User user);
+    public void resetFailedCount(Long userId) {
+        userRepository.updateFailedCount(UserConst.DEFAULT_FAILED_COUNT, userId);
+    }
 
-    Optional<User> getByUsername(String username);
+    public void lockAccount(User user) {
+        user.setUnlockFlag(false);
+        user.setLockTime(new Date());
+
+        userRepository.save(user);
+    }
+
+    public boolean unlockWhenLockExpired(User user) {
+        long lockTimeInMillis = user.getLockTime().getTime();
+        long currentTimeInMillis = System.currentTimeMillis();
+
+        if (lockTimeInMillis + UserConst.LOCK_TIME_DURATION < currentTimeInMillis) {
+            user.setUnlockFlag(true);
+            user.setLockTime(null);
+            user.setFailedCount(UserConst.DEFAULT_FAILED_COUNT);
+
+            userRepository.save(user);
+            return true;
+        }
+
+        return false;
+    }
+
+    public Optional<User> getByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
 }

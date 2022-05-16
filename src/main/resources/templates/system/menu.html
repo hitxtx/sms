@@ -13,14 +13,19 @@
                     <form class="form-inline" id="searchForm">
                         <label class="sr-only" for="keyword">keyword</label>
                         <div class="input-group input-group-sm mr-sm-2">
-                            <input type="text" class="form-control form-control-sm" id="keyword" name="keyword" autocomplete="off" placeholder="请输入关键词查询">
+                            <input type="text" class="form-control form-control-sm" id="keyword" name="keyword"
+                                   autocomplete="off" placeholder="请输入关键词查询">
                         </div>
-                        <button type="button" class="btn btn-primary btn-sm" id="searchBtn"><i class="fas fa-search"></i> 查询</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="searchBtn"><i
+                                class="fas fa-search"></i> 查询
+                        </button>
                     </form>
                 </div>
                 <div class="col-sm-3">
                     <div class="text-lg-right">
-                        <button type="button" class="btn btn-success btn-sm" id="createBtn"><i class="fas fa-plus"></i> 新增</button>
+                        <button type="button" class="btn btn-success btn-sm" id="createBtn"><i class="fas fa-plus"></i>
+                            新增
+                        </button>
                     </div>
                 </div>
             </div>
@@ -39,44 +44,53 @@
                 <div class="modal-body">
                     <form class="needs-validation" novalidate id="saveForm">
                         <div class="form-group row">
-                            <label for="menuName" class="col-sm-2 col-form-label col-form-label-sm text-right">菜单名称</label>
+                            <label for="menuName"
+                                   class="col-sm-2 col-form-label col-form-label-sm text-right">菜单名称</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control form-control-sm" id="menuName" name="menuName" autocomplete="off" required>
+                                <input type="text" class="form-control form-control-sm" id="menuName" name="menuName"
+                                       autocomplete="off" required>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="menuCode" class="col-sm-2 col-form-label col-form-label-sm text-right">菜单代码</label>
+                            <label for="menuCode"
+                                   class="col-sm-2 col-form-label col-form-label-sm text-right">菜单代码</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control form-control-sm" id="menuCode" name="menuCode" autocomplete="off" required>
+                                <input type="text" class="form-control form-control-sm" id="menuCode" name="menuCode"
+                                       autocomplete="off" required>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="path" class="col-sm-2 col-form-label col-form-label-sm text-right">链接路径</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control form-control-sm" id="path" name="path" autocomplete="off" required>
+                                <input type="text" class="form-control form-control-sm" id="path" name="path"
+                                       autocomplete="off" required>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="icon" class="col-sm-2 col-form-label col-form-label-sm text-right">菜单图标</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control form-control-sm" id="icon" name="icon" autocomplete="off" required>
+                                <input type="text" class="form-control form-control-sm" id="icon" name="icon"
+                                       autocomplete="off" required>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="sort" class="col-sm-2 col-form-label col-form-label-sm text-right">排序</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control form-control-sm" id="sort" name="sort" autocomplete="off" required value="1">
+                                <input type="text" class="form-control form-control-sm" id="sort" name="sort"
+                                       autocomplete="off" required value="1">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="deletedFlag" class="col-sm-2 col-form-label col-form-label-sm text-right">状态</label>
+                            <label for="deletedFlag"
+                                   class="col-sm-2 col-form-label col-form-label-sm text-right">状态</label>
                             <div class="col-sm-10">
-<!--                                <select class="custom-select custom-select-sm" id="deletedFlag" name="deletedFlag" required>-->
-<!--                                    <option value="" selected>启用</option>-->
-<!--                                    <option value="1">禁用</option>-->
-<!--                                </select>-->
+                                <!--                                <select class="custom-select custom-select-sm" id="deletedFlag" name="deletedFlag" required>-->
+                                <!--                                    <option value="" selected>启用</option>-->
+                                <!--                                    <option value="1">禁用</option>-->
+                                <!--                                </select>-->
                                 <div class="custom-control custom-switch custom-switch-sm">
-                                    <input type="checkbox" class="custom-control-input" id="deletedFlag" name="deletedFlag" required>
+                                    <input type="checkbox" class="custom-control-input" id="deletedFlag"
+                                           name="deletedFlag" required>
                                     <label class="custom-control-label" for="deletedFlag"></label>
                                 </div>
                             </div>
@@ -130,7 +144,7 @@
             filter.keyword = $("#keyword").val();
             $.ajax({
                 type: "GET",
-                url: _root + "menu/list",
+                url: _root + "system/menu/list",
                 data: filter,
                 dataType: "json"
             }).done(function (response) {
@@ -232,7 +246,7 @@
             }
             $.ajax({
                 type: "POST",
-                url: _root + "menu/save",
+                url: _root + "system/menu/save",
                 data: $form.serializeArray(),
             }).done(function (data) {
                 console.log(data);
@@ -249,7 +263,7 @@
             }
             $.ajax({
                 type: "POST",
-                url: _root + "menu/delete",
+                url: _root + "system/menu/delete",
                 data: $form.serializeArray(),
             }).done(function (data) {
                 console.log(data);
@@ -258,7 +272,6 @@
 
             });
         });
-
 
     });
 </script>

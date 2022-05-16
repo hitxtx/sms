@@ -1,7 +1,6 @@
 package com.example.ms.controller.system;
 
 import com.example.ms.model.Menu;
-import com.example.ms.repository.MenuRepository;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -18,7 +17,7 @@ import java.util.*;
 @RequestMapping("/system/menu")
 public class MenuController {
 
-    MenuRepository menuRepository;
+
 
     @GetMapping("/")
     public String index() {
@@ -27,7 +26,7 @@ public class MenuController {
 
     @GetMapping("/list")
     @ResponseBody
-    public Object list(Long pageIndex, Long pageSize, String keyword) {
+    public Object list(Integer pageIndex, Integer pageSize, String keyword) {
         List<Menu> menus = new ArrayList<>();
         for (long i = (pageIndex - 1L) * pageSize; i < pageIndex * pageSize; i++) {
             Menu menu = new Menu();

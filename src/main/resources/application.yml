@@ -30,7 +30,6 @@ spring:
 white:
   list:
     uris:
-      - /authentication
       - /login
       - /logout
       - /css/**
