@@ -1,2 +1,3 @@
 # simple-management-system
-spring boot, spring data jpa, spring security
+BackEnd: SpringBoot, Spring Security, Spring Data JPA, Thymeleaf
+FrontEnd: Bootstrap-AdminLTE
