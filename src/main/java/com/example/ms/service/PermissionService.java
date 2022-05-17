@@ -1,6 +1,5 @@
 package com.example.ms.service;
 
-import cn.hutool.core.util.StrUtil;
 import com.example.ms.model.Permission;
 import com.example.ms.repository.PermissionRepository;
 import lombok.AllArgsConstructor;
@@ -22,13 +21,17 @@ public class PermissionService {
 
     public Page<Permission> search(Integer pageIndex, Integer pageSize, String keyword) {
         Pageable pageable = PageRequest.of(pageIndex, pageSize, Sort.Direction.ASC, "id");
-        if (StrUtil.isBlank(keyword)) {
+        if (keyword == null || "".equals(keyword.trim())) {
             return permissionRepository.findAll(pageable);
         }
-        return permissionRepository.findFirst10ByTagLike(keyword, pageable);
+        return permissionRepository.findFirst10ByTagLike(keyword.trim(), pageable);
     }
 
-    public Permission create(Permission permission) {
+    public Permission create(Permission permission) throws Exception {
+        Permission oldPermission = permissionRepository.findByPathEquals(permission.getPath());
+        if (oldPermission != null) {
+            throw new Exception("记录已存在");
+        }
 
         permission.setCreatedTime(new Date());
         return permissionRepository.saveAndFlush(permission);

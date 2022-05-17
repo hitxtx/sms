@@ -36,7 +36,12 @@ public class PermissionController {
     @ResponseBody
     @PostMapping("/create")
     public Result create(Permission permission) {
-        permissionService.create(permission);
+        try {
+            permissionService.create(permission);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.FAILED();
+        }
 
         return Result.SUCCESS();
     }

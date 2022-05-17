@@ -15,4 +15,6 @@ public interface PermissionRepository extends JpaRepository<Permission, Long> {
 
     Page<Permission> findFirst10ByTagLike(String tag, Pageable pageable);
 
+    Permission findByPathEquals(String path);
+
 }

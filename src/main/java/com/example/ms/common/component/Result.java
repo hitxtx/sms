@@ -48,6 +48,6 @@ public class Result {
 
     // WARNING
     public static Result FAILED() {
-        return new Result(ResultCode.FAIL);
+        return new Result(ResultCode.FAILED);
     }
 }

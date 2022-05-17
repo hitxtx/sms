@@ -4,7 +4,7 @@ public enum  ResultCode {
 
     SUCCESS(true,10000,"Successful operation!"),
     //---System error return code-----
-    FAIL(false,10001,"operation failed"),
+    FAILED(false,10001,"operation failed"),
     UNAUTHENTICATED(false,10002,"You are not logged in"),
     UNAUTHORISE(false,10003,"Insufficient permissions"),
     SERVER_ERROR(false,99999,"Sorry, the system is busy, please try again later!"),
