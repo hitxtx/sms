@@ -7,7 +7,7 @@
 <body>
 <section class="content">
     <div class="card">
-        <div class="card-body">
+        <div class="card-body table-responsive">
             <div class="row mb-2">
                 <div class="col-sm-9">
                     <form class="form-inline" id="searchForm">
@@ -29,7 +29,56 @@
                     </div>
                 </div>
             </div>
-            <div id="datagrid"></div>
+            <table class="table table-hover text-nowrap">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Reason</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>183</td>
+                    <td>John Doe</td>
+                    <td>11-7-2014</td>
+                    <td><span class="tag tag-success">Approved</span></td>
+                    <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+                </tr>
+                <tr>
+                    <td>219</td>
+                    <td>Alexander Pierce</td>
+                    <td>11-7-2014</td>
+                    <td><span class="tag tag-warning">Pending</span></td>
+                    <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+                </tr>
+                <tr>
+                    <td>657</td>
+                    <td>Bob Doe</td>
+                    <td>11-7-2014</td>
+                    <td><span class="tag tag-primary">Approved</span></td>
+                    <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+                </tr>
+                <tr>
+                    <td>175</td>
+                    <td>Mike Doe</td>
+                    <td>11-7-2014</td>
+                    <td><span class="tag tag-danger">Denied</span></td>
+                    <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer clearfix">
+            <ul class="pagination pagination-sm m-0 float-right">
+                <li class="page-item"><a class="page-link" href="#">«</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">»</a></li>
+            </ul>
         </div>
     </div>
     <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" data-backdrop="static">
@@ -44,18 +93,18 @@
                 <div class="modal-body">
                     <form class="needs-validation" novalidate id="saveForm">
                         <div class="form-group row">
-                            <label for="menuName"
+                            <label for="permissionName"
                                    class="col-sm-2 col-form-label col-form-label-sm text-right">菜单名称</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control form-control-sm" id="menuName" name="menuName"
+                                <input type="text" class="form-control form-control-sm" id="permissionName" name="permissionName"
                                        autocomplete="off" required>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="menuCode"
+                            <label for="permissionCode"
                                    class="col-sm-2 col-form-label col-form-label-sm text-right">菜单代码</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control form-control-sm" id="menuCode" name="menuCode"
+                                <input type="text" class="form-control form-control-sm" id="permissionCode" name="permissionCode"
                                        autocomplete="off" required>
                             </div>
                         </div>
@@ -143,8 +192,8 @@
             let defer = $.Deferred();
             filter.keyword = $("#keyword").val();
             $.ajax({
-                type: "GET",
-                url: _root + "system/menu/list",
+                type: "POST",
+                url: _root + "system/permission/search",
                 data: filter,
                 dataType: "json"
             }).done(function (response) {
@@ -158,8 +207,8 @@
             $saveForm.removeClass("was-validated");
             if (row) {
                 $("#saveId").val(row.id);
-                $("#menuName").val(row.menuName);
-                $("#menuCode").val(row.menuCode);
+                $("#permissionName").val(row.permissionName);
+                $("#permissionCode").val(row.permissionCode);
                 $("#path").val(row.path);
                 $("#icon").val(row.icon);
                 $("#sort").val(row.sort);
@@ -196,9 +245,9 @@
             },
             fields: [
                 {name: "id", type: "text", title: "ID", align: "center", width: 20},
-                // {name: "submenus", type: "text", title: "", align: "center", width: 50},
-                {name: "menuName", type: "text", title: "菜单名称", align: "center", width: 60},
-                {name: "menuCode", type: "text", title: "菜单编码", align: "center", width: 60},
+                // {name: "subpermissions", type: "text", title: "", align: "center", width: 50},
+                {name: "permissionName", type: "text", title: "菜单名称", align: "center", width: 60},
+                {name: "permissionCode", type: "text", title: "菜单编码", align: "center", width: 60},
                 {name: "path", type: "text", title: "路径", align: "center", width: 50},
                 {name: "icon", type: "text", title: "图标", align: "center", width: 60},
                 {name: "sort", type: "number", title: "排序", align: "center", width: 30},
@@ -246,7 +295,7 @@
             }
             $.ajax({
                 type: "POST",
-                url: _root + "system/menu/create",
+                url: _root + "system/permission/create",
                 data: $form.serializeArray(),
             }).done(function (data) {
                 console.log(data);
@@ -263,7 +312,7 @@
             }
             $.ajax({
                 type: "POST",
-                url: _root + "system/menu/delete",
+                url: _root + "system/permission/delete",
                 data: $form.serializeArray(),
             }).done(function (data) {
                 console.log(data);

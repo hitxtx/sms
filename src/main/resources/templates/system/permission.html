@@ -29,7 +29,7 @@
                     </div>
                 </div>
             </div>
-            <div id="datagrid"></div>
+            <div id="dataGrid"></div>
         </div>
     </div>
     <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" data-backdrop="static">
@@ -44,18 +44,18 @@
                 <div class="modal-body">
                     <form class="needs-validation" novalidate id="saveForm">
                         <div class="form-group row">
-                            <label for="menuName"
-                                   class="col-sm-2 col-form-label col-form-label-sm text-right">菜单名称</label>
+                            <label for="module"
+                                   class="col-sm-2 col-form-label col-form-label-sm text-right">模块名称</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control form-control-sm" id="menuName" name="menuName"
+                                <input type="text" class="form-control form-control-sm" id="module" name="module"
                                        autocomplete="off" required>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="menuCode"
-                                   class="col-sm-2 col-form-label col-form-label-sm text-right">菜单代码</label>
+                            <label for="tag"
+                                   class="col-sm-2 col-form-label col-form-label-sm text-right">路径标签</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control form-control-sm" id="menuCode" name="menuCode"
+                                <input type="text" class="form-control form-control-sm" id="tag" name="tag"
                                        autocomplete="off" required>
                             </div>
                         </div>
@@ -67,27 +67,9 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="icon" class="col-sm-2 col-form-label col-form-label-sm text-right">菜单图标</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control form-control-sm" id="icon" name="icon"
-                                       autocomplete="off" required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="sort" class="col-sm-2 col-form-label col-form-label-sm text-right">排序</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control form-control-sm" id="sort" name="sort"
-                                       autocomplete="off" required value="1">
-                            </div>
-                        </div>
-                        <div class="form-group row">
                             <label for="deletedFlag"
                                    class="col-sm-2 col-form-label col-form-label-sm text-right">状态</label>
                             <div class="col-sm-10">
-                                <!--                                <select class="custom-select custom-select-sm" id="deletedFlag" name="deletedFlag" required>-->
-                                <!--                                    <option value="" selected>启用</option>-->
-                                <!--                                    <option value="1">禁用</option>-->
-                                <!--                                </select>-->
                                 <div class="custom-control custom-switch custom-switch-sm">
                                     <input type="checkbox" class="custom-control-input" id="deletedFlag"
                                            name="deletedFlag" required>
@@ -137,20 +119,23 @@
         let $searchForm = $("#searchForm");
         let $saveForm = $("#saveForm");
         let $deleteForm = $("#deleteForm");
-        let $datagrid = $("#datagrid");
+        let $dataGrid = $("#dataGrid");
 
         let searchData = function (filter) {
             let defer = $.Deferred();
             filter.keyword = $("#keyword").val();
             $.ajax({
-                type: "GET",
-                url: _root + "system/menu/list",
+                type: "POST",
+                url: _root + "system/permission/search",
                 data: filter,
                 dataType: "json"
-            }).done(function (response) {
-                defer.resolve(response);
-            });
-
+            }).done(function (data) {
+                if (data.success) {
+                    defer.resolve(data.data);
+                } else {
+                    alert(data.message);
+                }
+            })
             return defer.promise();
         };
         let saveModal = function (action, title, row) {
@@ -158,8 +143,8 @@
             $saveForm.removeClass("was-validated");
             if (row) {
                 $("#saveId").val(row.id);
-                $("#menuName").val(row.menuName);
-                $("#menuCode").val(row.menuCode);
+                $("#module").val(row.module);
+                $("#tag").val(row.tag);
                 $("#path").val(row.path);
                 $("#icon").val(row.icon);
                 $("#sort").val(row.sort);
@@ -180,7 +165,7 @@
         };
 
         jsGrid.locale("zh-cn");
-        $datagrid.jsGrid({
+        $dataGrid.jsGrid({
             height: "auto",
             width: "100%",
             sorting: false,
@@ -196,12 +181,9 @@
             },
             fields: [
                 {name: "id", type: "text", title: "ID", align: "center", width: 20},
-                // {name: "submenus", type: "text", title: "", align: "center", width: 50},
-                {name: "menuName", type: "text", title: "菜单名称", align: "center", width: 60},
-                {name: "menuCode", type: "text", title: "菜单编码", align: "center", width: 60},
+                {name: "module", type: "text", title: "模块名称", align: "center", width: 60},
+                {name: "tag", type: "text", title: "路径标签", align: "center", width: 60},
                 {name: "path", type: "text", title: "路径", align: "center", width: 50},
-                {name: "icon", type: "text", title: "图标", align: "center", width: 60},
-                {name: "sort", type: "number", title: "排序", align: "center", width: 30},
                 {name: "deletedFlag", type: "boolean", title: "状态", align: "center", width: 50},
                 {name: "createdTime", type: "text", title: "创建时间", align: "center", width: 100},
                 {name: "updatedTime", type: "text", title: "修改时间", align: "center", width: 100},
@@ -231,9 +213,9 @@
         });
 
         $searchBtn.on("click", function () {
-            let filter = $datagrid.jsGrid("getFilter");
+            let filter = $dataGrid.jsGrid("getFilter");
             filter.keyword = $("#keyword").val();
-            $datagrid.jsGrid("search", filter);
+            $dataGrid.jsGrid("search", filter);
         });
         $createBtn.on("click", function () {
             saveModal("show", $(this).html());
@@ -246,13 +228,13 @@
             }
             $.ajax({
                 type: "POST",
-                url: _root + "system/menu/create",
+                url: _root + "system/permission/create",
                 data: $form.serializeArray(),
             }).done(function (data) {
-                console.log(data);
                 saveModal("hide");
+                $searchBtn.click();
             }).fail(function (err) {
-
+                alert(err);
             });
         });
         $deleteBtn.on("click", function () {
@@ -263,13 +245,13 @@
             }
             $.ajax({
                 type: "POST",
-                url: _root + "system/menu/delete",
+                url: _root + "system/permission/delete",
                 data: $form.serializeArray(),
             }).done(function (data) {
-                console.log(data);
                 deleteModal("hide");
+                $searchBtn.click();
             }).fail(function (err) {
-
+                alert(err);
             });
         });
 

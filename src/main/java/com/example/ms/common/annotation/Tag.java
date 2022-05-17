@@ -1,4 +1,4 @@
-package com.example.ms.component.annotation;
+package com.example.ms.common.annotation;
 
 import java.lang.annotation.*;
 

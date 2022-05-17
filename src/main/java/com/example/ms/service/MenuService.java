@@ -20,7 +20,7 @@ public class MenuService {
         this.menuRepository = menuRepository;
     }
 
-    public Page<Menu> list(Integer pageIndex, Integer pageSize, String keyword) {
+    public Page<Menu> list(Integer pageIndex, Integer pageSize, String keywords) {
         PageRequest request = PageRequest.of(pageIndex, pageSize, Sort.Direction.ASC, "id");
         return menuRepository.findAll(request);
     }

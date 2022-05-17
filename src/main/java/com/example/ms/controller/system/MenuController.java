@@ -1,7 +1,8 @@
 package com.example.ms.controller.system;
 
 import com.example.ms.model.Menu;
-import lombok.Setter;
+import com.example.ms.service.MenuService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,12 +13,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.*;
 
 @Slf4j
-@Setter
+@AllArgsConstructor
 @Controller
 @RequestMapping("/system/menu")
 public class MenuController {
 
-
+    private MenuService menuService;
 
     @GetMapping("/")
     public String index() {
@@ -51,7 +52,7 @@ public class MenuController {
         return json;
     }
 
-    @PostMapping("/save")
+    @PostMapping("/create")
     @ResponseBody
     public Menu save(Menu menu) {
 

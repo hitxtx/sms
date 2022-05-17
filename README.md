@@ -1,3 +1,12 @@
-# simple-management-system
-BackEnd: SpringBoot, Spring Security, Spring Data JPA, Thymeleaf
-FrontEnd: Bootstrap-AdminLTE
+# SMS(Simple-Management-System)
+
+### Framework
+
+- SpringBoot
+- Spring MVC
+- Spring Security
+- Spring Data JPA
+- Lombok
+- Thymeleaf
+- Bootstrap
+- AdminLTE

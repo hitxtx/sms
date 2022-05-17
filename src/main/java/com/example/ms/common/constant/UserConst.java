@@ -1,4 +1,4 @@
-package com.example.ms.component.constant;
+package com.example.ms.common.constant;
 
 /**
  * 用户常量

@@ -1,6 +1,6 @@
 package com.example.ms.controller;
 
-import com.example.ms.component.annotation.Tag;
+import com.example.ms.common.annotation.Tag;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 

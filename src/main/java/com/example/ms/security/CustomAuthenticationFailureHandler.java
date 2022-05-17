@@ -1,6 +1,6 @@
 package com.example.ms.security;
 
-import com.example.ms.component.constant.UserConst;
+import com.example.ms.common.constant.UserConst;
 import com.example.ms.model.User;
 import com.example.ms.service.UserService;
 import lombok.AllArgsConstructor;

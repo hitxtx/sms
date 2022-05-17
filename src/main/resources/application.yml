@@ -36,3 +36,4 @@ white:
       - /js/**
       - /images/**
       - /plugins/**
+      - /system/permission/**

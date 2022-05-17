@@ -1,9 +1,58 @@
 package com.example.ms.controller.system;
 
+import com.example.ms.common.component.PageResult;
+import com.example.ms.common.component.Result;
+import com.example.ms.model.Permission;
+import com.example.ms.service.PermissionService;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+@Slf4j
+@AllArgsConstructor
 @RequestMapping("/system/permission")
 @Controller
 public class PermissionController {
+
+    private final PermissionService permissionService;
+
+    @GetMapping("")
+    public String index() {
+        return "/system/permission";
+    }
+
+    @ResponseBody
+    @PostMapping("/search")
+    public Result search(@RequestParam(name = "pageIndex", defaultValue = "1") Integer pageIndex,
+                         @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
+                         @RequestParam(name = "keyword", required = false) String keyword) {
+        Page<Permission> page = permissionService.search(pageIndex - 1, pageSize, keyword);
+
+        return Result.SUCCESS(new PageResult<>(page.getTotalElements(), page.getContent()));
+    }
+
+    @ResponseBody
+    @PostMapping("/create")
+    public Result create(Permission permission) {
+        permissionService.create(permission);
+
+        return Result.SUCCESS();
+    }
+
+    @ResponseBody
+    @PostMapping("/modify")
+    public Result modify(Permission permission) {
+
+        return Result.SUCCESS();
+    }
+
+    @ResponseBody
+    @PostMapping("/delete")
+    public Result delete() {
+
+        return Result.SUCCESS();
+    }
+
 }

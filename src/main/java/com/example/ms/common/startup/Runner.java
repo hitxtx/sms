@@ -1,6 +1,6 @@
-package com.example.ms.component.startup;
+package com.example.ms.common.startup;
 
-import com.example.ms.component.annotation.Tag;
+import com.example.ms.common.annotation.Tag;
 import com.example.ms.model.Permission;
 import com.example.ms.model.Role;
 import com.example.ms.repository.PermissionRepository;
