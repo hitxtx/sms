@@ -13,7 +13,9 @@ public interface PermissionRepository extends JpaRepository<Permission, Long> {
     @Query("update Permission AS p set p.deletedFlag = 1 where p.id = :id")
     int updateDeletedFlag(Long id);
 
-    Page<Permission> findFirst10ByTagLike(String tag, Pageable pageable);
+    Page<Permission> findFirst10ByDeletedFlag(Boolean deletedFlag, Pageable pageable);
+
+    Page<Permission> findFirst10ByDeletedFlagAndTagLike(Boolean deletedFlag, String tag, Pageable pageable);
 
     Permission findByPathEquals(String path);
 

@@ -4,8 +4,8 @@ import com.example.ms.common.constant.ResultCode;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data //Provide getter and setter methods
-@NoArgsConstructor //No parameter structure
+@Data
+@NoArgsConstructor
 public class Result {
 
     private boolean success;

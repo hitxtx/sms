@@ -22,9 +22,9 @@ public class PermissionService {
     public Page<Permission> search(Integer pageIndex, Integer pageSize, String keyword) {
         Pageable pageable = PageRequest.of(pageIndex, pageSize, Sort.Direction.ASC, "id");
         if (keyword == null || "".equals(keyword.trim())) {
-            return permissionRepository.findAll(pageable);
+            return permissionRepository.findFirst10ByDeletedFlag(false, pageable);
         }
-        return permissionRepository.findFirst10ByTagLike(keyword.trim(), pageable);
+        return permissionRepository.findFirst10ByDeletedFlagAndTagLike(false, keyword.trim(), pageable);
     }
 
     public Permission create(Permission permission) throws Exception {
