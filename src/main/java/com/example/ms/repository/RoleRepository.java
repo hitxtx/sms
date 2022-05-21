@@ -1,7 +1,6 @@
 package com.example.ms.repository;
 
 import com.example.ms.model.Role;
-import com.example.ms.model.Permission;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
