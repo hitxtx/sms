@@ -10,13 +10,13 @@ import org.springframework.data.jpa.repository.Query;
 public interface PermissionRepository extends JpaRepository<Permission, Long> {
 
     @Modifying
-    @Query("update Permission AS p set p.deletedFlag = 1 where p.id = :id")
-    int updateDeletedFlag(Long id);
+    @Query("update Permission AS p set p.deletedFlag =:deletedFlag where p.id = :id")
+    void updateDeletedFlag(Boolean deletedFlag, Long id);
 
     Page<Permission> findFirst10ByDeletedFlag(Boolean deletedFlag, Pageable pageable);
 
     Page<Permission> findFirst10ByDeletedFlagAndTagLike(Boolean deletedFlag, String tag, Pageable pageable);
 
-    Permission findByPathEquals(String path);
+    Permission findByPath(String path);
 
 }

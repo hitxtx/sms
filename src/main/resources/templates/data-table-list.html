@@ -259,10 +259,10 @@
                     title: "操作",
                     width: 85,
                     itemTemplate: function (value, item) {
-                        let buttons = $("<a class=\"btn btn-xs text-info control-modify\"><i class=\"fas fa-edit\"></i> 编辑</a>" +
+                        let buttons = $("<a class=\"btn btn-xs text-info control-update\"><i class=\"fas fa-edit\"></i> 编辑</a>" +
                             "<a class=\"btn btn-xs text-danger control-remove\"><i class=\"fas fa-trash\"></i> 删除</a>")
                             .on("click", function (e) {
-                                if ($(e.target).hasClass("control-modify")) {
+                                if ($(e.target).hasClass("control-update")) {
                                     saveModal("show", $(this).html(), item);
 
                                     e.stopPropagation();

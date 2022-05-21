@@ -20,9 +20,9 @@
                             <button type="button" class="btn btn-primary btn-sm" id="searchBtn">
                                 <i class="fas fa-search"></i> 查询
                             </button>
-<!--                            <button type="button" class="btn btn-default btn-sm" id="resetBtn">-->
-<!--                                <i class="fas fa-times"></i> 清空-->
-<!--                            </button>-->
+                            <!--                            <button type="button" class="btn btn-default btn-sm" id="resetBtn">-->
+                            <!--                                <i class="fas fa-times"></i> 清空-->
+                            <!--                            </button>-->
                         </div>
                     </form>
                 </div>
@@ -37,7 +37,7 @@
             <div id="dataGrid"></div>
         </div>
     </div>
-    <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal fade" id="createUpdateModal" tabindex="-1" role="dialog" data-backdrop="static">
         <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -47,7 +47,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form class="needs-validation" novalidate id="saveForm">
+                    <form class="needs-validation" id="createUpdateForm" novalidate>
                         <div class="form-group row">
                             <label for="module"
                                    class="col-sm-2 col-form-label col-form-label-sm text-right">模块名称</label>
@@ -121,8 +121,8 @@
         let $createBtn = $("#createBtn");
         let $saveBtn = $("#saveBtn");
         let $deleteBtn = $("#deleteBtn");
-        let $searchForm = $("#searchForm");
-        let $saveForm = $("#saveForm");
+        // let $searchForm = $("#searchForm");
+        let $createUpdateForm = $("#createUpdateForm");
         let $deleteForm = $("#deleteForm");
         let $dataGrid = $("#dataGrid");
 
@@ -138,14 +138,15 @@
                 if (data.success) {
                     defer.resolve(data.data);
                 } else {
-                    alert(data.message);
+                    toastr.error(data.message);
                 }
             })
             return defer.promise();
         };
-        let saveModal = function (action, title, row) {
-            $saveForm.reset();
-            $saveForm.removeClass("was-validated");
+        let createUpdateModal = function (display, title, row) {
+            $createUpdateForm.reset();
+            $createUpdateForm.removeClass("was-validated");
+            $createUpdateForm.attr("action", row ? "system/permission/update" : "system/permission/create");
             if (row) {
                 $("#saveId").val(row.id);
                 $("#module").val(row.module);
@@ -157,15 +158,15 @@
             }
 
             $("#saveTitle").html(title);
-            $("#saveModal").modal(action === "show" ? "show" : "hide");
+            $("#createUpdateModal").modal(display === "show" ? "show" : "hide");
         };
-        let deleteModal = function (action, title, id) {
+        let deleteModal = function (display, title, id) {
             $deleteForm.reset();
             $deleteForm.removeClass("was-validated");
 
             $("#deleteId").val(id);
             $("#deleteTitle").html(title);
-            $("#deleteModal").modal(action === "show" ? "show" : "hide");
+            $("#deleteModal").modal(display === "show" ? "show" : "hide");
         };
 
         jsGrid.locale("zh-cn");
@@ -196,16 +197,14 @@
                     title: "操作",
                     width: 85,
                     itemTemplate: function (value, item) {
-                        let buttons = $("<a class=\"btn btn-xs text-info control-modify\"><i class=\"fas fa-edit\"></i> 编辑</a>" +
+                        let buttons = $("<a class=\"btn btn-xs text-info control-update\"><i class=\"fas fa-edit\"></i> 编辑</a>" +
                             "<a class=\"btn btn-xs text-danger control-remove\"><i class=\"fas fa-trash\"></i> 删除</a>")
                             .on("click", function (e) {
-                                if ($(e.target).hasClass("control-modify")) {
-                                    saveModal("show", $(this).html(), item);
-
+                                if ($(e.target).hasClass("control-update")) {
+                                    createUpdateModal("show", $(this).html(), item);
                                     e.stopPropagation();
                                 } else if ($(e.target).hasClass("control-remove")) {
                                     deleteModal("show", $(this).html(), item.id);
-
                                     e.stopPropagation();
                                 }
                             });
@@ -222,23 +221,27 @@
             $dataGrid.jsGrid("search", filter);
         });
         $createBtn.on("click", function () {
-            saveModal("show", $(this).html());
+            createUpdateModal("show", $(this).html());
         });
         $saveBtn.on("click", function () {
-            let $form = $saveForm;
+            let $form = $createUpdateForm;
             if (!$form[0].checkValidity()) {
                 $form.addClass('was-validated');
                 return false;
             }
             $.ajax({
                 type: "POST",
-                url: _root + "system/permission/create",
+                url: _root + $createUpdateForm.attr("action"),
                 data: $form.serializeArray(),
             }).done(function (data) {
-                saveModal("hide");
-                $searchBtn.click();
+                createUpdateModal("hide");
+                if (data.success) {
+                    $searchBtn.click();
+                } else {
+                    toastr.warning(data.message);
+                }
             }).fail(function (err) {
-                alert(err);
+                toastr.error(err);
             });
         });
         $deleteBtn.on("click", function () {
@@ -253,9 +256,13 @@
                 data: $form.serializeArray(),
             }).done(function (data) {
                 deleteModal("hide");
-                $searchBtn.click();
+                if (data.success) {
+                    $searchBtn.click();
+                } else {
+                    toastr.warning(data.message);
+                }
             }).fail(function (err) {
-                alert(err);
+                toastr.error(err);
             });
         });
 

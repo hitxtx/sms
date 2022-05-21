@@ -120,7 +120,7 @@ public class Runner implements ApplicationRunner {
                     role.getPermissions().remove(oldPermission);
                 }
                 // 删除
-                permissionRepository.updateDeletedFlag(oldPermission.getId());
+                permissionRepository.updateDeletedFlag(true, oldPermission.getId());
             } else {
                 // 更新
                 if (!oldPermission.equals(newPermission)) {

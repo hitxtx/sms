@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Transactional
@@ -28,13 +29,45 @@ public class PermissionService {
     }
 
     public Permission create(Permission permission) throws Exception {
-        Permission oldPermission = permissionRepository.findByPathEquals(permission.getPath());
-        if (oldPermission != null) {
+        Permission oldPermission = permissionRepository.findByPath(permission.getPath());
+        if (oldPermission != null && !oldPermission.getDeletedFlag()) {
             throw new Exception("记录已存在");
         }
-
+        if (oldPermission != null && oldPermission.getDeletedFlag()) {
+            permission.setId(oldPermission.getId());
+        }
+        permission.setDeletedFlag(false);
         permission.setCreatedTime(new Date());
         return permissionRepository.saveAndFlush(permission);
     }
 
+    public Permission update(Permission permission) throws Exception {
+        if (permission.getId() == null || permission.getId() <= 0) {
+            throw new Exception("更新信息异常");
+        }
+        Optional<Permission> optional = permissionRepository.findById(permission.getId());
+        optional.orElseThrow(() -> new Exception("找不到该记录"));
+        if (!optional.get().getPath().equals(permission.getPath())) {
+            Permission oldPermission = permissionRepository.findByPath(permission.getPath());
+            if (oldPermission != null && !oldPermission.getId().equals(permission.getId())) {
+                throw new Exception("记录已存在");
+            }
+        }
+        Permission oldPermission = optional.get();
+        permission.setDeletedFlag(oldPermission.getDeletedFlag());
+        permission.setCreatedTime(oldPermission.getCreatedTime());
+        permission.setUpdatedTime(new Date());
+        return permissionRepository.saveAndFlush(permission);
+    }
+
+    public void delete(Long id) {
+        permissionRepository.deleteById(id);
+    }
+
+    public void logicDelete(Long id) {
+        boolean exists = permissionRepository.existsById(id);
+        if (exists) {
+            permissionRepository.updateDeletedFlag(true, id);
+        }
+    }
 }

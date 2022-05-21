@@ -47,16 +47,22 @@ public class PermissionController {
     }
 
     @ResponseBody
-    @PostMapping("/modify")
-    public Result modify(Permission permission) {
+    @PostMapping("/update")
+    public Result update(Permission permission) {
+        try {
+            permissionService.update(permission);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.FAILED();
+        }
 
         return Result.SUCCESS();
     }
 
     @ResponseBody
     @PostMapping("/delete")
-    public Result delete() {
-
+    public Result delete(Long id) {
+        permissionService.logicDelete(id);
         return Result.SUCCESS();
     }
 
