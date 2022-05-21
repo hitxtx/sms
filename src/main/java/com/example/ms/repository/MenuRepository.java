@@ -16,7 +16,7 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
 
     Page<Menu> findFirst10ByDeletedFlag(Boolean deletedFlag, Pageable pageable);
 
-    Page<Menu> findFirst10ByDeletedFlagAndMenuNameLike(Boolean deletedFlag, String tag, Pageable pageable);
+    Page<Menu> findFirst10ByDeletedFlagAndMenuNameLike(Boolean deletedFlag, String menuName, Pageable pageable);
 
     Menu findByPath(String path);
 
