@@ -1,69 +1,69 @@
 package com.example.ms.controller.system;
 
+import com.example.ms.common.component.PageResult;
+import com.example.ms.common.component.Result;
 import com.example.ms.model.Menu;
 import com.example.ms.service.MenuService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.*;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @AllArgsConstructor
-@Controller
 @RequestMapping("/system/menu")
+@Controller
 public class MenuController {
 
-    private MenuService menuService;
+    private final MenuService menuService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public String index() {
-        return "system/menu";
+        return "/system/menu";
     }
 
-    @GetMapping("/list")
     @ResponseBody
-    public Object list(Integer pageIndex, Integer pageSize, String keyword) {
-        List<Menu> menus = new ArrayList<>();
-        for (long i = (pageIndex - 1L) * pageSize; i < pageIndex * pageSize; i++) {
-            Menu menu = new Menu();
-            menu.setId(i);
-            menu.setParentMenu(new Menu());
-            menu.setMenuName("菜单名称" + i);
-            menu.setMenuCode("Menu-" + i);
-            menu.setPath("#");
-            menu.setIcon("fa fa-smile");
-            menu.setSort(1L);
-            menu.setDeletedFlag(i % 2 == 0);
-            menu.setCreatedTime(new Date());
-            if (keyword != null && keyword.length() > 0) {
-                menu.setMenuName(keyword + i);
-            }
+    @PostMapping("/search")
+    public Result search(@RequestParam(name = "pageIndex", defaultValue = "1") Integer pageIndex,
+                         @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
+                         @RequestParam(name = "keyword", required = false) String keyword) {
+        Page<Menu> page = menuService.search(pageIndex - 1, pageSize, keyword);
 
-            menus.add(menu);
-        }
-        Map<String, Object> json = new HashMap<>();
-        json.put("data", menus);
-        json.put("itemsCount", 20);
-        return json;
+        return Result.SUCCESS(new PageResult<>(page.getTotalElements(), page.getContent()));
     }
 
+    @ResponseBody
     @PostMapping("/create")
-    @ResponseBody
-    public Menu save(Menu menu) {
+    public Result create(Menu menu) {
+        try {
+            menuService.create(menu);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.FAILED();
+        }
 
-        return null;
+        return Result.SUCCESS();
     }
 
-    @PostMapping("/delete")
     @ResponseBody
-    public Long delete(Long id) {
+    @PostMapping("/update")
+    public Result update(Menu menu) {
+        try {
+            menuService.update(menu);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.FAILED();
+        }
 
-        return 0L;
+        return Result.SUCCESS();
+    }
+
+    @ResponseBody
+    @PostMapping("/delete")
+    public Result delete(Long id) {
+        menuService.logicDelete(id);
+        return Result.SUCCESS();
     }
 
 }

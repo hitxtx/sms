@@ -66,11 +66,13 @@ public class Runner implements ApplicationRunner {
                     // 请求路径
                     String path;
                     Tag tag = method.getAnnotation(Tag.class);
+                    String tagName; // 路径备注
                     if (tag == null) {
-                        continue;
+                        tagName = method.getName();
+                    } else {
+                        tagName = tag.value();
                     }
-                    // 路径备注
-                    String tagName = tag.value();
+
                     RequestMapping mapping = method.getAnnotation(RequestMapping.class);
                     GetMapping getMapping = method.getAnnotation(GetMapping.class);
                     PostMapping postMapping = method.getAnnotation(PostMapping.class);

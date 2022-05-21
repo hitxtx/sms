@@ -5,6 +5,7 @@ import com.example.ms.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.AntPathMatcher;
 
 import java.util.List;
 
@@ -20,4 +21,15 @@ class ApplicationTests {
         System.err.println(users.toString());
     }
 
+    public static void main(String[] args) {
+        AntPathMatcher matcher = new AntPathMatcher();
+        System.err.println(matcher.match("/user/update/*", "/user/update/12"));
+        System.err.println(matcher.match("/user/update/", "/user/update/12"));
+        System.err.println(matcher.match("/user/update", "/user/update?id=12"));
+        System.err.println(matcher.match("/user/update/?", "/user/update/12"));
+        System.err.println(matcher.match("/user/update/??", "/user/update/12"));
+        System.err.println(matcher.match("/user/update/??", "/user/update/1"));
+        System.err.println(matcher.match("/user/update/?", "/user/update/1"));
+        System.err.println(matcher.match("/user/update/*", "/user/update/%20"));
+    }
 }

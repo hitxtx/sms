@@ -11,14 +11,16 @@
             <div class="row mb-2">
                 <div class="col-sm-9">
                     <form class="form-inline" id="searchForm">
-                        <label class="sr-only" for="searchText">searchText</label>
+                        <label class="sr-only" for="keyword">keyword</label>
                         <div class="input-group input-group-sm mr-sm-2">
-                            <input type="text" class="form-control form-control-sm" id="searchText" name="searchText"
+                            <input type="text" class="form-control form-control-sm" id="keyword" name="keyword"
                                    autocomplete="off" placeholder="请输入关键词查询">
                         </div>
-                        <button type="button" class="btn btn-primary btn-sm" id="searchBtn"><i
-                                class="fas fa-search"></i> 查询
-                        </button>
+                        <div class="btn-group-sm">
+                            <button type="button" class="btn btn-primary btn-sm" id="searchBtn">
+                                <i class="fas fa-search"></i> 查询
+                            </button>
+                        </div>
                     </form>
                 </div>
                 <div class="col-sm-3">
@@ -29,10 +31,10 @@
                     </div>
                 </div>
             </div>
-            <div id="datagrid"></div>
+            <div id="dataGrid"></div>
         </div>
     </div>
-    <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal fade" id="createUpdateModal" tabindex="-1" role="dialog" data-backdrop="static">
         <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -42,7 +44,14 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form class="needs-validation" novalidate id="saveForm">
+                    <form class="needs-validation" id="createUpdateForm" novalidate>
+                        <div class="form-group row">
+                            <label for="parentMenu" class="col-sm-2 col-form-label col-form-label-sm text-right">上级菜单</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control form-control-sm" id="parentMenu" name="parentMenu"
+                                       autocomplete="off" required>
+                            </div>
+                        </div>
                         <div class="form-group row">
                             <label for="menuName"
                                    class="col-sm-2 col-form-label col-form-label-sm text-right">菜单名称</label>
@@ -60,39 +69,17 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="path" class="col-sm-2 col-form-label col-form-label-sm text-right">链接路径</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control form-control-sm" id="path" name="path"
-                                       autocomplete="off" required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="icon" class="col-sm-2 col-form-label col-form-label-sm text-right">菜单图标</label>
+                            <label for="icon" class="col-sm-2 col-form-label col-form-label-sm text-right">图标</label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control form-control-sm" id="icon" name="icon"
                                        autocomplete="off" required>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="sort" class="col-sm-2 col-form-label col-form-label-sm text-right">排序</label>
+                            <label for="path" class="col-sm-2 col-form-label col-form-label-sm text-right">链接路径</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control form-control-sm" id="sort" name="sort"
-                                       autocomplete="off" required value="1">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="deletedFlag"
-                                   class="col-sm-2 col-form-label col-form-label-sm text-right">状态</label>
-                            <div class="col-sm-10">
-                                <!--                                <select class="custom-select custom-select-sm" id="deletedFlag" name="deletedFlag" required>-->
-                                <!--                                    <option value="" selected>启用</option>-->
-                                <!--                                    <option value="1">禁用</option>-->
-                                <!--                                </select>-->
-                                <div class="custom-control custom-switch custom-switch-sm">
-                                    <input type="checkbox" class="custom-control-input" id="deletedFlag"
-                                           name="deletedFlag" required>
-                                    <label class="custom-control-label" for="deletedFlag"></label>
-                                </div>
+                                <input type="text" class="form-control form-control-sm" id="path" name="path"
+                                       autocomplete="off" required>
                             </div>
                         </div>
                         <input type="hidden" id="saveId" name="id">
@@ -134,60 +121,62 @@
         let $createBtn = $("#createBtn");
         let $saveBtn = $("#saveBtn");
         let $deleteBtn = $("#deleteBtn");
-        let $searchForm = $("#searchForm");
-        let $saveForm = $("#saveForm");
+        let $createUpdateForm = $("#createUpdateForm");
         let $deleteForm = $("#deleteForm");
-        let $datagrid = $("#datagrid");
+        let $dataGrid = $("#dataGrid");
 
         let searchData = function (filter) {
             let defer = $.Deferred();
             filter.keyword = $("#keyword").val();
             $.ajax({
-                type: "GET",
-                url: _root + "system/menu/list",
+                type: "POST",
+                url: _root + "system/menu/search",
                 data: filter,
                 dataType: "json"
-            }).done(function (response) {
-                defer.resolve(response);
-            });
-
+            }).done(function (data) {
+                if (data.success) {
+                    defer.resolve(data.data);
+                } else {
+                    toastr.error(data.message);
+                }
+            })
             return defer.promise();
         };
-        let saveModal = function (action, title, row) {
-            $saveForm.reset();
-            $saveForm.removeClass("was-validated");
+        let createUpdateModal = function (display, title, row) {
+            $createUpdateForm.reset();
+            $createUpdateForm.removeClass("was-validated");
+            $createUpdateForm.attr("action", row ? "system/menu/update" : "system/menu/create");
             if (row) {
                 $("#saveId").val(row.id);
+                $("#parentMenu").val(row.parentMenu);
                 $("#menuName").val(row.menuName);
                 $("#menuCode").val(row.menuCode);
-                $("#path").val(row.path);
                 $("#icon").val(row.icon);
+                $("#path").val(row.path);
                 $("#sort").val(row.sort);
-                // $("#deletedFlag").val(row.deletedFlag);
-                $("#deletedFlag").prop("checked", row.deletedFlag);
             }
 
             $("#saveTitle").html(title);
-            $("#saveModal").modal(action === "show" ? "show" : "hide");
+            $("#createUpdateModal").modal(display === "show" ? "show" : "hide");
         };
-        let deleteModal = function (action, title, id) {
+        let deleteModal = function (display, title, id) {
             $deleteForm.reset();
             $deleteForm.removeClass("was-validated");
 
             $("#deleteId").val(id);
             $("#deleteTitle").html(title);
-            $("#deleteModal").modal(action === "show" ? "show" : "hide");
+            $("#deleteModal").modal(display === "show" ? "show" : "hide");
         };
 
         jsGrid.locale("zh-cn");
-        $datagrid.jsGrid({
+        $dataGrid.jsGrid({
             height: "auto",
             width: "100%",
             sorting: false,
             paging: true,
             autoload: true,
             pageLoading: true,
-            pageSize: 15,
+            pageSize: 10,
             pageIndex: 1,
             controller: {
                 loadData: function (filter) {
@@ -196,13 +185,11 @@
             },
             fields: [
                 {name: "id", type: "text", title: "ID", align: "center", width: 20},
-                // {name: "submenus", type: "text", title: "", align: "center", width: 50},
-                {name: "menuName", type: "text", title: "菜单名称", align: "center", width: 60},
-                {name: "menuCode", type: "text", title: "菜单编码", align: "center", width: 60},
-                {name: "path", type: "text", title: "路径", align: "center", width: 50},
-                {name: "icon", type: "text", title: "图标", align: "center", width: 60},
-                {name: "sort", type: "number", title: "排序", align: "center", width: 30},
-                {name: "deletedFlag", type: "boolean", title: "状态", align: "center", width: 50},
+                {name: "parentMenu", type: "text", title: "上级菜单", align: "center", width: 50},
+                {name: "menuName", type: "text", title: "菜单名称", align: "center", width: 50},
+                {name: "menuCode", type: "text", title: "菜单代码", align: "center", width: 50},
+                {name: "icon", type: "text", title: "图标", align: "center", width: 50},
+                {name: "path", type: "text", title: "路径", align: "center", width: 80},
                 {name: "createdTime", type: "text", title: "创建时间", align: "center", width: 100},
                 {name: "updatedTime", type: "text", title: "修改时间", align: "center", width: 100},
                 {
@@ -214,12 +201,10 @@
                             "<a class=\"btn btn-xs text-danger control-remove\"><i class=\"fas fa-trash\"></i> 删除</a>")
                             .on("click", function (e) {
                                 if ($(e.target).hasClass("control-update")) {
-                                    saveModal("show", $(this).html(), item);
-
+                                    createUpdateModal("show", $(this).html(), item);
                                     e.stopPropagation();
                                 } else if ($(e.target).hasClass("control-remove")) {
                                     deleteModal("show", $(this).html(), item.id);
-
                                     e.stopPropagation();
                                 }
                             });
@@ -231,28 +216,32 @@
         });
 
         $searchBtn.on("click", function () {
-            let filter = $datagrid.jsGrid("getFilter");
+            let filter = $dataGrid.jsGrid("getFilter");
             filter.keyword = $("#keyword").val();
-            $datagrid.jsGrid("search", filter);
+            $dataGrid.jsGrid("search", filter);
         });
         $createBtn.on("click", function () {
-            saveModal("show", $(this).html());
+            createUpdateModal("show", $(this).html());
         });
         $saveBtn.on("click", function () {
-            let $form = $saveForm;
+            let $form = $createUpdateForm;
             if (!$form[0].checkValidity()) {
                 $form.addClass('was-validated');
                 return false;
             }
             $.ajax({
                 type: "POST",
-                url: _root + "system/menu/create",
+                url: _root + $createUpdateForm.attr("action"),
                 data: $form.serializeArray(),
             }).done(function (data) {
-                console.log(data);
-                saveModal("hide");
+                createUpdateModal("hide");
+                if (data.success) {
+                    $searchBtn.click();
+                } else {
+                    toastr.warning(data.message);
+                }
             }).fail(function (err) {
-
+                toastr.error(err);
             });
         });
         $deleteBtn.on("click", function () {
@@ -266,10 +255,14 @@
                 url: _root + "system/menu/delete",
                 data: $form.serializeArray(),
             }).done(function (data) {
-                console.log(data);
                 deleteModal("hide");
+                if (data.success) {
+                    $searchBtn.click();
+                } else {
+                    toastr.warning(data.message);
+                }
             }).fail(function (err) {
-
+                toastr.error(err);
             });
         });
 
