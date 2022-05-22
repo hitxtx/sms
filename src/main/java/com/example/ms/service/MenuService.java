@@ -22,10 +22,10 @@ public class MenuService {
 
     public Page<Menu> search(Integer pageIndex, Integer pageSize, String keyword) {
         Pageable pageable = PageRequest.of(pageIndex, pageSize, Sort.Direction.ASC, "id");
-        if (keyword == null || "".equals(keyword.trim())) {
+        if (keyword == null || "".equals(keyword)) {
             return menuRepository.findFirst10ByDeletedFlag(false, pageable);
         }
-        return menuRepository.findFirst10ByDeletedFlagAndMenuNameLike(false, keyword.trim(), pageable);
+        return menuRepository.findFirst10ByDeletedFlagAndMenuNameLike(false, "%" + keyword + "%", pageable);
     }
 
     public Menu create(Menu menu) throws Exception {

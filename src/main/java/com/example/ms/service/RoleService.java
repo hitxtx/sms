@@ -22,10 +22,10 @@ public class RoleService {
 
     public Page<Role> search(Integer pageIndex, Integer pageSize, String keyword) {
         Pageable pageable = PageRequest.of(pageIndex, pageSize, Sort.Direction.ASC, "id");
-        if (keyword == null || "".equals(keyword.trim())) {
+        if (keyword == null || "".equals(keyword)) {
             return roleRepository.findFirst10ByDeletedFlag(false, pageable);
         }
-        return roleRepository.findFirst10ByDeletedFlagAndRoleNameLike(false, keyword.trim(), pageable);
+        return roleRepository.findFirst10ByDeletedFlagAndRoleNameLike(false, "%" + keyword + "%", pageable);
     }
 
     public Role create(Role role) throws Exception {

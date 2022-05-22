@@ -27,10 +27,10 @@ public class UserService {
 
     public Page<User> search(Integer pageIndex, Integer pageSize, String keyword) {
         Pageable pageable = PageRequest.of(pageIndex, pageSize, Sort.Direction.ASC, "id");
-        if (keyword == null || "".equals(keyword.trim())) {
+        if (keyword == null || "".equals(keyword)) {
             return userRepository.findFirst10ByDeletedFlag(false, pageable);
         }
-        return userRepository.findFirst10ByDeletedFlagAndUsernameLike(false, keyword.trim(), pageable);
+        return userRepository.findFirst10ByDeletedFlagAndUsernameLike(false, "%" + keyword + "%", pageable);
     }
 
     public User create(User user) throws Exception {

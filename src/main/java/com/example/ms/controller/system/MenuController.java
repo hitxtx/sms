@@ -28,7 +28,7 @@ public class MenuController {
     public Result search(@RequestParam(name = "pageIndex", defaultValue = "1") Integer pageIndex,
                          @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                          @RequestParam(name = "keyword", required = false) String keyword) {
-        Page<Menu> page = menuService.search(pageIndex - 1, pageSize, keyword);
+        Page<Menu> page = menuService.search(pageIndex - 1, pageSize, keyword.trim());
 
         return Result.SUCCESS(new PageResult<>(page.getTotalElements(), page.getContent()));
     }
