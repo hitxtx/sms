@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html th:replace="~{admin_layout::adminLayout(~{::title}, ~{}, ~{::script}, ~{::section})}"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Hello World</title>
+</head>
+<body>
+<section class="content">
+    <div class="card">
+        <div class="card-body">
+            <div class="row mb-2">
+                <div class="col-sm-9">
+                    <form class="form-inline" id="searchForm">
+                        <label class="sr-only" for="keyword">keyword</label>
+                        <div class="input-group input-group-sm mr-sm-2">
+                            <input type="text" class="form-control form-control-sm" id="keyword" name="keyword"
+                                   autocomplete="off" placeholder="请输入关键词查询">
+                        </div>
+                        <div class="btn-group-sm">
+                            <button type="button" class="btn btn-primary btn-sm" id="searchBtn">
+                                <i class="fas fa-search"></i> 查询
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-sm-3">
+                    <div class="text-lg-right">
+                        <button type="button" class="btn btn-success btn-sm" id="createBtn"><i class="fas fa-plus"></i>
+                            新增
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="dataGrid"></div>
+        </div>
+    </div>
+    <div class="modal fade" id="createUpdateModal" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="saveTitle">Title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" id="createUpdateForm" novalidate>
+                        <div class="form-group row">
+                            <label for="username"
+                                   class="col-sm-2 col-form-label col-form-label-sm text-right">角色名称</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control form-control-sm" id="username" name="username"
+                                       autocomplete="off" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="userCode"
+                                   class="col-sm-2 col-form-label col-form-label-sm text-right">角色代码</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control form-control-sm" id="userCode" name="userCode"
+                                       autocomplete="off" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="sort" class="col-sm-2 col-form-label col-form-label-sm text-right">排序</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control form-control-sm" id="sort" name="sort"
+                                       autocomplete="off" required>
+                            </div>
+                        </div>
+                        <input type="hidden" id="saveId" name="id">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary" id="saveBtn">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger" id="deleteTitle">Title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" novalidate id="deleteForm">
+                        <h6>确定要删除吗？</h6>
+                        <input type="hidden" id="deleteId" name="id" required>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="deleteBtn">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script th:inline="javascript">
+    $(function () {
+        let $searchBtn = $("#searchBtn");
+        let $createBtn = $("#createBtn");
+        let $saveBtn = $("#saveBtn");
+        let $deleteBtn = $("#deleteBtn");
+        let $createUpdateForm = $("#createUpdateForm");
+        let $deleteForm = $("#deleteForm");
+        let $dataGrid = $("#dataGrid");
+
+        let searchData = function (filter) {
+            let defer = $.Deferred();
+            filter.keyword = $("#keyword").val();
+            $.ajax({
+                type: "POST",
+                url: _root + "system/user/search",
+                data: filter,
+                dataType: "json"
+            }).done(function (data) {
+                if (data.success) {
+                    defer.resolve(data.data);
+                } else {
+                    toastr.error(data.message);
+                }
+            })
+            return defer.promise();
+        };
+        let createUpdateModal = function (display, title, row) {
+            $createUpdateForm.reset();
+            $createUpdateForm.removeClass("was-validated");
+            $createUpdateForm.attr("action", row ? "system/user/update" : "system/user/create");
+            if (row) {
+                $("#saveId").val(row.id);
+                $("#username").val(row.username);
+                $("#userCode").val(row.userCode);
+                $("#sort").val(row.sort);
+            }
+
+            $("#saveTitle").html(title);
+            $("#createUpdateModal").modal(display === "show" ? "show" : "hide");
+        };
+        let deleteModal = function (display, title, id) {
+            $deleteForm.reset();
+            $deleteForm.removeClass("was-validated");
+
+            $("#deleteId").val(id);
+            $("#deleteTitle").html(title);
+            $("#deleteModal").modal(display === "show" ? "show" : "hide");
+        };
+
+        jsGrid.locale("zh-cn");
+        $dataGrid.jsGrid({
+            height: "auto",
+            width: "100%",
+            sorting: false,
+            paging: true,
+            autoload: true,
+            pageLoading: true,
+            pageSize: 10,
+            pageIndex: 1,
+            controller: {
+                loadData: function (filter) {
+                    return searchData(filter);
+                }
+            },
+            fields: [
+                {name: "id", type: "text", title: "ID", align: "center", width: 20},
+                {name: "username", type: "text", title: "角色名称", align: "center", width: 50},
+                {name: "userCode", type: "text", title: "角色代码", align: "center", width: 50},
+                {name: "sort", type: "text", title: "排序", align: "center", width: 50},
+                {name: "createdTime", type: "text", title: "创建时间", align: "center", width: 100},
+                {name: "updatedTime", type: "text", title: "修改时间", align: "center", width: 100},
+                {
+                    type: "control",
+                    title: "操作",
+                    width: 85,
+                    itemTemplate: function (value, item) {
+                        let buttons = $("<a class=\"btn btn-xs text-info control-update\"><i class=\"fas fa-edit\"></i> 编辑</a>" +
+                            "<a class=\"btn btn-xs text-danger control-remove\"><i class=\"fas fa-trash\"></i> 删除</a>")
+                            .on("click", function (e) {
+                                if ($(e.target).hasClass("control-update")) {
+                                    createUpdateModal("show", $(this).html(), item);
+                                    e.stopPropagation();
+                                } else if ($(e.target).hasClass("control-remove")) {
+                                    deleteModal("show", $(this).html(), item.id);
+                                    e.stopPropagation();
+                                }
+                            });
+
+                        return $("<div class=\"btn-group btn-group-sm\"></div>").append(buttons);
+                    }
+                }
+            ]
+        });
+
+        $searchBtn.on("click", function () {
+            let filter = $dataGrid.jsGrid("getFilter");
+            filter.keyword = $("#keyword").val();
+            $dataGrid.jsGrid("search", filter);
+        });
+        $createBtn.on("click", function () {
+            createUpdateModal("show", $(this).html());
+        });
+        $saveBtn.on("click", function () {
+            let $form = $createUpdateForm;
+            if (!$form[0].checkValidity()) {
+                $form.addClass('was-validated');
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: _root + $createUpdateForm.attr("action"),
+                data: $form.serializeArray(),
+            }).done(function (data) {
+                createUpdateModal("hide");
+                if (data.success) {
+                    $searchBtn.click();
+                } else {
+                    toastr.warning(data.message);
+                }
+            }).fail(function (err) {
+                toastr.error(err);
+            });
+        });
+        $deleteBtn.on("click", function () {
+            let $form = $deleteForm;
+            if (!$form[0].checkValidity()) {
+                $form.addClass('was-validated');
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: _root + "system/user/delete",
+                data: $form.serializeArray(),
+            }).done(function (data) {
+                deleteModal("hide");
+                if (data.success) {
+                    $searchBtn.click();
+                } else {
+                    toastr.warning(data.message);
+                }
+            }).fail(function (err) {
+                toastr.error(err);
+            });
+        });
+
+    });
+</script>
+</body>
+</html>
