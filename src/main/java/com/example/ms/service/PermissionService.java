@@ -1,6 +1,6 @@
 package com.example.ms.service;
 
-import com.example.ms.model.Permission;
+import com.example.ms.model.bo.Permission;
 import com.example.ms.repository.PermissionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;

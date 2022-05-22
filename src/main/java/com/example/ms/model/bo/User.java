@@ -1,4 +1,4 @@
-package com.example.ms.model;
+package com.example.ms.model.bo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;

@@ -1,7 +1,7 @@
 package com.example.ms.service;
 
 import com.example.ms.common.constant.UserConst;
-import com.example.ms.model.User;
+import com.example.ms.model.bo.User;
 import com.example.ms.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

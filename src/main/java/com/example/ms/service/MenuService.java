@@ -1,6 +1,6 @@
 package com.example.ms.service;
 
-import com.example.ms.model.Menu;
+import com.example.ms.model.bo.Menu;
 import com.example.ms.repository.MenuRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -70,4 +70,5 @@ public class MenuService {
             menuRepository.updateDeletedFlag(true, id);
         }
     }
+
 }

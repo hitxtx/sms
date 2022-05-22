@@ -1,7 +1,7 @@
 package com.example.ms.security;
 
-import com.example.ms.model.Role;
-import com.example.ms.model.User;
+import com.example.ms.model.bo.Role;
+import com.example.ms.model.bo.User;
 import com.example.ms.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

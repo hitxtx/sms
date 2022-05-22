@@ -2,7 +2,7 @@ package com.example.ms.controller.system;
 
 import com.example.ms.common.component.PageResult;
 import com.example.ms.common.component.Result;
-import com.example.ms.model.Permission;
+import com.example.ms.model.bo.Permission;
 import com.example.ms.service.PermissionService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

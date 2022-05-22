@@ -1,8 +1,8 @@
 package com.example.ms.common.startup;
 
 import com.example.ms.common.annotation.Tag;
-import com.example.ms.model.Permission;
-import com.example.ms.model.Role;
+import com.example.ms.model.bo.Permission;
+import com.example.ms.model.bo.Role;
 import com.example.ms.repository.PermissionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

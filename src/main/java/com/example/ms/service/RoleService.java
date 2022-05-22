@@ -1,6 +1,6 @@
 package com.example.ms.service;
 
-import com.example.ms.model.Role;
+import com.example.ms.model.bo.Role;
 import com.example.ms.repository.RoleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;

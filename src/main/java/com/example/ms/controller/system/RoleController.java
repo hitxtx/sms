@@ -2,7 +2,7 @@ package com.example.ms.controller.system;
 
 import com.example.ms.common.component.PageResult;
 import com.example.ms.common.component.Result;
-import com.example.ms.model.Role;
+import com.example.ms.model.bo.Role;
 import com.example.ms.service.RoleService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
