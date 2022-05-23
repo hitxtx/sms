@@ -1,11 +1,14 @@
 package com.example.ms.repository;
 
 import com.example.ms.model.bo.Menu;
+import com.example.ms.model.vo.SelectOption;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 public interface MenuRepository extends JpaRepository<Menu, Long> {
 
@@ -18,5 +21,11 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
     Page<Menu> findFirst10ByDeletedFlagAndMenuNameLike(Boolean deletedFlag, String menuName, Pageable pageable);
 
     Menu findByPath(String path);
+
+    @Query("SELECT m.id AS id, m.menuName as text from Menu as m where m.deletedFlag =:deletedFlag")
+    List<SelectOption> findByDeletedFlag(Boolean deletedFlag);
+
+    @Query("SELECT m.id AS id, m.menuName as text from Menu as m where m.deletedFlag =:deletedFlag and m.menuName like concat('%', :text, '%') ")
+    List<SelectOption> findByDeletedFlagAndMenuNameLike(Boolean deletedFlag, String text);
 
 }

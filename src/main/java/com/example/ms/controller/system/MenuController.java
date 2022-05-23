@@ -3,12 +3,15 @@ package com.example.ms.controller.system;
 import com.example.ms.common.component.PageResult;
 import com.example.ms.common.component.Result;
 import com.example.ms.model.bo.Menu;
+import com.example.ms.model.vo.SelectOption;
 import com.example.ms.service.MenuService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @AllArgsConstructor
@@ -64,6 +67,13 @@ public class MenuController {
     public Result delete(Long id) {
         menuService.logicDelete(id);
         return Result.SUCCESS();
+    }
+
+    @ResponseBody
+    @PostMapping("/select")
+    public Result select(String term) {
+        List<SelectOption> optionList = menuService.select(term);
+        return Result.SUCCESS(optionList);
     }
 
 }

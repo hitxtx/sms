@@ -1,6 +1,7 @@
 package com.example.ms.service;
 
 import com.example.ms.model.bo.Menu;
+import com.example.ms.model.vo.SelectOption;
 import com.example.ms.repository.MenuRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -71,4 +73,10 @@ public class MenuService {
         }
     }
 
+    public List<SelectOption> select(String term) {
+        if (term == null || term.trim().length() == 0) {
+            return menuRepository.findByDeletedFlag(false);
+        }
+        return menuRepository.findByDeletedFlagAndMenuNameLike(false, term);
+    }
 }
