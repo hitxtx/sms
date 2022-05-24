@@ -23,9 +23,9 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
     Menu findByPath(String path);
 
     @Query("SELECT m.id AS id, m.menuName as text from Menu as m where m.deletedFlag =:deletedFlag")
-    List<SelectOption> findByDeletedFlag(Boolean deletedFlag);
+    List<SelectOption> listByDeletedFlag(Boolean deletedFlag);
 
     @Query("SELECT m.id AS id, m.menuName as text from Menu as m where m.deletedFlag =:deletedFlag and m.menuName like concat('%', :text, '%') ")
-    List<SelectOption> findByDeletedFlagAndMenuNameLike(Boolean deletedFlag, String text);
+    List<SelectOption> listByDeletedFlagAndMenuNameLike(Boolean deletedFlag, String text);
 
 }

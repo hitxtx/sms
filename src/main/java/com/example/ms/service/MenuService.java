@@ -75,8 +75,8 @@ public class MenuService {
 
     public List<SelectOption> select(String term) {
         if (term == null || term.trim().length() == 0) {
-            return menuRepository.findByDeletedFlag(false);
+            return menuRepository.listByDeletedFlag(false);
         }
-        return menuRepository.findByDeletedFlagAndMenuNameLike(false, term);
+        return menuRepository.listByDeletedFlagAndMenuNameLike(false, term);
     }
 }
