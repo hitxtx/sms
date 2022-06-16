@@ -2,6 +2,7 @@ package com.example.ms.service;
 
 import com.example.ms.common.constant.UserConst;
 import com.example.ms.model.bo.User;
+import com.example.ms.model.dto.SearchParam;
 import com.example.ms.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,8 +26,9 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public Page<User> search(Integer pageIndex, Integer pageSize, String keyword) {
-        Pageable pageable = PageRequest.of(pageIndex, pageSize, Sort.Direction.ASC, "id");
+    public Page<User> search(SearchParam param) {
+        Pageable pageable = PageRequest.of(param.getPageIndex() - 1, param.getPageSize(), Sort.Direction.ASC, "id");
+        String keyword = param.getKeyword();
         if (keyword == null || "".equals(keyword)) {
             return userRepository.findFirst10ByDeletedFlag(false, pageable);
         }

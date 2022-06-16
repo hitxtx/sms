@@ -1,6 +1,7 @@
 package com.example.ms.service;
 
 import com.example.ms.model.bo.Permission;
+import com.example.ms.model.dto.SearchParam;
 import com.example.ms.repository.PermissionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,8 +21,9 @@ public class PermissionService {
 
     private final PermissionRepository permissionRepository;
 
-    public Page<Permission> search(Integer pageIndex, Integer pageSize, String keyword) {
-        Pageable pageable = PageRequest.of(pageIndex, pageSize, Sort.Direction.ASC, "id");
+    public Page<Permission> search(SearchParam param) {
+        Pageable pageable = PageRequest.of(param.getPageIndex() - 1, param.getPageSize(), Sort.Direction.ASC, "id");
+        String keyword = param.getKeyword();
         if (keyword == null || "".equals(keyword)) {
             return permissionRepository.findFirst10ByDeletedFlag(false, pageable);
         }

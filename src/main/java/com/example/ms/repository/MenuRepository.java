@@ -1,7 +1,7 @@
 package com.example.ms.repository;
 
 import com.example.ms.model.bo.Menu;
-import com.example.ms.model.vo.SelectOption;
+import com.example.ms.model.dto.SelectOption;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,7 +16,7 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
     @Query("update Menu AS p set p.deletedFlag =:deletedFlag where p.id = :id")
     void updateDeletedFlag(Boolean deletedFlag, Long id);
 
-    Page<Menu> findFirst10ByDeletedFlag(Boolean deletedFlag, Pageable pageable);
+    Page<Menu> findFirst10ByDeletedFlagAndParentMenu(Boolean deletedFlag, Menu parentMenu, Pageable pageable);
 
     Page<Menu> findFirst10ByDeletedFlagAndMenuNameLike(Boolean deletedFlag, String menuName, Pageable pageable);
 

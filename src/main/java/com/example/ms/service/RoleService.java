@@ -1,6 +1,7 @@
 package com.example.ms.service;
 
 import com.example.ms.model.bo.Role;
+import com.example.ms.model.dto.SearchParam;
 import com.example.ms.repository.RoleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,8 +21,9 @@ public class RoleService {
 
     private final RoleRepository roleRepository;
 
-    public Page<Role> search(Integer pageIndex, Integer pageSize, String keyword) {
-        Pageable pageable = PageRequest.of(pageIndex, pageSize, Sort.Direction.ASC, "id");
+    public Page<Role> search(SearchParam param) {
+        Pageable pageable = PageRequest.of(param.getPageIndex() - 1, param.getPageSize(), Sort.Direction.ASC, "id");
+        String keyword = param.getKeyword();
         if (keyword == null || "".equals(keyword)) {
             return roleRepository.findFirst10ByDeletedFlag(false, pageable);
         }

@@ -1,7 +1,8 @@
 package com.example.ms.service;
 
 import com.example.ms.model.bo.Menu;
-import com.example.ms.model.vo.SelectOption;
+import com.example.ms.model.dto.SearchParam;
+import com.example.ms.model.dto.SelectOption;
 import com.example.ms.repository.MenuRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,10 +23,13 @@ public class MenuService {
 
     private final MenuRepository menuRepository;
 
-    public Page<Menu> search(Integer pageIndex, Integer pageSize, String keyword) {
-        Pageable pageable = PageRequest.of(pageIndex, pageSize, Sort.Direction.ASC, "id");
+    public Page<Menu> search(SearchParam param) {
+        Pageable pageable = PageRequest.of(param.getPageIndex() - 1, param.getPageSize(), Sort.Direction.ASC, "id");
+        String keyword = param.getKeyword();
         if (keyword == null || "".equals(keyword)) {
-            return menuRepository.findFirst10ByDeletedFlag(false, pageable);
+            Menu parentMenu = new Menu();
+            parentMenu.setId(param.getParentId() == null ? 0 : param.getParentId());
+            return menuRepository.findFirst10ByDeletedFlagAndParentMenu(false, parentMenu, pageable);
         }
         return menuRepository.findFirst10ByDeletedFlagAndMenuNameLike(false, "%" + keyword + "%", pageable);
     }

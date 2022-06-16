@@ -3,7 +3,8 @@ package com.example.ms.controller.system;
 import com.example.ms.common.component.PageResult;
 import com.example.ms.common.component.Result;
 import com.example.ms.model.bo.Menu;
-import com.example.ms.model.vo.SelectOption;
+import com.example.ms.model.dto.SearchParam;
+import com.example.ms.model.dto.SelectOption;
 import com.example.ms.service.MenuService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,12 +27,14 @@ public class MenuController {
         return "/system/menu";
     }
 
+//    public Result search(@RequestParam(name = "pageIndex", defaultValue = "1") Integer pageIndex,
+//                         @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
+//                         @RequestParam(name = "keyword", required = false) String keyword,
+//                         @RequestParam(name = "parentId", defaultValue = "0") Long parentId) {
     @ResponseBody
     @PostMapping("/search")
-    public Result search(@RequestParam(name = "pageIndex", defaultValue = "1") Integer pageIndex,
-                         @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
-                         @RequestParam(name = "keyword", required = false) String keyword) {
-        Page<Menu> page = menuService.search(pageIndex - 1, pageSize, keyword.trim());
+    public Result search(SearchParam param) {
+        Page<Menu> page = menuService.search(param);
 
         return Result.SUCCESS(new PageResult<>(page.getTotalElements(), page.getContent()));
     }

@@ -3,6 +3,7 @@ package com.example.ms.controller.system;
 import com.example.ms.common.component.PageResult;
 import com.example.ms.common.component.Result;
 import com.example.ms.model.bo.User;
+import com.example.ms.model.dto.SearchParam;
 import com.example.ms.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,10 +26,8 @@ public class UserController {
 
     @ResponseBody
     @PostMapping("/search")
-    public Result search(@RequestParam(name = "pageIndex", defaultValue = "1") Integer pageIndex,
-                         @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
-                         @RequestParam(name = "keyword", required = false) String keyword) {
-        Page<User> page = userService.search(pageIndex - 1, pageSize, keyword);
+    public Result search(SearchParam param) {
+        Page<User> page = userService.search(param);
 
         return Result.SUCCESS(new PageResult<>(page.getTotalElements(), page.getContent()));
     }
