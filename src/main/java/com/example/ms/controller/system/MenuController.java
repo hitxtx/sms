@@ -27,10 +27,6 @@ public class MenuController {
         return "/system/menu";
     }
 
-//    public Result search(@RequestParam(name = "pageIndex", defaultValue = "1") Integer pageIndex,
-//                         @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
-//                         @RequestParam(name = "keyword", required = false) String keyword,
-//                         @RequestParam(name = "parentId", defaultValue = "0") Long parentId) {
     @ResponseBody
     @PostMapping("/search")
     public Result search(SearchParam param) {
