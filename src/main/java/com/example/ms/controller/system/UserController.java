@@ -1,7 +1,7 @@
 package com.example.ms.controller.system;
 
-import com.example.ms.common.component.PageResult;
-import com.example.ms.common.component.Result;
+import com.example.ms.model.vo.PageResult;
+import com.example.ms.model.vo.Result;
 import com.example.ms.model.bo.User;
 import com.example.ms.model.dto.SearchParam;
 import com.example.ms.service.UserService;

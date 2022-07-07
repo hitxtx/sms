@@ -1,4 +1,4 @@
-package com.example.ms.common.component;
+package com.example.ms.model.vo;
 
 import com.example.ms.common.constant.ResultCode;
 import lombok.Data;
