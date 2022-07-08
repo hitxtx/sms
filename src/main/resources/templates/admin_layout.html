@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html th:fragment="adminLayout(title, links, scripts, content)" xmlns:th="http://www.thymeleaf.org" lang="en">
+<html th:fragment="adminLayout(title, links, scripts, content)" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -198,11 +198,30 @@
             <!--                            <a href="#" class="d-block">I'm Administrator</a>-->
             <!--                        </div>-->
             <!--                    </div>-->
+
             <!--/*--> menu <!--*/-->
             <nav class="mt-2">
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                <ul th:if="${not #lists.isEmpty(menuTree)}" class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                     data-accordion="false">
-                    <li class="nav-item">
+                    <li th:each="menu : ${menuTree}" th:class="${not #lists.isEmpty(menu.submenus)}? (${menu.id == menuActive.parentMenu.id}? 'nav-item has-treeview menu-open' : 'nav-item has-treeview') : 'nav-item'">
+                        <a th:href="${menu.path}" th:class="${menu.id == menuActive.parentMenu.id}? 'nav-link active' : 'nav-link'">
+                            <i class="nav-icon fas" th:classappend="${menu.icon}"></i>
+                            <p>
+                                <i th:text="${menu.menuName}" th:remove="tag"></i>
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul th:if="${not #lists.isEmpty(menu.submenus)}" class="nav nav-treeview">
+                            <li th:each="submenu : ${menu.submenus}" class="nav-item">
+                                <a th:class="${submenu.id == menuActive.id}? 'nav-link active' : 'nav-link'" href="#" th:href="@{${submenu.path}}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p th:text="${submenu.menuName}"></p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+<!--                    <li class="nav-item">
                         <a class="nav-link" href="/" th:href="@{/dashboard/}">
                             <i class="nav-icon fas fa-tachometer-alt"></i>
                             <p>
@@ -245,7 +264,7 @@
                                 </a>
                             </li>
                         </ul>
-                    </li>
+                    </li>-->
                 </ul>
             </nav>
         </div>
@@ -257,14 +276,14 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-sm-6">
-                        <h1>Menu Name</h1>
+                        <h1 th:text="${menuActive.menuName}">Menu Name</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item">
-                                <a href="/" th:href="@{/}">Home</a>
+                                <a href="/" th:href="@{/}">主页</a>
                             </li>
-                            <li class="breadcrumb-item active">Menu Name</li>
+                            <li class="breadcrumb-item active" th:text="${menuActive.menuName}">Menu Name</li>
                         </ol>
                     </div>
                 </div>

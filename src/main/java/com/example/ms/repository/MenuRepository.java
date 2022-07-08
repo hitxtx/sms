@@ -20,6 +20,10 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
 
     Page<Menu> findFirst10ByDeletedFlagAndMenuNameLike(Boolean deletedFlag, String menuName, Pageable pageable);
 
+    List<Menu> findMenuByDeletedFlagAndParentMenu(Boolean deletedFlag,Menu parentMenu);
+
+    List<Menu> findMenuByDeletedFlag(Boolean deleteFlag);
+
     Menu findByPath(String path);
 
     @Query("SELECT m.id AS id, m.menuName as text from Menu as m where m.deletedFlag =:deletedFlag")

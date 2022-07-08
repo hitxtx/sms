@@ -25,9 +25,9 @@ public class PermissionService {
         Pageable pageable = PageRequest.of(param.getPageIndex() - 1, param.getPageSize(), Sort.Direction.ASC, "id");
         String keyword = param.getKeyword();
         if (keyword == null || "".equals(keyword)) {
-            return permissionRepository.findFirst10ByDeletedFlag(false, pageable);
+            return permissionRepository.findByDeletedFlag(false, pageable);
         }
-        return permissionRepository.findFirst10ByDeletedFlagAndTagLike(false, "%" + keyword + "%", pageable);
+        return permissionRepository.findByDeletedFlagAndTagLike(false, "%" + keyword + "%", pageable);
     }
 
     public Permission create(Permission permission) throws Exception {

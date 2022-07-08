@@ -83,4 +83,15 @@ public class MenuService {
         }
         return menuRepository.listByDeletedFlagAndMenuNameLike(false, term);
     }
+
+    public List<Menu> list(Long parentId) {
+        Menu parentMenu = new Menu();
+        parentMenu.setId(parentId == null ? 0 : parentId);
+        return menuRepository.findMenuByDeletedFlagAndParentMenu(false, parentMenu);
+    }
+
+    public List<Menu> listAll() {
+        return menuRepository.findMenuByDeletedFlag(false);
+    }
+
 }
