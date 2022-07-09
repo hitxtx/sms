@@ -87,7 +87,7 @@ public class MenuService {
     public List<Menu> list(Long parentId) {
         Menu parentMenu = new Menu();
         parentMenu.setId(parentId == null ? 0 : parentId);
-        return menuRepository.findMenuByDeletedFlagAndParentMenu(false, parentMenu);
+        return menuRepository.findMenuByDeletedFlagAndParentMenuOrderBySortDesc(false, parentMenu);
     }
 
     public List<Menu> listAll() {

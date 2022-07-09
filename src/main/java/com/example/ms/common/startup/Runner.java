@@ -78,28 +78,36 @@ public class Runner implements ApplicationRunner {
                     PostMapping postMapping = method.getAnnotation(PostMapping.class);
                     PutMapping putMapping = method.getAnnotation(PutMapping.class);
                     DeleteMapping deleteMapping = method.getAnnotation(DeleteMapping.class);
+                    List<String> methodPathList = new ArrayList<>();
                     if (postMapping != null) {
-                        path = classPath + postMapping.value()[0];
+                        methodPathList = Arrays.asList(postMapping.value());
+//                        path = classPath + postMapping.value()[0];
                     } else if (getMapping != null) {
-                        path = classPath + getMapping.value()[0];
+                        methodPathList = Arrays.asList(getMapping.value());
+//                        path = classPath + getMapping.value()[0];
                     } else if (putMapping != null) {
-                        path = classPath + putMapping.value()[0];
+                        methodPathList = Arrays.asList(putMapping.value());
+//                        path = classPath + putMapping.value()[0];
                     } else if (deleteMapping != null) {
-                        path = classPath + deleteMapping.value()[0];
+                        methodPathList = Arrays.asList(deleteMapping.value());
+//                        path = classPath + deleteMapping.value()[0];
                     } else if (mapping != null) {
-                        path = classPath + mapping.value()[0];
+                        methodPathList = Arrays.asList(mapping.value());
+//                        path = classPath + mapping.value()[0];
                     } else {
                         continue;
                     }
 
-                    Permission permission = new Permission();
-                    permission.setModule(moduleName);
-                    permission.setTag(tagName);
-                    permission.setPath(path);
-                    permission.setDeletedFlag(false);
-                    permission.setCreatedTime(new Date());
+                    methodPathList.forEach(p -> {
+                        Permission permission = new Permission();
+                        permission.setModule(moduleName);
+                        permission.setTag(tagName);
+                        permission.setPath(classPath + p);
+                        permission.setDeletedFlag(false);
+                        permission.setCreatedTime(new Date());
 
-                    permissionMap.put(permission.getPath(), permission);
+                        permissionMap.put(permission.getPath(), permission);
+                    });
                 }
             }
         } catch (IOException e) {

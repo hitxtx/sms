@@ -203,68 +203,24 @@
             <nav class="mt-2">
                 <ul th:if="${not #lists.isEmpty(menuTree)}" class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                     data-accordion="false">
-                    <li th:each="menu : ${menuTree}" th:class="${not #lists.isEmpty(menu.submenus)}? (${menu.id == menuActive.parentMenu.id}? 'nav-item has-treeview menu-open' : 'nav-item has-treeview') : 'nav-item'">
-                        <a th:href="${menu.path}" th:class="${menu.id == menuActive.parentMenu.id}? 'nav-link active' : 'nav-link'">
-                            <i class="nav-icon fas" th:classappend="${menu.icon}"></i>
+                    <li th:each="menu1 : ${menuTree}" class="nav-item"
+                        th:classappend="${not #lists.isEmpty(menu1.submenus)}? (${menuActive.parentMenu != null && menuActive.parentMenu.id == menu1.id}? 'has-treeview menu-open' : 'has-treeview') : ''">
+                        <a th:href="${menu1.path}" th:class="${menuActive.parentMenu != null && menuActive.parentMenu.id == menu1.id || menuActive.id == menu1.id}? 'nav-link active' : 'nav-link'">
+                            <i class="nav-icon fas" th:classappend="${menu1.icon}"></i>
                             <p>
-                                <i th:text="${menu.menuName}" th:remove="tag"></i>
-                                <i class="right fas fa-angle-left"></i>
+                                <i th:text="${menu1.menuName}" th:remove="tag"></i>
+                                <i th:if="${not #lists.isEmpty(menu1.submenus)}" class="right fas fa-angle-left"></i>
                             </p>
                         </a>
-                        <ul th:if="${not #lists.isEmpty(menu.submenus)}" class="nav nav-treeview">
-                            <li th:each="submenu : ${menu.submenus}" class="nav-item">
-                                <a th:class="${submenu.id == menuActive.id}? 'nav-link active' : 'nav-link'" href="#" th:href="@{${submenu.path}}">
+                        <ul th:if="${not #lists.isEmpty(menu1.submenus)}" class="nav nav-treeview">
+                            <li th:each="menu2 : ${menu1.submenus}" class="nav-item">
+                                <a th:class="${menu2.id == menuActive.id}? 'nav-link active' : 'nav-link'" href="#" th:href="@{${menu2.path}}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p th:text="${submenu.menuName}"></p>
+                                    <p th:text="${menu2.menuName}"></p>
                                 </a>
                             </li>
                         </ul>
                     </li>
-
-<!--                    <li class="nav-item">
-                        <a class="nav-link" href="/" th:href="@{/dashboard/}">
-                            <i class="nav-icon fas fa-tachometer-alt"></i>
-                            <p>
-                                仪表盘
-                                <span class="right badge badge-danger">New</span>
-                            </p>
-                        </a>
-                    </li>
-                    <li class="nav-item has-treeview menu-open">
-                        <a href="#" class="nav-link active">
-                            <i class="nav-icon fas fa-cog"></i>
-                            <p>
-                                系统设置
-                                <i class="right fas fa-angle-left"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a class="nav-link active" href="/" th:href="@{/system/menu}">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>菜单管理</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link" th:href="@{/system/user}">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>用户管理</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link" th:href="@{/system/role}">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>角色管理</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link" th:href="@{/system/permission}">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>权限管理</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>-->
                 </ul>
             </nav>
         </div>
