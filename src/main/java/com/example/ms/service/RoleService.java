@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -25,9 +26,9 @@ public class RoleService {
         Pageable pageable = PageRequest.of(param.getPageIndex() - 1, param.getPageSize(), Sort.Direction.ASC, "id");
         String keyword = param.getKeyword();
         if (keyword == null || "".equals(keyword)) {
-            return roleRepository.findFirst10ByDeletedFlag(false, pageable);
+            return roleRepository.findByDeletedFlag(false, pageable);
         }
-        return roleRepository.findFirst10ByDeletedFlagAndRoleNameLike(false, "%" + keyword + "%", pageable);
+        return roleRepository.findByDeletedFlagAndRoleNameLike(false, "%" + keyword + "%", pageable);
     }
 
     public Role create(Role role) throws Exception {
@@ -72,4 +73,17 @@ public class RoleService {
             roleRepository.updateDeletedFlag(true, id);
         }
     }
+
+    public Role getById(Long id) {
+        return roleRepository.getById(id);
+    }
+
+    public List<Role> listAll() {
+        return roleRepository.findAll();
+    }
+
+    public List<Role> listAllEnabled() {
+        return roleRepository.findByDeletedFlag(false);
+    }
+
 }

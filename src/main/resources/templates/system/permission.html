@@ -37,7 +37,7 @@
             <div id="dataGrid"></div>
         </div>
     </div>
-    <div class="modal fade" id="createUpdateModal" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal fade" id="createModal" tabindex="-1" role="dialog" data-backdrop="static">
         <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -47,7 +47,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form class="needs-validation" id="createUpdateForm" novalidate>
+                    <form class="needs-validation" id="createForm" novalidate>
                         <div class="form-group row">
                             <label for="module"
                                    class="col-sm-2 col-form-label col-form-label-sm text-right">模块名称</label>
@@ -86,7 +86,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                    <button type="submit" class="btn btn-primary" id="saveBtn">保存</button>
+                    <button type="submit" class="btn btn-primary" id="confirmBtn">保存</button>
                 </div>
             </div>
         </div>
@@ -118,10 +118,10 @@
     $(function () {
         let $searchBtn = $("#searchBtn");
         let $createBtn = $("#createBtn");
-        let $saveBtn = $("#saveBtn");
+        let $confirmBtn = $("#confirmBtn");
         let $deleteBtn = $("#deleteBtn");
         // let $searchForm = $("#searchForm");
-        let $createUpdateForm = $("#createUpdateForm");
+        let $createForm = $("#createForm");
         let $deleteForm = $("#deleteForm");
         let $dataGrid = $("#dataGrid");
 
@@ -142,10 +142,10 @@
             })
             return defer.promise();
         };
-        let createUpdateModal = function (display, title, row) {
-            $createUpdateForm.reset();
-            $createUpdateForm.removeClass("was-validated");
-            $createUpdateForm.attr("action", row ? "system/permission/update" : "system/permission/create");
+        let createModal = function (display, title, row) {
+            $createForm.reset();
+            $createForm.removeClass("was-validated");
+            $createForm.attr("action", row ? "system/permission/update" : "system/permission/create");
             if (row) {
                 $("#saveId").val(row.id);
                 $("#module").val(row.module);
@@ -157,7 +157,7 @@
             }
 
             $("#saveTitle").html(title);
-            $("#createUpdateModal").modal(display === "show" ? "show" : "hide");
+            $("#createModal").modal(display === "show" ? "show" : "hide");
         };
         let deleteModal = function (display, title, id) {
             $deleteForm.reset();
@@ -200,7 +200,7 @@
                             "<a class=\"btn btn-xs text-danger control-remove\"><i class=\"fas fa-trash\"></i> 删除</a>")
                             .on("click", function (e) {
                                 if ($(e.target).hasClass("control-update")) {
-                                    createUpdateModal("show", $(this).html(), item);
+                                    createModal("show", $(this).html(), item);
                                     e.stopPropagation();
                                 } else if ($(e.target).hasClass("control-remove")) {
                                     deleteModal("show", $(this).html(), item.id);
@@ -220,20 +220,20 @@
             $dataGrid.jsGrid("search", filter);
         });
         $createBtn.on("click", function () {
-            createUpdateModal("show", $(this).html());
+            createModal("show", $(this).html());
         });
-        $saveBtn.on("click", function () {
-            let $form = $createUpdateForm;
+        $confirmBtn.on("click", function () {
+            let $form = $createForm;
             if (!$form[0].checkValidity()) {
                 $form.addClass('was-validated');
                 return false;
             }
             $.ajax({
                 type: "POST",
-                url: _root + $createUpdateForm.attr("action"),
+                url: _root + $createForm.attr("action"),
                 data: $form.serializeArray(),
             }).done(function (data) {
-                createUpdateModal("hide");
+                createModal("hide");
                 if (data.success) {
                     $searchBtn.click();
                 } else {

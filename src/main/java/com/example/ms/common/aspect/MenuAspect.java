@@ -24,7 +24,7 @@ public class MenuAspect {
         this.menuService = menuService;
     }
 
-    @Pointcut("execution(* com.example.ms.controller..*.index(..))")
+    @Pointcut("execution(* com.example.ms.controller..*.*Page(..))")
     public void active() {
 
     }

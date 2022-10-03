@@ -1,4 +1,4 @@
-package com.example.ms.model.vo;
+package com.example.ms.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

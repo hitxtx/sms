@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html th:replace="~{admin_layout::adminLayout(~{::title}, ~{}, ~{::script}, ~{::section})}"
+<html th:replace="~{admin_layout::adminLayout(~{::title}, ~{::link}, ~{::script}, ~{::section})}"
       xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <title>Hello World</title>
+    <link rel="stylesheet" th:href="@{/plugins/bootstrap-treeview/css/bootstrap-treeview.css}">
 </head>
 <body>
 <section class="content">
@@ -34,7 +35,7 @@
             <div id="dataGrid"></div>
         </div>
     </div>
-    <div class="modal fade" id="createUpdateModal" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal fade" id="createModal" tabindex="-1" role="dialog" data-backdrop="static">
         <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -44,7 +45,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form class="needs-validation" id="createUpdateForm" novalidate>
+                    <form class="needs-validation" id="createForm" novalidate>
                         <div class="form-group row">
                             <label for="username"
                                    class="col-sm-2 col-form-label col-form-label-sm text-right">角色名称</label>
@@ -73,7 +74,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                    <button type="submit" class="btn btn-primary" id="saveBtn">保存</button>
+                    <button type="submit" class="btn btn-primary" id="confirmBtn">保存</button>
                 </div>
             </div>
         </div>
@@ -100,17 +101,34 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="assignRolesModal" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-info">分配角色</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" novalidate id="assignRolesForm">
+                        <input type="hidden" id="assignRolesId" name="id">
+                    </form>
+                    <div id="assignRolesTreeview"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="assignRolesBtn">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
+<script th:src="@{/plugins/bootstrap-treeview/js/bootstrap-treeview.js}"></script>
+</body>
 <script th:inline="javascript">
     $(function () {
         let $searchBtn = $("#searchBtn");
-        let $createBtn = $("#createBtn");
-        let $saveBtn = $("#saveBtn");
-        let $deleteBtn = $("#deleteBtn");
-        let $createUpdateForm = $("#createUpdateForm");
-        let $deleteForm = $("#deleteForm");
-        let $dataGrid = $("#dataGrid");
-
         let searchData = function (filter) {
             let defer = $.Deferred();
             filter.keyword = $("#keyword").val();
@@ -128,10 +146,19 @@
             })
             return defer.promise();
         };
-        let createUpdateModal = function (display, title, row) {
-            $createUpdateForm.reset();
-            $createUpdateForm.removeClass("was-validated");
-            $createUpdateForm.attr("action", row ? "system/user/update" : "system/user/create");
+        $searchBtn.on("click", function () {
+            let filter = $dataGrid.jsGrid("getFilter");
+            filter.keyword = $("#keyword").val();
+            $dataGrid.jsGrid("search", filter);
+        });
+
+        let $createBtn = $("#createBtn");
+        let $createForm = $("#createForm");
+        let $confirmBtn = $("#confirmBtn");
+        let createModal = function (display, title, row) {
+            $createForm.reset();
+            $createForm.removeClass("was-validated");
+            $createForm.attr("action", row ? "system/user/update" : "system/user/create");
             if (row) {
                 $("#saveId").val(row.id);
                 $("#username").val(row.username);
@@ -140,8 +167,35 @@
             }
 
             $("#saveTitle").html(title);
-            $("#createUpdateModal").modal(display === "show" ? "show" : "hide");
+            $("#createModal").modal(display === "show" ? "show" : "hide");
         };
+        $createBtn.on("click", function () {
+            createModal("show", $(this).html());
+        });
+        $confirmBtn.on("click", function () {
+            let $form = $createForm;
+            if (!$form[0].checkValidity()) {
+                $form.addClass('was-validated');
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: _root + $createForm.attr("action"),
+                data: $form.serializeArray(),
+            }).done(function (data) {
+                createModal("hide");
+                if (data.success) {
+                    $searchBtn.click();
+                } else {
+                    toastr.warning(data.message);
+                }
+            }).fail(function (err) {
+                toastr.error(err);
+            });
+        });
+
+        let $deleteBtn = $("#deleteBtn");
+        let $deleteForm = $("#deleteForm");
         let deleteModal = function (display, title, id) {
             $deleteForm.reset();
             $deleteForm.removeClass("was-validated");
@@ -150,8 +204,84 @@
             $("#deleteTitle").html(title);
             $("#deleteModal").modal(display === "show" ? "show" : "hide");
         };
+        $deleteBtn.on("click", function () {
+            let $form = $deleteForm;
+            if (!$form[0].checkValidity()) {
+                $form.addClass('was-validated');
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: _root + "system/user/delete",
+                data: $form.serializeArray(),
+            }).done(function (data) {
+                deleteModal("hide");
+                if (data.success) {
+                    $searchBtn.click();
+                } else {
+                    toastr.warning(data.message);
+                }
+            }).fail(function (err) {
+                toastr.error(err);
+            });
+        });
+
+        let $assignRolesForm = $("#assignRolesForm");
+        let $assignRolesBtn = $("#assignRolesBtn");
+        let assignRolesModal = function (display, id) {
+            $assignRolesForm.reset();
+            $assignRolesForm.removeClass("was-validated");
+
+            $("#assignRolesId").val(id);
+            $("#assignRolesModal").modal(display === "show" ? "show" : "hide");
+
+            $.ajax({
+                type: "GET",
+                url: _root + "system/user/role/treeview",
+                data: $assignRolesForm.serializeArray(),
+            }).done(function (data) {
+                if (data.success) {
+                    $('#assignRolesTreeview').treeview({
+                        data: data.data,         // data is not optional
+                        levels: 1,
+                        highlightSelected: false,
+                        multiSelect: true,
+                        showCheckbox: true,
+                    });
+                } else {
+                    toastr.warning(data.message);
+                }
+            })
+        };
+        $assignRolesBtn.on("click", function () {
+            let selectedNodes = $('#assignRolesTreeview').treeview('getChecked');
+            let params = [];
+            if (selectedNodes != null && selectedNodes.length > 0) {
+                for(let i = 0, len = selectedNodes.length; i < len; i++) {
+                    if (selectedNodes[i].id === undefined) {
+                        continue;
+                    }
+                    params.push(selectedNodes[i].id);
+                }
+            }
+            // $("roleIds").val(params.join(','));
+            $.ajax({
+                type: "POST",
+                url: _root + "system/user/role/assign",
+                data: "id=" + $("#assignRolesId").val() + "&roleIds=" + params.join(","),
+                // contentType: "application/json;charset=UTF-8"
+            }).done(function (data) {
+                if (data.success) {
+                    assignRolesModal("hide");
+                    toastr.success(data.message);
+                } else {
+                    toastr.warning(data.message);
+                }
+            });
+        });
 
         jsGrid.locale("zh-cn");
+        let $dataGrid = $("#dataGrid");
         $dataGrid.jsGrid({
             height: "auto",
             width: "100%",
@@ -176,16 +306,20 @@
                 {
                     type: "control",
                     title: "操作",
-                    width: 85,
+                    width: 100,
                     itemTemplate: function (value, item) {
-                        let buttons = $("<a class=\"btn btn-xs text-info control-update\"><i class=\"fas fa-edit\"></i> 编辑</a>" +
+                        let buttons = $("<a class=\"btn btn-xs text-info control-roles\"><i class=\"fas fa-users\"></i> 角色列表</a>" +
+                            "<a class=\"btn btn-xs text-info control-update\"><i class=\"fas fa-edit\"></i> 编辑</a>" +
                             "<a class=\"btn btn-xs text-danger control-remove\"><i class=\"fas fa-trash\"></i> 删除</a>")
                             .on("click", function (e) {
                                 if ($(e.target).hasClass("control-update")) {
-                                    createUpdateModal("show", $(this).html(), item);
+                                    createModal("show", $(this).html(), item);
                                     e.stopPropagation();
                                 } else if ($(e.target).hasClass("control-remove")) {
                                     deleteModal("show", $(this).html(), item.id);
+                                    e.stopPropagation();
+                                } else if ($(e.target).hasClass("control-roles")) {
+                                    assignRolesModal("show", item.id);
                                     e.stopPropagation();
                                 }
                             });
@@ -196,58 +330,6 @@
             ]
         });
 
-        $searchBtn.on("click", function () {
-            let filter = $dataGrid.jsGrid("getFilter");
-            filter.keyword = $("#keyword").val();
-            $dataGrid.jsGrid("search", filter);
-        });
-        $createBtn.on("click", function () {
-            createUpdateModal("show", $(this).html());
-        });
-        $saveBtn.on("click", function () {
-            let $form = $createUpdateForm;
-            if (!$form[0].checkValidity()) {
-                $form.addClass('was-validated');
-                return false;
-            }
-            $.ajax({
-                type: "POST",
-                url: _root + $createUpdateForm.attr("action"),
-                data: $form.serializeArray(),
-            }).done(function (data) {
-                createUpdateModal("hide");
-                if (data.success) {
-                    $searchBtn.click();
-                } else {
-                    toastr.warning(data.message);
-                }
-            }).fail(function (err) {
-                toastr.error(err);
-            });
-        });
-        $deleteBtn.on("click", function () {
-            let $form = $deleteForm;
-            if (!$form[0].checkValidity()) {
-                $form.addClass('was-validated');
-                return false;
-            }
-            $.ajax({
-                type: "POST",
-                url: _root + "system/user/delete",
-                data: $form.serializeArray(),
-            }).done(function (data) {
-                deleteModal("hide");
-                if (data.success) {
-                    $searchBtn.click();
-                } else {
-                    toastr.warning(data.message);
-                }
-            }).fail(function (err) {
-                toastr.error(err);
-            });
-        });
-
     });
 </script>
-</body>
 </html>

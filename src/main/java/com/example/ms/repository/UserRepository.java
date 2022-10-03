@@ -21,9 +21,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("update User AS p set p.deletedFlag =:deletedFlag where p.id = :id")
     void updateDeletedFlag(Boolean deletedFlag, Long id);
 
-    Page<User> findFirst10ByDeletedFlag(Boolean deletedFlag, Pageable pageable);
+    Page<User> findByDeletedFlag(Boolean deletedFlag, Pageable pageable);
 
-    Page<User> findFirst10ByDeletedFlagAndUsernameLike(Boolean deletedFlag, String roleName, Pageable pageable);
+    Page<User> findByDeletedFlagAndUsernameLike(Boolean deletedFlag, String roleName, Pageable pageable);
 
     User getByUsername(String roleName);
 

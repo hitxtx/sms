@@ -29,9 +29,9 @@ public class MenuService {
         if (keyword == null || "".equals(keyword)) {
             Menu parentMenu = new Menu();
             parentMenu.setId(param.getParentId() == null ? 0 : param.getParentId());
-            return menuRepository.findFirst10ByDeletedFlagAndParentMenu(false, parentMenu, pageable);
+            return menuRepository.findByDeletedFlagAndParentMenu(false, parentMenu, pageable);
         }
-        return menuRepository.findFirst10ByDeletedFlagAndMenuNameLike(false, "%" + keyword + "%", pageable);
+        return menuRepository.findByDeletedFlagAndMenuNameLike(false, "%" + keyword + "%", pageable);
     }
 
     public Menu create(Menu menu) throws Exception {

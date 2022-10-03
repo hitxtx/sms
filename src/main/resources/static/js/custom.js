@@ -11,4 +11,20 @@ $(function () {
             select2.val("").trigger("change");
         }
     };
+
+    // jQuery.doGet = function (url, successFN) {
+    //     $.ajax({
+    //         type: "GET",
+    //         url: url,
+    //         data: data,
+    //         contentType: "application/json;charset=UTF-8"
+    //     }).done(function (data) {
+    //         if (data.success) {
+    //             toastr.success(data.message);
+    //         } else {
+    //             toastr.warning(data.message);
+    //         }
+    //     });
+    // }
+
 });

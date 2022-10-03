@@ -1,4 +1,4 @@
-package com.example.ms.model.vo;
+package com.example.ms.model.dto;
 
 import com.example.ms.common.constant.ResultCode;
 import lombok.Data;
@@ -13,7 +13,7 @@ public class Result {
     private String message;
     private Object data;
 
-    //Used when you don't need to return data
+    // Used when you don't need to return data
     public Result(ResultCode code) {
         this.success = code.success;
         this.code = code.code;
@@ -33,21 +33,16 @@ public class Result {
         this.success = success;
     }
 
-    /* * Call the ResultCode class to encapsulate commonly used return data */
-    public static Result SUCCESS() {
+    public static Result success() {
         return new Result(ResultCode.SUCCESS);
     }
 
-    public static Result SUCCESS(Object data) {
+    public static Result success(Object data) {
         return new Result(ResultCode.SUCCESS, data);
     }
 
-    public static Result ERROR() {
-        return new Result(ResultCode.SERVER_ERROR);
+    public static Result failure() {
+        return new Result(ResultCode.FAILURE);
     }
 
-    // WARNING
-    public static Result FAILED() {
-        return new Result(ResultCode.FAILED);
-    }
 }
