@@ -1,9 +1,9 @@
 package com.example.ms.controller.system;
 
 import com.example.ms.model.bo.Permission;
-import com.example.ms.model.dto.SearchParam;
 import com.example.ms.model.dto.PageResult;
 import com.example.ms.model.dto.Result;
+import com.example.ms.model.dto.SearchParam;
 import com.example.ms.service.PermissionService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +32,8 @@ public class PermissionController {
         try {
             permissionService.create(permission);
         } catch (Exception e) {
-            e.printStackTrace();
-            return Result.failure();
+            log.error("新增权限：", e);
+            return Result.failure(e.getMessage());
         }
 
         return Result.success();
@@ -44,8 +44,8 @@ public class PermissionController {
         try {
             permissionService.update(permission);
         } catch (Exception e) {
-            e.printStackTrace();
-            return Result.failure();
+            log.error("更新权限：", e);
+            return Result.failure(e.getMessage());
         }
 
         return Result.success();

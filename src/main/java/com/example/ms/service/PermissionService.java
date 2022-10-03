@@ -1,6 +1,5 @@
 package com.example.ms.service;
 
-import com.example.ms.model.bo.Menu;
 import com.example.ms.model.bo.Permission;
 import com.example.ms.model.dto.SearchParam;
 import com.example.ms.repository.PermissionRepository;
@@ -35,7 +34,7 @@ public class PermissionService {
     public Permission create(Permission permission) throws Exception {
         Permission oldPermission = permissionRepository.findByPath(permission.getPath());
         if (oldPermission != null && !oldPermission.getDeletedFlag()) {
-            throw new Exception("记录已存在");
+            throw new Exception("该权限已存在");
         }
         if (oldPermission != null && oldPermission.getDeletedFlag()) {
             permission.setId(oldPermission.getId());
@@ -47,14 +46,14 @@ public class PermissionService {
 
     public Permission update(Permission permission) throws Exception {
         if (permission.getId() == null || permission.getId() <= 0) {
-            throw new Exception("更新信息异常");
+            throw new Exception("更新权限异常");
         }
         Optional<Permission> optional = permissionRepository.findById(permission.getId());
-        optional.orElseThrow(() -> new Exception("找不到该记录"));
+        optional.orElseThrow(() -> new Exception("找不到该权限"));
         if (!optional.get().getPath().equals(permission.getPath())) {
             Permission oldPermission = permissionRepository.findByPath(permission.getPath());
             if (oldPermission != null && !oldPermission.getId().equals(permission.getId())) {
-                throw new Exception("记录已存在");
+                throw new Exception("该权限已存在");
             }
         }
         Permission oldPermission = optional.get();

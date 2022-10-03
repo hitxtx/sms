@@ -36,12 +36,12 @@ public class RoleService {
     }
 
     public Role create(Role role) throws Exception {
-        Role repeatRole = roleRepository.findByRoleName(role.getRoleName());
-        if (repeatRole != null && !repeatRole.getDeletedFlag()) {
+        Role oldRole = roleRepository.findByRoleName(role.getRoleName());
+        if (oldRole != null && !oldRole.getDeletedFlag()) {
             throw new Exception("该角色已存在");
         }
-        if (repeatRole != null && repeatRole.getDeletedFlag()) {
-            role.setId(repeatRole.getId());
+        if (oldRole != null && oldRole.getDeletedFlag()) {
+            role.setId(oldRole.getId());
         }
         role.setDeletedFlag(false);
         role.setCreatedTime(new Date());
@@ -55,8 +55,8 @@ public class RoleService {
         Optional<Role> optional = roleRepository.findById(role.getId());
         optional.orElseThrow(() -> new Exception("找不到该角色"));
         if (!optional.get().getRoleName().equals(role.getRoleName())) {
-            Role repeatRole = roleRepository.findByRoleName(role.getRoleName());
-            if (repeatRole != null && !repeatRole.getId().equals(role.getId())) {
+            Role oldRole = roleRepository.findByRoleName(role.getRoleName());
+            if (oldRole != null && !oldRole.getId().equals(role.getId())) {
                 throw new Exception("该角色名称已存在");
             }
         }

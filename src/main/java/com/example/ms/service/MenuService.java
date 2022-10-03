@@ -37,7 +37,7 @@ public class MenuService {
     public Menu create(Menu menu) throws Exception {
         Menu oldMenu = menuRepository.findByPath(menu.getPath());
         if (oldMenu != null && !oldMenu.getDeletedFlag()) {
-            throw new Exception("记录已存在");
+            throw new Exception("该菜单已存在");
         }
         if (oldMenu != null && oldMenu.getDeletedFlag()) {
             menu.setId(oldMenu.getId());
@@ -49,20 +49,21 @@ public class MenuService {
 
     public Menu update(Menu menu) throws Exception {
         if (menu.getId() == null || menu.getId() <= 0) {
-            throw new Exception("更新信息异常");
+            throw new Exception("更新菜单异常");
         }
         Optional<Menu> optional = menuRepository.findById(menu.getId());
-        optional.orElseThrow(() -> new Exception("找不到该记录"));
+        optional.orElseThrow(() -> new Exception("找不到该菜单"));
         if (!optional.get().getPath().equals(menu.getPath())) {
             Menu oldMenu = menuRepository.findByPath(menu.getPath());
             if (oldMenu != null && !oldMenu.getId().equals(menu.getId())) {
-                throw new Exception("记录已存在");
+                throw new Exception("该菜单已存在");
             }
         }
         Menu oldMenu = optional.get();
         menu.setDeletedFlag(oldMenu.getDeletedFlag());
         menu.setCreatedTime(oldMenu.getCreatedTime());
         menu.setUpdatedTime(new Date());
+
         return menuRepository.saveAndFlush(menu);
     }
 

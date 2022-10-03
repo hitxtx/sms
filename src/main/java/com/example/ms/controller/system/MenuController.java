@@ -1,10 +1,10 @@
 package com.example.ms.controller.system;
 
 import com.example.ms.model.bo.Menu;
-import com.example.ms.model.dto.SearchParam;
-import com.example.ms.model.dto.SelectOption;
 import com.example.ms.model.dto.PageResult;
 import com.example.ms.model.dto.Result;
+import com.example.ms.model.dto.SearchParam;
+import com.example.ms.model.dto.SelectOption;
 import com.example.ms.service.MenuService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,8 +35,8 @@ public class MenuController {
         try {
             menuService.create(menu);
         } catch (Exception e) {
-            e.printStackTrace();
-            return Result.failure();
+            log.error("新增菜单：", e);
+            return Result.failure(e.getMessage());
         }
 
         return Result.success();
@@ -47,8 +47,8 @@ public class MenuController {
         try {
             menuService.update(menu);
         } catch (Exception e) {
-            e.printStackTrace();
-            return Result.failure();
+            log.error("更新菜单：", e);
+            return Result.failure(e.getMessage());
         }
 
         return Result.success();
