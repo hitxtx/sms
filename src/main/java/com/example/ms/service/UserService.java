@@ -34,12 +34,12 @@ public class UserService {
     }
 
     public User create(User user) throws Exception {
-        User oldUser = userRepository.getByUsername(user.getUsername());
-        if (oldUser != null && !oldUser.getDeletedFlag()) {
+        User repeatUser = userRepository.getByUsername(user.getUsername());
+        if (repeatUser != null && !repeatUser.getDeletedFlag()) {
             throw new Exception("记录已存在");
         }
-        if (oldUser != null && oldUser.getDeletedFlag()) {
-            user.setId(oldUser.getId());
+        if (repeatUser != null && repeatUser.getDeletedFlag()) {
+            user.setId(repeatUser.getId());
         }
         user.setDeletedFlag(false);
         user.setCreatedTime(new Date());
@@ -53,15 +53,16 @@ public class UserService {
         Optional<User> optional = userRepository.findById(user.getId());
         optional.orElseThrow(() -> new Exception("找不到该记录"));
         if (!optional.get().getUsername().equals(user.getUsername())) {
-            User oldUser = userRepository.getByUsername(user.getUsername());
-            if (oldUser != null && !oldUser.getId().equals(user.getId())) {
+            User repeatUser = userRepository.getByUsername(user.getUsername());
+            if (repeatUser != null && !repeatUser.getId().equals(user.getId())) {
                 throw new Exception("记录已存在");
             }
         }
         User oldUser = optional.get();
         user.setDeletedFlag(oldUser.getDeletedFlag());
-        user.setCreatedTime(oldUser.getCreatedTime());
         user.setUpdatedTime(new Date());
+        user.setRoles(oldUser.getRoles());
+
         return userRepository.saveAndFlush(user);
     }
 

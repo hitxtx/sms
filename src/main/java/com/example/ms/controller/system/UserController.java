@@ -33,8 +33,8 @@ public class UserController {
         try {
             userService.create(user);
         } catch (Exception e) {
-            e.printStackTrace();
-            return Result.failure();
+            log.error("新增用户：", e);
+            return Result.failure(e.getMessage());
         }
 
         return Result.success();
@@ -45,8 +45,8 @@ public class UserController {
         try {
             userService.update(user);
         } catch (Exception e) {
-            e.printStackTrace();
-            return Result.failure();
+            log.error("更新用户：", e);
+            return Result.failure(e.getMessage());
         }
 
         return Result.success();

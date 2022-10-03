@@ -1,9 +1,9 @@
 package com.example.ms.controller.system;
 
 import com.example.ms.model.bo.Role;
-import com.example.ms.model.dto.SearchParam;
 import com.example.ms.model.dto.PageResult;
 import com.example.ms.model.dto.Result;
+import com.example.ms.model.dto.SearchParam;
 import com.example.ms.model.dto.TreeNode;
 import com.example.ms.service.RoleService;
 import lombok.AllArgsConstructor;
@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -33,7 +34,7 @@ public class RoleController {
         try {
             roleService.create(role);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("新增角色：", e);
             return Result.failure();
         }
 
@@ -45,7 +46,7 @@ public class RoleController {
         try {
             roleService.update(role);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("更新角色：", e);
             return Result.failure();
         }
 

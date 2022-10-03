@@ -36,12 +36,12 @@ public class RoleService {
     }
 
     public Role create(Role role) throws Exception {
-        Role oldRole = roleRepository.findByRoleName(role.getRoleName());
-        if (oldRole != null && !oldRole.getDeletedFlag()) {
-            throw new Exception("记录已存在");
+        Role repeatRole = roleRepository.findByRoleName(role.getRoleName());
+        if (repeatRole != null && !repeatRole.getDeletedFlag()) {
+            throw new Exception("该角色已存在");
         }
-        if (oldRole != null && oldRole.getDeletedFlag()) {
-            role.setId(oldRole.getId());
+        if (repeatRole != null && repeatRole.getDeletedFlag()) {
+            role.setId(repeatRole.getId());
         }
         role.setDeletedFlag(false);
         role.setCreatedTime(new Date());
@@ -50,20 +50,21 @@ public class RoleService {
 
     public Role update(Role role) throws Exception {
         if (role.getId() == null || role.getId() <= 0) {
-            throw new Exception("更新信息异常");
+            throw new Exception("更新角色异常");
         }
         Optional<Role> optional = roleRepository.findById(role.getId());
-        optional.orElseThrow(() -> new Exception("找不到该记录"));
+        optional.orElseThrow(() -> new Exception("找不到该角色"));
         if (!optional.get().getRoleName().equals(role.getRoleName())) {
-            Role oldRole = roleRepository.findByRoleName(role.getRoleName());
-            if (oldRole != null && !oldRole.getId().equals(role.getId())) {
-                throw new Exception("记录已存在");
+            Role repeatRole = roleRepository.findByRoleName(role.getRoleName());
+            if (repeatRole != null && !repeatRole.getId().equals(role.getId())) {
+                throw new Exception("该角色名称已存在");
             }
         }
         Role oldRole = optional.get();
         role.setDeletedFlag(oldRole.getDeletedFlag());
-        role.setCreatedTime(oldRole.getCreatedTime());
         role.setUpdatedTime(new Date());
+        role.setMenus(oldRole.getMenus());
+        role.setPermissions(oldRole.getPermissions());
         return roleRepository.saveAndFlush(role);
     }
 

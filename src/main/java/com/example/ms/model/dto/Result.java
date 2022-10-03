@@ -27,10 +27,10 @@ public class Result {
         this.data = data;
     }
 
-    public Result(Integer code, String message, boolean success) {
+    public Result(boolean success, Integer code, String message) {
+        this.success = success;
         this.code = code;
         this.message = message;
-        this.success = success;
     }
 
     public static Result success() {
@@ -43,6 +43,10 @@ public class Result {
 
     public static Result failure() {
         return new Result(ResultCode.FAILURE);
+    }
+
+    public static Result failure(String message) {
+        return new Result(ResultCode.ERROR.success, ResultCode.ERROR.code, message);
     }
 
 }
