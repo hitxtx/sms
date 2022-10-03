@@ -101,7 +101,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="assignRolesModal" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal fade" id="assignRoleModal" tabindex="-1" role="dialog" data-backdrop="static">
         <div class="modal-dialog modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -111,14 +111,14 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form class="needs-validation" novalidate id="assignRolesForm">
-                        <input type="hidden" id="assignRolesId" name="id">
+                    <form class="needs-validation" novalidate id="assignRoleForm">
+                        <input type="hidden" id="assignRoleId" name="id">
                     </form>
-                    <div id="assignRolesTreeview"></div>
+                    <div id="assignRoleTreeview"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary" id="assignRolesBtn">确定</button>
+                    <button type="button" class="btn btn-primary" id="assignRoleBtn">确定</button>
                 </div>
             </div>
         </div>
@@ -226,22 +226,22 @@
             });
         });
 
-        let $assignRolesForm = $("#assignRolesForm");
-        let $assignRolesBtn = $("#assignRolesBtn");
-        let assignRolesModal = function (display, id) {
-            $assignRolesForm.reset();
-            $assignRolesForm.removeClass("was-validated");
+        let $assignRoleForm = $("#assignRoleForm");
+        let $assignRoleBtn = $("#assignRoleBtn");
+        let assignRoleModal = function (display, id) {
+            $assignRoleForm.reset();
+            $assignRoleForm.removeClass("was-validated");
 
-            $("#assignRolesId").val(id);
-            $("#assignRolesModal").modal(display === "show" ? "show" : "hide");
+            $("#assignRoleId").val(id);
+            $("#assignRoleModal").modal(display === "show" ? "show" : "hide");
 
             $.ajax({
                 type: "GET",
                 url: _root + "system/user/role/treeview",
-                data: $assignRolesForm.serializeArray(),
+                data: $assignRoleForm.serializeArray(),
             }).done(function (data) {
                 if (data.success) {
-                    $('#assignRolesTreeview').treeview({
+                    $('#assignRoleTreeview').treeview({
                         data: data.data,         // data is not optional
                         levels: 1,
                         highlightSelected: false,
@@ -253,8 +253,8 @@
                 }
             })
         };
-        $assignRolesBtn.on("click", function () {
-            let selectedNodes = $('#assignRolesTreeview').treeview('getChecked');
+        $assignRoleBtn.on("click", function () {
+            let selectedNodes = $('#assignRoleTreeview').treeview('getChecked');
             let params = [];
             if (selectedNodes != null && selectedNodes.length > 0) {
                 for(let i = 0, len = selectedNodes.length; i < len; i++) {
@@ -264,15 +264,13 @@
                     params.push(selectedNodes[i].id);
                 }
             }
-            // $("roleIds").val(params.join(','));
             $.ajax({
                 type: "POST",
                 url: _root + "system/user/role/assign",
-                data: "id=" + $("#assignRolesId").val() + "&roleIds=" + params.join(","),
-                // contentType: "application/json;charset=UTF-8"
+                data: "id=" + $("#assignRoleId").val() + "&roleIds=" + params.join(","),
             }).done(function (data) {
                 if (data.success) {
-                    assignRolesModal("hide");
+                    assignRoleModal("hide");
                     toastr.success(data.message);
                 } else {
                     toastr.warning(data.message);
@@ -308,7 +306,7 @@
                     title: "操作",
                     width: 100,
                     itemTemplate: function (value, item) {
-                        let buttons = $("<a class=\"btn btn-xs text-info control-roles\"><i class=\"fas fa-users\"></i> 角色列表</a>" +
+                        let buttons = $("<a class=\"btn btn-xs text-info control-role\"><i class=\"fas fa-users\"></i> 角色列表</a>" +
                             "<a class=\"btn btn-xs text-info control-update\"><i class=\"fas fa-edit\"></i> 编辑</a>" +
                             "<a class=\"btn btn-xs text-danger control-remove\"><i class=\"fas fa-trash\"></i> 删除</a>")
                             .on("click", function (e) {
@@ -318,8 +316,8 @@
                                 } else if ($(e.target).hasClass("control-remove")) {
                                     deleteModal("show", $(this).html(), item.id);
                                     e.stopPropagation();
-                                } else if ($(e.target).hasClass("control-roles")) {
-                                    assignRolesModal("show", item.id);
+                                } else if ($(e.target).hasClass("control-role")) {
+                                    assignRoleModal("show", item.id);
                                     e.stopPropagation();
                                 }
                             });

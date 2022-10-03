@@ -100,17 +100,55 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="assignMenuModal" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-info">分配菜单</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" novalidate id="assignMenuForm">
+                        <input type="hidden" id="assignMenuId" name="id">
+                    </form>
+                    <div id="assignMenuTreeview"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="assignMenuBtn">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="assignPermissionModal" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-info">分配权限</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" novalidate id="assignPermissionForm">
+                        <input type="hidden" id="assignPermissionId" name="id">
+                    </form>
+                    <div id="assignPermissionTreeview"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="assignPermissionBtn">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
+<script th:src="@{/plugins/bootstrap-treeview/js/bootstrap-treeview.js}"></script>
 <script th:inline="javascript">
     $(function () {
         let $searchBtn = $("#searchBtn");
-        let $createBtn = $("#createBtn");
-        let $confirmBtn = $("#confirmBtn");
-        let $deleteBtn = $("#deleteBtn");
-        let $createForm = $("#createForm");
-        let $deleteForm = $("#deleteForm");
-        let $dataGrid = $("#dataGrid");
-
         let searchData = function (filter) {
             let defer = $.Deferred();
             filter.keyword = $("#keyword").val();
@@ -128,6 +166,15 @@
             })
             return defer.promise();
         };
+        $searchBtn.on("click", function () {
+            let filter = $dataGrid.jsGrid("getFilter");
+            filter.keyword = $("#keyword").val();
+            $dataGrid.jsGrid("search", filter);
+        });
+
+        let $createBtn = $("#createBtn");
+        let $confirmBtn = $("#confirmBtn");
+        let $createForm = $("#createForm");
         let createModal = function (display, title, row) {
             $createForm.reset();
             $createForm.removeClass("was-validated");
@@ -142,65 +189,6 @@
             $("#saveTitle").html(title);
             $("#createModal").modal(display === "show" ? "show" : "hide");
         };
-        let deleteModal = function (display, title, id) {
-            $deleteForm.reset();
-            $deleteForm.removeClass("was-validated");
-
-            $("#deleteId").val(id);
-            $("#deleteTitle").html(title);
-            $("#deleteModal").modal(display === "show" ? "show" : "hide");
-        };
-
-        jsGrid.locale("zh-cn");
-        $dataGrid.jsGrid({
-            height: "auto",
-            width: "100%",
-            sorting: false,
-            paging: true,
-            autoload: true,
-            pageLoading: true,
-            pageSize: 10,
-            pageIndex: 1,
-            controller: {
-                loadData: function (filter) {
-                    return searchData(filter);
-                }
-            },
-            fields: [
-                {name: "id", type: "text", title: "ID", align: "center", width: 20, visible: false},
-                {name: "roleName", type: "text", title: "角色名称", align: "center", width: 50},
-                {name: "roleCode", type: "text", title: "角色代码", align: "center", width: 50},
-                {name: "sort", type: "text", title: "排序", align: "center", width: 50},
-                {name: "createdTime", type: "text", title: "创建时间", align: "center", width: 100},
-                {name: "updatedTime", type: "text", title: "修改时间", align: "center", width: 100},
-                {
-                    type: "control",
-                    title: "操作",
-                    width: 85,
-                    itemTemplate: function (value, item) {
-                        let buttons = $("<a class=\"btn btn-xs text-info control-update\"><i class=\"fas fa-edit\"></i> 编辑</a>" +
-                            "<a class=\"btn btn-xs text-danger control-remove\"><i class=\"fas fa-trash\"></i> 删除</a>")
-                            .on("click", function (e) {
-                                if ($(e.target).hasClass("control-update")) {
-                                    createModal("show", $(this).html(), item);
-                                    e.stopPropagation();
-                                } else if ($(e.target).hasClass("control-remove")) {
-                                    deleteModal("show", $(this).html(), item.id);
-                                    e.stopPropagation();
-                                }
-                            });
-
-                        return $("<div class=\"btn-group btn-group-sm\"></div>").append(buttons);
-                    }
-                }
-            ]
-        });
-
-        $searchBtn.on("click", function () {
-            let filter = $dataGrid.jsGrid("getFilter");
-            filter.keyword = $("#keyword").val();
-            $dataGrid.jsGrid("search", filter);
-        });
         $createBtn.on("click", function () {
             createModal("show", $(this).html());
         });
@@ -225,6 +213,17 @@
                 toastr.error(err);
             });
         });
+
+        let $deleteBtn = $("#deleteBtn");
+        let $deleteForm = $("#deleteForm");
+        let deleteModal = function (display, title, id) {
+            $deleteForm.reset();
+            $deleteForm.removeClass("was-validated");
+
+            $("#deleteId").val(id);
+            $("#deleteTitle").html(title);
+            $("#deleteModal").modal(display === "show" ? "show" : "hide");
+        };
         $deleteBtn.on("click", function () {
             let $form = $deleteForm;
             if (!$form[0].checkValidity()) {
@@ -245,6 +244,164 @@
             }).fail(function (err) {
                 toastr.error(err);
             });
+        });
+
+        let $assignMenuForm = $("#assignMenuForm");
+        let $assignMenuBtn = $("#assignMenuBtn");
+        let assignMenuModal = function (display, id) {
+            $assignMenuForm.reset();
+            $assignMenuForm.removeClass("was-validated");
+
+            $("#assignMenuId").val(id);
+            $("#assignMenuModal").modal(display === "show" ? "show" : "hide");
+
+            $.ajax({
+                type: "GET",
+                url: _root + "system/role/menu/treeview",
+                data: $assignMenuForm.serializeArray(),
+            }).done(function (data) {
+                if (data.success) {
+                    $('#assignMenuTreeview').treeview({
+                        data: data.data,
+                        levels: 1,
+                        highlightSelected: false,
+                        multiSelect: true,
+                        showCheckbox: true,
+                    });
+                } else {
+                    toastr.warning(data.message);
+                }
+            })
+        };
+        $assignMenuBtn.on("click", function () {
+            let selectedNodes = $('#assignMenuTreeview').treeview('getChecked');
+            let params = [];
+            if (selectedNodes != null && selectedNodes.length > 0) {
+                for(let i = 0, len = selectedNodes.length; i < len; i++) {
+                    if (selectedNodes[i].id === undefined) {
+                        continue;
+                    }
+                    params.push(selectedNodes[i].id);
+                }
+            }
+            $.ajax({
+                type: "POST",
+                url: _root + "system/role/menu/assign",
+                data: "id=" + $("#assignMenuId").val() + "&menuIds=" + params.join(","),
+            }).done(function (data) {
+                if (data.success) {
+                    assignMenuModal("hide");
+                    toastr.success(data.message);
+                } else {
+                    toastr.warning(data.message);
+                }
+            });
+        });
+
+        let $assignPermissionForm = $("#assignPermissionForm");
+        let $assignPermissionBtn = $("#assignPermissionBtn");
+        let assignPermissionModal = function (display, id) {
+            $assignPermissionForm.reset();
+            $assignPermissionForm.removeClass("was-validated");
+
+            $("#assignPermissionId").val(id);
+            $("#assignPermissionModal").modal(display === "show" ? "show" : "hide");
+
+            $.ajax({
+                type: "GET",
+                url: _root + "system/role/permission/treeview",
+                data: $assignPermissionForm.serializeArray(),
+            }).done(function (data) {
+                if (data.success) {
+                    $('#assignPermissionTreeview').treeview({
+                        data: data.data,
+                        levels: 1,
+                        highlightSelected: false,
+                        multiSelect: true,
+                        showCheckbox: true,
+                    });
+                } else {
+                    toastr.warning(data.message);
+                }
+            })
+        };
+        $assignPermissionBtn.on("click", function () {
+            let selectedNodes = $('#assignPermissionTreeview').treeview('getChecked');
+            let params = [];
+            if (selectedNodes != null && selectedNodes.length > 0) {
+                for(let i = 0, len = selectedNodes.length; i < len; i++) {
+                    if (selectedNodes[i].id === undefined) {
+                        continue;
+                    }
+                    params.push(selectedNodes[i].id);
+                }
+            }
+            $.ajax({
+                type: "POST",
+                url: _root + "system/role/permission/assign",
+                data: "id=" + $("#assignPermissionId").val() + "&permissionIds=" + params.join(","),
+            }).done(function (data) {
+                if (data.success) {
+                    assignPermissionModal("hide");
+                    toastr.success(data.message);
+                } else {
+                    toastr.warning(data.message);
+                }
+            });
+        });
+
+        jsGrid.locale("zh-cn");
+        let $dataGrid = $("#dataGrid");
+        $dataGrid.jsGrid({
+            height: "auto",
+            width: "100%",
+            sorting: false,
+            paging: true,
+            autoload: true,
+            pageLoading: true,
+            pageSize: 10,
+            pageIndex: 1,
+            controller: {
+                loadData: function (filter) {
+                    return searchData(filter);
+                }
+            },
+            fields: [
+                {name: "id", type: "text", title: "ID", align: "center", width: 20, visible: false},
+                {name: "roleName", type: "text", title: "角色名称", align: "center", width: 50},
+                {name: "roleCode", type: "text", title: "角色代码", align: "center", width: 50},
+                {name: "sort", type: "text", title: "排序", align: "center", width: 50},
+                {name: "createdTime", type: "text", title: "创建时间", align: "center", width: 100},
+                {name: "updatedTime", type: "text", title: "修改时间", align: "center", width: 100},
+                {
+                    type: "control",
+                    title: "操作",
+                    width: 160,
+                    itemTemplate: function (value, item) {
+                        let buttons = $("<a class=\"btn btn-xs text-info control-menu\"><i class=\"fas fa-edit\"></i> 菜单列表</a>" +
+                            "<a class=\"btn btn-xs text-info control-permission\"><i class=\"fas fa-edit\"></i> 权限列表</a>" +
+                            "<a class=\"btn btn-xs text-info control-update\"><i class=\"fas fa-edit\"></i> 编辑</a>" +
+                            "<a class=\"btn btn-xs text-danger control-remove\"><i class=\"fas fa-trash\"></i> 删除</a>")
+                            .on("click", function (e) {
+                                if ($(e.target).hasClass("control-update")) {
+                                    createModal("show", $(this).html(), item);
+                                    e.stopPropagation();
+                                } else if ($(e.target).hasClass("control-remove")) {
+                                    deleteModal("show", $(this).html(), item.id);
+                                    e.stopPropagation();
+                                } else if ($(e.target).hasClass("control-menu")) {
+                                    assignMenuModal("show", item.id);
+                                    e.stopPropagation();
+                                } else if ($(e.target).hasClass("control-permission")) {
+                                    assignPermissionModal("show", item.id);
+                                    e.stopPropagation();
+                                }
+                            });
+
+                        return $("<div class=\"btn-group btn-group-sm\"></div>").append(buttons);
+                    }
+                }
+            ]
         });
 
     });

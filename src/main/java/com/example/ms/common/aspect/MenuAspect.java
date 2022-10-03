@@ -32,7 +32,7 @@ public class MenuAspect {
     @After("active()")
     public void before(JoinPoint joinPoint) {
         List<Menu> menuTree = menuService.list(0L);
-        List<Menu> menuList = menuService.listAll();
+        List<Menu> menuList = menuService.listAllEnabled();
 
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (attributes != null) {

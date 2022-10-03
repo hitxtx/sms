@@ -16,13 +16,13 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
     @Query("update Menu AS p set p.deletedFlag =:deletedFlag where p.id = :id")
     void updateDeletedFlag(Boolean deletedFlag, Long id);
 
-    Page<Menu> findByDeletedFlagAndParentMenu(Boolean deletedFlag, Menu parentMenu, Pageable pageable);
-
-    Page<Menu> findByDeletedFlagAndMenuNameLike(Boolean deletedFlag, String menuName, Pageable pageable);
+    List<Menu> findByDeletedFlag(Boolean deleteFlag);
 
     List<Menu> findMenuByDeletedFlagAndParentMenuOrderBySortDesc(Boolean deletedFlag,Menu parentMenu);
 
-    List<Menu> findMenuByDeletedFlag(Boolean deleteFlag);
+    Page<Menu> findByDeletedFlagAndParentMenu(Boolean deletedFlag, Menu parentMenu, Pageable pageable);
+
+    Page<Menu> findByDeletedFlagAndMenuNameLike(Boolean deletedFlag, String menuName, Pageable pageable);
 
     Menu findByPath(String path);
 

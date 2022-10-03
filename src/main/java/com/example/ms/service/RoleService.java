@@ -1,7 +1,10 @@
 package com.example.ms.service;
 
+import com.example.ms.model.bo.Menu;
+import com.example.ms.model.bo.Permission;
 import com.example.ms.model.bo.Role;
 import com.example.ms.model.dto.SearchParam;
+import com.example.ms.model.dto.TreeNode;
 import com.example.ms.repository.RoleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -11,9 +14,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Transactional
@@ -21,6 +23,8 @@ import java.util.Optional;
 public class RoleService {
 
     private final RoleRepository roleRepository;
+    private final MenuService menuService;
+    private final PermissionService permissionService;
 
     public Page<Role> search(SearchParam param) {
         Pageable pageable = PageRequest.of(param.getPageIndex() - 1, param.getPageSize(), Sort.Direction.ASC, "id");
@@ -84,6 +88,83 @@ public class RoleService {
 
     public List<Role> listAllEnabled() {
         return roleRepository.findByDeletedFlag(false);
+    }
+
+    public List<TreeNode> roleMenuTreeNodes(Long id) {
+        List<TreeNode> treeNodeList = new ArrayList<>();
+
+        Role role = roleRepository.getById(id);
+        Set<Menu> roleMenuList = role.getMenus();
+        List<Long> roleMenuIdList = roleMenuList.stream().map(Menu::getId).collect(Collectors.toList());
+        List<Menu> menuList = menuService.list(0L);
+        if (menuList.isEmpty()) {
+            return treeNodeList;
+        }
+        for (Menu menu : menuList) {
+            TreeNode treeNode = new TreeNode(menu.getId(), menu.getMenuName());
+            boolean setFlag = roleMenuIdList.contains(menu.getId());
+            treeNode.setState(setFlag, menu.getDeletedFlag(), !menu.getSubmenus().isEmpty(), setFlag);
+            if (!menu.getSubmenus().isEmpty()) {
+                treeNode.setNodes(new ArrayList<>());
+                for (Menu submenu : menu.getSubmenus()) {
+                    TreeNode subTreeNode = new TreeNode(submenu.getId(), submenu.getMenuName());
+                    boolean subSetFlag = roleMenuIdList.contains(submenu.getId());
+                    subTreeNode.setState(subSetFlag, submenu.getDeletedFlag(), !submenu.getSubmenus().isEmpty(), subSetFlag);
+
+                    treeNode.getNodes().add(subTreeNode);
+                }
+            }
+
+            treeNodeList.add(treeNode);
+        }
+
+        return treeNodeList;
+    }
+
+    @Transactional
+    public void assignRoleMenu(Long id, List<Long> menuIds) {
+        Role role = roleRepository.getById(id);
+        role.setMenus(new HashSet<>());
+        if (menuIds != null && !menuIds.isEmpty()) {
+            for (Long menuId : menuIds) {
+                role.getMenus().add(menuService.getById(menuId));
+            }
+        }
+        roleRepository.save(role);
+    }
+
+    public List<TreeNode> rolePermissionTreeNodes(Long id) {
+        List<TreeNode> treeNodeList = new ArrayList<>();
+
+        Role role = roleRepository.getById(id);
+        Set<Permission> rolePermissionList = role.getPermissions();
+        List<Long> rolePermissionIdList = rolePermissionList.stream().map(Permission::getId).collect(Collectors.toList());
+        List<Permission> permissionList = permissionService.listAll();
+        permissionList.sort(Comparator.comparing(Permission::getModule).thenComparing(Permission::getPath));
+        if (permissionList.isEmpty()) {
+            return treeNodeList;
+        }
+        for (Permission permission : permissionList) {
+            TreeNode treeNode = new TreeNode(permission.getId(), permission.getPath());
+            boolean setFlag = rolePermissionIdList.contains(permission.getId());
+            treeNode.setState(setFlag, permission.getDeletedFlag(), setFlag);
+
+            treeNodeList.add(treeNode);
+        }
+
+        return treeNodeList;
+    }
+
+    @Transactional
+    public void assignRolePermission(Long id, List<Long> permissionIds) {
+        Role role = roleRepository.getById(id);
+        role.setPermissions(new HashSet<>());
+        if (permissionIds != null && !permissionIds.isEmpty()) {
+            for (Long permissionId : permissionIds) {
+                role.getPermissions().add(permissionService.getById(permissionId));
+            }
+        }
+        roleRepository.save(role);
     }
 
 }

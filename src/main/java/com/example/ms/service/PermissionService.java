@@ -1,5 +1,6 @@
 package com.example.ms.service;
 
+import com.example.ms.model.bo.Menu;
 import com.example.ms.model.bo.Permission;
 import com.example.ms.model.dto.SearchParam;
 import com.example.ms.repository.PermissionRepository;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -72,4 +74,17 @@ public class PermissionService {
             permissionRepository.updateDeletedFlag(true, id);
         }
     }
+
+    public Permission getById(Long id) {
+        return permissionRepository.getById(id);
+    }
+
+    public List<Permission> listAll() {
+        return permissionRepository.findAll();
+    }
+
+    public List<Permission> listAllEnabled() {
+        return permissionRepository.findByDeletedFlag(false);
+    }
+
 }

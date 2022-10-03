@@ -65,8 +65,8 @@ public class UserController {
     }
 
     @PostMapping("/role/assign")
-    public Result userAssignRoles(Long id, @RequestParam List<Long> roleIds) {
-        userService.userRolesAssign(id, roleIds);
+    public Result assignUserRole(Long id, @RequestParam List<Long> roleIds) {
+        userService.assignUserRole(id, roleIds);
         return Result.success();
     }
 

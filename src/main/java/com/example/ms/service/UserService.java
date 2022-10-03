@@ -151,7 +151,7 @@ public class UserService {
     }
 
     @Transactional
-    public void userRolesAssign(Long id, List<Long> roleIds) {
+    public void assignUserRole(Long id, List<Long> roleIds) {
         User user = userRepository.getById(id);
         user.setRoles(new HashSet<>());
         if (roleIds != null && !roleIds.isEmpty()) {

@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class IndexController {
 
-    @Tag("仪表盘")
+//    @Tag("仪表盘")
     @GetMapping("/")
-    public String index() {
+    public String indexPage() {
         return "dashboard/v1";
     }
 

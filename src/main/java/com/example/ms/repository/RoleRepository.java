@@ -15,12 +15,12 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
     @Query("update Role AS p set p.deletedFlag =:deletedFlag where p.id = :id")
     void updateDeletedFlag(Boolean deletedFlag, Long id);
 
+    List<Role> findByDeletedFlag(Boolean deleteFlag);
+
     Page<Role> findByDeletedFlag(Boolean deletedFlag, Pageable pageable);
 
     Page<Role> findByDeletedFlagAndRoleNameLike(Boolean deletedFlag, String roleName, Pageable pageable);
 
     Role findByRoleName(String roleName);
-
-    List<Role> findByDeletedFlag(Boolean deleteFlag);
 
 }

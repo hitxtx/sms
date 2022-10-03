@@ -90,8 +90,16 @@ public class MenuService {
         return menuRepository.findMenuByDeletedFlagAndParentMenuOrderBySortDesc(false, parentMenu);
     }
 
+    public Menu getById(Long id) {
+        return menuRepository.getById(id);
+    }
+
     public List<Menu> listAll() {
-        return menuRepository.findMenuByDeletedFlag(false);
+        return menuRepository.findAll();
+    }
+
+    public List<Menu> listAllEnabled() {
+        return menuRepository.findByDeletedFlag(false);
     }
 
 }
