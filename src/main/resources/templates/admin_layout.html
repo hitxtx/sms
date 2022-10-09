@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html th:fragment="adminLayout(title, links, scripts, content)" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en" th:fragment="adminLayout(title, links, scripts, content)"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -137,7 +140,7 @@
                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
                     <img src="/images/avatar.png" th:src="@{/images/avatar.png}"
                          class="user-image img-circle elevation-2" alt="User Image">
-                    <span class="d-none d-md-inline">Alexander Pierce</span>
+                    <span class="d-none d-md-inline" sec:authentication="principal.username">Alexander Pierce</span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                     <!-- User image -->
@@ -145,8 +148,8 @@
                         <img src="/images/avatar.png" th:src="@{/images/avatar.png}" class="img-circle elevation-2"
                              alt="User Image">
                         <p>
-                            Alexander Pierce - Web Developer
-                            <small>Member since Nov. 2012</small>
+                            <span sec:authentication="principal.username"></span>
+                            <small>Member since <i sec:authentication="principal.user.createdTime"></i></small>
                         </p>
                     </li>
                     <!-- Menu Body -->
