@@ -9,9 +9,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Data
@@ -32,7 +30,7 @@ public class Menu {
 
     @NotFound(action = NotFoundAction.IGNORE)
     @OneToMany(mappedBy = "parentMenu")
-    private Set<Menu> submenus = new HashSet<>();
+    private List<Menu> submenus = new ArrayList<>();
 
     @JsonIgnore
     @ManyToMany(mappedBy = "menus")

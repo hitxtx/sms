@@ -41,6 +41,10 @@ public class UserService {
         if (oldUser != null && oldUser.getDeletedFlag()) {
             user.setId(oldUser.getId());
         }
+        user.setAvatar("");
+        user.setFailedCount(0);
+        user.setUnlockFlag(true);
+        user.setStatus(true);
         user.setDeletedFlag(false);
         user.setCreatedTime(new Date());
         return userRepository.saveAndFlush(user);
@@ -59,7 +63,12 @@ public class UserService {
             }
         }
         User oldUser = optional.get();
+        user.setAvatar(oldUser.getAvatar());
+        user.setFailedCount(oldUser.getFailedCount());
+        user.setUnlockFlag(oldUser.getUnlockFlag());
+        user.setStatus(oldUser.getStatus());
         user.setDeletedFlag(oldUser.getDeletedFlag());
+        user.setCreatedTime(oldUser.getCreatedTime());
         user.setUpdatedTime(new Date());
         user.setRoles(oldUser.getRoles());
 

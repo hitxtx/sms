@@ -37,7 +37,7 @@ public class User {
     private String nickname;
 
     @Column(name = "gender")
-    private Integer gender;
+    private String gender;
 
     @Column(name = "avatar")
     private String avatar;

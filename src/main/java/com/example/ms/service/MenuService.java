@@ -12,9 +12,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Transactional
@@ -88,7 +87,13 @@ public class MenuService {
     public List<Menu> list(Long parentId) {
         Menu parentMenu = new Menu();
         parentMenu.setId(parentId == null ? 0 : parentId);
-        return menuRepository.findMenuByDeletedFlagAndParentMenuOrderBySortDesc(false, parentMenu);
+        List<Menu> menuList = menuRepository.findMenuByDeletedFlagAndParentMenu(false, parentMenu);
+        menuList.sort(Comparator.comparingLong(Menu::getSort));
+        for (Menu menu : menuList) {
+            List<Menu> menus = menu.getSubmenus().stream().sorted(Comparator.comparingLong(Menu::getSort)).collect(Collectors.toList());
+            menu.setSubmenus(menus);
+        }
+        return menuList;
     }
 
     public Menu getById(Long id) {
