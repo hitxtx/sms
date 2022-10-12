@@ -1,7 +1,7 @@
 package com.example.ms;
 
-import com.example.ms.model.bo.User;
-import com.example.ms.repository.UserRepository;
+import com.example.ms.module.system.model.bo.User;
+import com.example.ms.module.system.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

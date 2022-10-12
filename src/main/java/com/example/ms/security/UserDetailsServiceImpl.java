@@ -1,8 +1,8 @@
 package com.example.ms.security;
 
-import com.example.ms.model.bo.Role;
-import com.example.ms.model.bo.User;
-import com.example.ms.repository.UserRepository;
+import com.example.ms.module.system.model.bo.Role;
+import com.example.ms.module.system.model.bo.User;
+import com.example.ms.module.system.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,7 +1,7 @@
 package com.example.ms.config;
 
 import com.example.ms.security.*;
-import com.example.ms.service.UserService;
+import com.example.ms.module.system.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

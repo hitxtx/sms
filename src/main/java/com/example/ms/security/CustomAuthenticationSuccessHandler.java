@@ -1,7 +1,7 @@
 package com.example.ms.security;
 
-import com.example.ms.model.bo.User;
-import com.example.ms.service.UserService;
+import com.example.ms.module.system.model.bo.User;
+import com.example.ms.module.system.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.Authentication;

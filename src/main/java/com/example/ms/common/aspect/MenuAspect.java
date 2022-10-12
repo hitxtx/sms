@@ -1,7 +1,7 @@
 package com.example.ms.common.aspect;
 
-import com.example.ms.model.bo.Menu;
-import com.example.ms.service.MenuService;
+import com.example.ms.module.system.model.bo.Menu;
+import com.example.ms.module.system.service.MenuService;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
