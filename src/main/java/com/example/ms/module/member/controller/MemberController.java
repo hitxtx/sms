@@ -20,16 +20,19 @@ public class MemberController {
         return "/member/level";
     }
 
-//    @GetMapping("/account")
-//    public String account() {
-//        return "/member/account";
-//    }
-//
+    @MenuMarker("会员账号")
+    @GetMapping("/account")
+    public String account() {
+        return "/member/account";
+    }
+
+//    @MenuMarker("支付记录")
 //    @GetMapping("/payment")
 //    public String payment() {
 //        return "/member/payment";
 //    }
 //
+//    @MenuMarker("消费记录")
 //    @GetMapping("/expense")
 //    public String expense() {
 //        return "/member/expense";

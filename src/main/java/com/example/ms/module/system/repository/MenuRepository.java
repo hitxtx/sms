@@ -1,7 +1,7 @@
 package com.example.ms.module.system.repository;
 
-import com.example.ms.module.system.model.bo.Menu;
 import com.example.ms.model.SelectOption;
+import com.example.ms.module.system.model.bo.Menu;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,6 +20,8 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
 
     List<Menu> findMenuByDeletedFlagAndParentMenu(Boolean deletedFlag, Menu parentMenu);
 
+    List<Menu> findMenuByDeletedFlagAndParentMenuIsNull(Boolean deletedFlag);
+
     Page<Menu> findByDeletedFlagAndParentMenu(Boolean deletedFlag, Menu parentMenu, Pageable pageable);
 
     Page<Menu> findByDeletedFlagAndMenuNameLike(Boolean deletedFlag, String menuName, Pageable pageable);
@@ -31,5 +33,9 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
 
     @Query("SELECT m.id AS id, m.menuName as text from Menu as m where m.deletedFlag =:deletedFlag and m.menuName like concat('%', :text, '%') ")
     List<SelectOption> listByDeletedFlagAndMenuNameLike(Boolean deletedFlag, String text);
+
+    Menu findByMenuCode(String menuCode);
+
+    void deleteByMenuCodeIsNotIn(List<String> menuCodeList);
 
 }

@@ -1,8 +1,8 @@
 package com.example.ms.module.system.service;
 
-import com.example.ms.module.system.model.bo.Menu;
 import com.example.ms.model.SearchParam;
 import com.example.ms.model.SelectOption;
+import com.example.ms.module.system.model.bo.Menu;
 import com.example.ms.module.system.repository.MenuRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,7 +12,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -86,8 +89,14 @@ public class MenuService {
 
     public List<Menu> list(Long parentId) {
         Menu parentMenu = new Menu();
-        parentMenu.setId(parentId == null ? 0 : parentId);
-        List<Menu> menuList = menuRepository.findMenuByDeletedFlagAndParentMenu(false, parentMenu);
+        parentMenu.setId(parentId);
+
+        List<Menu> menuList;
+        if (parentId == null || parentId == 0L) {
+            menuList = menuRepository.findMenuByDeletedFlagAndParentMenuIsNull(false);
+        } else {
+            menuList = menuRepository.findMenuByDeletedFlagAndParentMenu(false, parentMenu);
+        }
         menuList.sort(Comparator.comparingLong(Menu::getSort));
         for (Menu menu : menuList) {
             List<Menu> menus = menu.getSubmenus().stream().sorted(Comparator.comparingLong(Menu::getSort)).collect(Collectors.toList());

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@MenuMarker("系统管理")
+@MenuMarker(value = "系统管理", icon = "fa-cog")
 @Slf4j
 @AllArgsConstructor
 @RequestMapping("/system")

@@ -1,7 +1,10 @@
 package com.example.ms.common.startup;
 
+import com.example.ms.common.annotation.MenuMarker;
+import com.example.ms.module.system.model.bo.Menu;
 import com.example.ms.module.system.model.bo.Permission;
 import com.example.ms.module.system.model.bo.Role;
+import com.example.ms.module.system.repository.MenuRepository;
 import com.example.ms.module.system.repository.PermissionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +30,13 @@ import java.util.*;
 @Component
 public class Runner implements ApplicationRunner {
 
+    private MenuRepository menuRepository;
     private PermissionRepository permissionRepository;
+
+    @Autowired
+    public void setMenuRepository(MenuRepository menuRepository) {
+        this.menuRepository = menuRepository;
+    }
 
     @Autowired
     public void setPermissionRepository(PermissionRepository permissionRepository) {
@@ -42,6 +51,7 @@ public class Runner implements ApplicationRunner {
 
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 
+        Map<String, Menu> menuMap = new HashMap<>();
         Map<String, Permission> permissionMap = new HashMap<>();
         try {
             String pattern = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
@@ -58,8 +68,21 @@ public class Runner implements ApplicationRunner {
                 String moduleName = simpleName.replace("Controller", "");
 
                 // 获取Class路径
-                RequestMapping classAnnotation = clazz.getAnnotation(RequestMapping.class);
-                String classPath = classAnnotation != null ? classAnnotation.value()[0] : "";
+                RequestMapping classRequestMapping = clazz.getAnnotation(RequestMapping.class);
+                String classPath = classRequestMapping != null ? classRequestMapping.value()[0] : "";
+                MenuMarker classMenuMarker = clazz.getAnnotation(MenuMarker.class);
+                if (classMenuMarker != null) {
+                    Menu menu = new Menu();
+                    menu.setMenuName(classMenuMarker.value());
+                    menu.setMenuCode(moduleName);
+                    menu.setPath("#");
+                    menu.setIcon(classMenuMarker.icon());
+                    menu.setSort(1L);
+                    menu.setDeletedFlag(false);
+                    menu.setCreatedTime(new Date());
+
+                    menuMap.put(menu.getMenuCode(), menu);
+                }
 
                 for (Method method : clazz.getDeclaredMethods()) {
                     String methodName = method.getName();
@@ -89,6 +112,25 @@ public class Runner implements ApplicationRunner {
                         continue;
                     }
 
+                    MenuMarker menuMarker = method.getAnnotation(MenuMarker.class);
+                    if (menuMarker != null) { // 菜单方法
+                        for (String url : methodPathList) {
+                            Menu menu = new Menu();
+                            menu.setParentMenu(menuMap.get(moduleName));
+                            menu.setMenuName(menuMarker.value());
+                            menu.setMenuCode(moduleName + "#" + methodName);
+                            menu.setPath(classPath + url);
+                            menu.setIcon(menuMarker.icon());
+                            menu.setSort(1L);
+                            menu.setDeletedFlag(false);
+                            menu.setCreatedTime(new Date());
+
+//                            menuMap.put(menu.getMenuCode(), menu);
+                            menuMap.get(moduleName).getSubmenus().add(menu);
+                        }
+                    }
+
+
                     methodPathList.forEach(pathKey -> {
                         Permission permission = new Permission();
                         permission.setModule(moduleName);
@@ -105,8 +147,49 @@ public class Runner implements ApplicationRunner {
             e.printStackTrace();
         }
 
+        updateMenus(menuMap);
+
         updatePermissions(permissionMap);
 
+    }
+
+    public void updateMenus(Map<String, Menu> menuMap) {
+        List<String> menuCodeList = new ArrayList<>(menuMap.keySet());
+
+        for (String menuCode : menuMap.keySet()) {
+            Menu newMenu = menuMap.get(menuCode);
+            Menu oldMenu = menuRepository.findByMenuCode(menuCode);
+            if (oldMenu != null) {
+                newMenu.setId(oldMenu.getId());
+                newMenu.setSort(oldMenu.getSort());
+                newMenu.setCreatedTime(oldMenu.getCreatedTime());
+                newMenu.setUpdatedTime(new Date());
+
+            }
+            menuRepository.saveAndFlush(newMenu);
+
+            List<Menu> submenus = newMenu.getSubmenus();
+            if (submenus == null || submenus.isEmpty()) {
+                continue;
+            }
+            for (Menu newSubmenu : submenus) {
+                menuCodeList.add(newSubmenu.getMenuCode());
+
+                Menu oldSubmenu = menuRepository.findByMenuCode(newSubmenu.getMenuCode());
+                if (oldSubmenu == null) {
+                    continue;
+                }
+                newSubmenu.setId(oldSubmenu.getId());
+                newSubmenu.setParentMenu(newMenu);
+                newSubmenu.setSort(oldSubmenu.getSort());
+                newSubmenu.setCreatedTime(oldSubmenu.getCreatedTime());
+                newSubmenu.setUpdatedTime(new Date());
+
+            }
+            menuRepository.saveAllAndFlush(submenus);
+
+            menuRepository.deleteByMenuCodeIsNotIn(menuCodeList);
+        }
     }
 
     public void updatePermissions(Map<String, Permission> permissionMap) {
