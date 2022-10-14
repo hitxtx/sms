@@ -1,19 +1,19 @@
 package com.example.ms.module.system.controller;
 
-import com.example.ms.common.annotation.Tag;
+import com.example.ms.common.annotation.MenuMarker;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+@MenuMarker("仪表盘")
 @Controller
 public class IndexController {
 
-//    @Tag("仪表盘")
+    @MenuMarker("仪表盘")
     @GetMapping("/")
-    public String indexPage() {
+    public String index() {
         return "dashboard/v1";
     }
 
-    @Tag("登录")
     @GetMapping("/login")
     public String login() {
         return "login";

@@ -1,6 +1,5 @@
 package com.example.ms.common.startup;
 
-import com.example.ms.common.annotation.Tag;
 import com.example.ms.module.system.model.bo.Permission;
 import com.example.ms.module.system.model.bo.Role;
 import com.example.ms.module.system.repository.PermissionRepository;
@@ -35,7 +34,7 @@ public class Runner implements ApplicationRunner {
         this.permissionRepository = permissionRepository;
     }
 
-    private static final String BASE_PACKAGE = "com.example.ms.controller";
+    private static final String BASE_PACKAGE = "com.example.ms.module";
     private static final String RESOURCE_PATTERN = "/**/*Controller.class";
 
     @Override
@@ -63,22 +62,14 @@ public class Runner implements ApplicationRunner {
                 String classPath = classAnnotation != null ? classAnnotation.value()[0] : "";
 
                 for (Method method : clazz.getDeclaredMethods()) {
-                    // 请求路径
-                    String path;
-                    Tag tag = method.getAnnotation(Tag.class);
-                    String tagName; // 路径备注
-                    if (tag == null) {
-                        tagName = method.getName();
-                    } else {
-                        tagName = tag.value();
-                    }
+                    String methodName = method.getName();
 
                     RequestMapping mapping = method.getAnnotation(RequestMapping.class);
                     GetMapping getMapping = method.getAnnotation(GetMapping.class);
                     PostMapping postMapping = method.getAnnotation(PostMapping.class);
                     PutMapping putMapping = method.getAnnotation(PutMapping.class);
                     DeleteMapping deleteMapping = method.getAnnotation(DeleteMapping.class);
-                    List<String> methodPathList = new ArrayList<>();
+                    List<String> methodPathList;
                     if (postMapping != null) {
                         methodPathList = Arrays.asList(postMapping.value());
 //                        path = classPath + postMapping.value()[0];
@@ -98,11 +89,11 @@ public class Runner implements ApplicationRunner {
                         continue;
                     }
 
-                    methodPathList.forEach(p -> {
+                    methodPathList.forEach(pathKey -> {
                         Permission permission = new Permission();
                         permission.setModule(moduleName);
-                        permission.setTag(tagName);
-                        permission.setPath(classPath + p);
+                        permission.setTag(methodName);
+                        permission.setPath(classPath + pathKey);
                         permission.setDeletedFlag(false);
                         permission.setCreatedTime(new Date());
 

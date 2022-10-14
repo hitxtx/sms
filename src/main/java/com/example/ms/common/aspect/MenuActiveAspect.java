@@ -15,15 +15,16 @@ import java.util.List;
 
 @Aspect
 @Component
-public class MenuAspect {
+public class MenuActiveAspect {
 
     public final MenuService menuService;
 
-    public MenuAspect(MenuService menuService) {
+    public MenuActiveAspect(MenuService menuService) {
         this.menuService = menuService;
     }
 
-    @Pointcut("execution(* com.example.ms.controller..*.*Page(..))")
+    //    @Pointcut("execution(* com.example.ms.module..controller..*.*Index(..))")
+    @Pointcut("@annotation(com.example.ms.common.annotation.MenuMarker)")
     public void active() {
 
     }
@@ -45,17 +46,6 @@ public class MenuAspect {
                 }
             }
             request.setAttribute("menuTree", menuTree);
-
-//            System.out.println("URL : " + request.getRequestURL().toString());
-//            System.out.println("HTTP_METHOD : " + request.getMethod());
-//            System.out.println("getRequestURI : " + request.getRequestURI());
-//            System.out.println("getContextPath : " + request.getContextPath());
-//            System.out.println("getServletPath : " + request.getServletPath());
-//            System.out.println("getPathInfo : " + request.getPathInfo());
-//            System.out.println("getAuthType : " + request.getAuthType());
-//            System.out.println("IP : " + request.getRemoteAddr());
-//            System.out.println("CLASS_METHOD : " + joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
-//            System.out.println("ARGS : " + Arrays.toString(joinPoint.getArgs()));
         }
 
     }
