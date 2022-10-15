@@ -140,12 +140,12 @@ public class Runner implements ApplicationRunner {
                     methodPathList.forEach(pathKey -> {
                         Permission permission = new Permission();
                         permission.setModule(moduleName);
-                        permission.setTag(methodName);
-                        permission.setPath(classPath + pathKey);
+                        permission.setMethod(methodName);
+                        permission.setPath(classPath + pathKey + (menuMarker == null ? "/**" : ""));
                         permission.setDeletedFlag(false);
                         permission.setCreatedTime(new Date());
 
-                        permissionMap.put(permission.getPath(), permission);
+                        permissionMap.put(permission.getMethod(), permission);
                     });
                 }
             }
@@ -157,7 +157,6 @@ public class Runner implements ApplicationRunner {
         updatePermissions(permissionMap);
 
 //        updateSuperRole();
-
     }
 
     private void updateSuperRole() {
@@ -213,7 +212,7 @@ public class Runner implements ApplicationRunner {
     public void updatePermissions(Map<String, Permission> permissionMap) {
         List<Permission> permissionList = permissionRepository.findAll();
         for (Permission oldPermission : permissionList) {
-            Permission newPermission = permissionMap.get(oldPermission.getPath());
+            Permission newPermission = permissionMap.get(oldPermission.getMethod());
             if (newPermission == null) {
                 // 解除角色关联
                 Set<Role> roles = oldPermission.getRoles();
@@ -227,13 +226,14 @@ public class Runner implements ApplicationRunner {
                 // 更新
                 if (!oldPermission.equals(newPermission)) {
                     oldPermission.setModule(newPermission.getModule());
-                    oldPermission.setTag(newPermission.getTag());
+                    oldPermission.setMethod(newPermission.getMethod());
+                    oldPermission.setPath(newPermission.getPath());
                     oldPermission.setDeletedFlag(false);
                     oldPermission.setUpdatedTime(new Date());
                     permissionRepository.saveAndFlush(oldPermission);
                 }
 
-                permissionMap.remove(oldPermission.getPath()); // 移除更新记录
+                permissionMap.remove(oldPermission.getMethod()); // 移除更新记录
             }
         }
         // 新增

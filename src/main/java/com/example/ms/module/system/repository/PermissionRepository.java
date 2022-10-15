@@ -19,7 +19,7 @@ public interface PermissionRepository extends JpaRepository<Permission, Long> {
 
     Page<Permission> findByDeletedFlag(Boolean deletedFlag, Pageable pageable);
 
-    Page<Permission> findByDeletedFlagAndTagLike(Boolean deletedFlag, String tag, Pageable pageable);
+    Page<Permission> findByDeletedFlagAndMethodLike(Boolean deletedFlag, String method, Pageable pageable);
 
     Permission findByPath(String path);
 

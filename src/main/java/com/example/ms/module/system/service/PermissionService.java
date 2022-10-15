@@ -28,7 +28,7 @@ public class PermissionService {
         if (keyword == null || "".equals(keyword)) {
             return permissionRepository.findByDeletedFlag(false, pageable);
         }
-        return permissionRepository.findByDeletedFlagAndTagLike(false, "%" + keyword + "%", pageable);
+        return permissionRepository.findByDeletedFlagAndMethodLike(false, "%" + keyword + "%", pageable);
     }
 
     public Permission create(Permission permission) throws Exception {

@@ -29,8 +29,8 @@ public class Permission {
     @Column(name = "module")
     private String module;
 
-    @Column(name = "tag")
-    private String tag;
+    @Column(name = "method")
+    private String method;
 
     @Column(name = "path")
     private String path;

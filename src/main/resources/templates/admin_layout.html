@@ -140,7 +140,7 @@
                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
                     <img src="/images/avatar.png" th:src="@{/images/avatar.png}"
                          class="user-image img-circle elevation-2" alt="User Image">
-                    <span class="d-none d-md-inline" sec:authentication="principal.username">Alexander Pierce</span>
+                    <span class="d-none d-md-inline" sec:authentication="principal.user.nickname">Alexander</span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                     <!-- User image -->
@@ -148,7 +148,7 @@
                         <img src="/images/avatar.png" th:src="@{/images/avatar.png}" class="img-circle elevation-2"
                              alt="User Image">
                         <p>
-                            <span sec:authentication="principal.username"></span>
+                            <span sec:authentication="principal.user.nickname"></span>
                             <small>Member since <i sec:authentication="principal.user.createdTime"></i></small>
                         </p>
                     </li>
