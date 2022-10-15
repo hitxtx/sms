@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name = "sys_log")
+@Table(name = "sms_log")
 public class Log {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

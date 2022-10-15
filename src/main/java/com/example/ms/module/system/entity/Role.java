@@ -14,7 +14,7 @@ import java.util.*;
 @EqualsAndHashCode(exclude = {"users", "permissions", "menus"})
 @ToString(exclude = {"users", "permissions", "menus"})
 @Entity
-@Table(name = "sys_role")
+@Table(name = "sms_role")
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,13 +25,13 @@ public class Role {
     private Set<User> users = new HashSet<>();
 
     @ManyToMany
-    @JoinTable(name = "sys_role_menu",
+    @JoinTable(name = "sms_role_menu",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "menu_id"))
     private List<Menu> menus = new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(name = "sys_role_permission",
+    @JoinTable(name = "sms_role_permission",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id"))
     private List<Permission> permissions = new ArrayList<>();

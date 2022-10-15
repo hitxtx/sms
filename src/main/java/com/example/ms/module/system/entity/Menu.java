@@ -16,7 +16,7 @@ import java.util.*;
 @EqualsAndHashCode(exclude = {"roles", "submenus"})
 @ToString(exclude = {"roles", "submenus"})
 @Entity
-@Table(name = "sys_menu")
+@Table(name = "sms_menu")
 public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -15,14 +15,14 @@ import java.util.Set;
 @EqualsAndHashCode(exclude = {"roles"})
 @ToString(exclude = {"roles"})
 @Entity
-@Table(name = "sys_user")
+@Table(name = "sms_user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToMany
-    @JoinTable(name = "sys_user_role",
+    @JoinTable(name = "sms_user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();

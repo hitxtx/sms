@@ -16,7 +16,7 @@ import java.util.Set;
 @EqualsAndHashCode(exclude = {"roles", "id", "updatedTime", "createdTime"})
 @ToString(exclude = {"roles"})
 @Entity
-@Table(name = "sys_permission")
+@Table(name = "sms_permission")
 public class Permission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
