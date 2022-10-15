@@ -132,7 +132,6 @@ public class Runner implements ApplicationRunner {
                             menu.setDeletedFlag(false);
                             menu.setCreatedTime(new Date());
 
-//                            menuMap.put(menu.getMenuCode(), menu);
                             menuMap.get(moduleName).getSubmenus().add(menu);
                         }
                     }
@@ -155,7 +154,6 @@ public class Runner implements ApplicationRunner {
         }
 
         updateMenus(menuMap);
-
         updatePermissions(permissionMap);
 
 //        updateSuperRole();
@@ -205,10 +203,11 @@ public class Runner implements ApplicationRunner {
                 newSubmenu.setUpdatedTime(new Date());
 
             }
-            menuRepository.saveAllAndFlush(submenus);
 
-            menuRepository.deleteByMenuCodeIsNotIn(menuCodeList);
+            menuRepository.saveAllAndFlush(submenus);
         }
+
+        menuRepository.deleteByMenuCodeIsNotIn(menuCodeList);
     }
 
     public void updatePermissions(Map<String, Permission> permissionMap) {

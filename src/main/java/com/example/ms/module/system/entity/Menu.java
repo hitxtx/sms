@@ -24,7 +24,7 @@ public class Menu {
 
     @JsonIgnore
     @NotFound(action = NotFoundAction.IGNORE)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "parent_menu", referencedColumnName = "id")
     private Menu parentMenu;
 
