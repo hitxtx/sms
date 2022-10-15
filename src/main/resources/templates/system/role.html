@@ -267,7 +267,23 @@
                         highlightSelected: false,
                         multiSelect: true,
                         showCheckbox: true,
-                        color: '#0000ff'
+                        color: '#0000ff',
+                        onNodeChecked: function (event, data) {
+                            if (data !== null && data.nodes !== null) {
+                                for (let i = 0, len = data.nodes.length; i < len; i++) {
+                                    let node = data.nodes[i];
+                                    $('#assignMenuTreeview').treeview('checkNode', [node.nodeId, {silent: true}]);
+                                }
+                            }
+                        },
+                        onNodeUnchecked: function (event, data) {
+                            if (data !== null && data.nodes !== null) {
+                                for (let i = 0, len = data.nodes.length; i < len; i++) {
+                                    let node = data.nodes[i];
+                                    $('#assignMenuTreeview').treeview('uncheckNode', [node.nodeId, {silent: true}]);
+                                }
+                            }
+                        }
                     });
                 } else {
                     toastr.warning(data.message);
@@ -278,7 +294,7 @@
             let selectedNodes = $('#assignMenuTreeview').treeview('getChecked');
             let params = [];
             if (selectedNodes != null && selectedNodes.length > 0) {
-                for(let i = 0, len = selectedNodes.length; i < len; i++) {
+                for (let i = 0, len = selectedNodes.length; i < len; i++) {
                     if (selectedNodes[i].id === undefined) {
                         continue;
                     }
@@ -320,7 +336,23 @@
                         highlightSelected: false,
                         multiSelect: true,
                         showCheckbox: true,
-                        color: '#0000ff'
+                        color: '#0000ff',
+                        onNodeChecked: function (event, data) {
+                            if (data !== null && data.nodes !== null) {
+                                for (let i = 0, len = data.nodes.length; i < len; i++) {
+                                    let node = data.nodes[i];
+                                    $('#assignPermissionTreeview').treeview('checkNode', [node.nodeId, {silent: true}]);
+                                }
+                            }
+                        },
+                        onNodeUnchecked: function (event, data) {
+                            if (data !== null && data.nodes !== null) {
+                                for (let i = 0, len = data.nodes.length; i < len; i++) {
+                                    let node = data.nodes[i];
+                                    $('#assignPermissionTreeview').treeview('uncheckNode', [node.nodeId, {silent: true}]);
+                                }
+                            }
+                        }
                     });
                 } else {
                     toastr.warning(data.message);
@@ -331,8 +363,8 @@
             let selectedNodes = $('#assignPermissionTreeview').treeview('getChecked');
             let params = [];
             if (selectedNodes != null && selectedNodes.length > 0) {
-                for(let i = 0, len = selectedNodes.length; i < len; i++) {
-                    if (selectedNodes[i].id === undefined) {
+                for (let i = 0, len = selectedNodes.length; i < len; i++) {
+                    if (selectedNodes[i].id === undefined || selectedNodes[i].id === 0) {
                         continue;
                     }
                     params.push(selectedNodes[i].id);

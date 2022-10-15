@@ -29,7 +29,7 @@ public class TreeNode {
 
     private Long id;
     private String text;
-//    private String icon = "glyphicon glyphicon-stop";
+    //    private String icon = "glyphicon glyphicon-stop";
 //    private String selectedIcon = "glyphicon glyphicon-stop";
     private String color;
     private String backColor;
@@ -49,7 +49,7 @@ public class TreeNode {
         this.text = text;
     }
 
-    public void setState(Boolean checked, Boolean disabled,Boolean selected) {
+    public void setState(Boolean checked, Boolean disabled, Boolean selected) {
         this.state.setChecked(checked);
         this.state.setDisabled(disabled);
         this.state.setSelected(selected);
@@ -57,6 +57,10 @@ public class TreeNode {
 
     public void setState(Boolean checked, Boolean disabled, Boolean expanded, Boolean selected) {
         this.state = new TreeNodeState(checked, disabled, expanded, selected);
+    }
+
+    public boolean getStateChecked() {
+        return this.state.getChecked();
     }
 
     public void setStateChecked(Boolean checked) {

@@ -138,22 +138,36 @@ public class RoleService {
         List<TreeNode> treeNodeList = new ArrayList<>();
 
         Role role = roleRepository.getById(id);
-        List<Permission> rolePermissionList = role.getPermissions();
-        List<Long> rolePermissionIdList = rolePermissionList.stream().map(Permission::getId).collect(Collectors.toList());
+        List<Long> rolePermissionIdList = role.getPermissions().stream().map(Permission::getId).collect(Collectors.toList());
         List<Permission> permissionList = permissionService.listAll();
-        permissionList.sort(Comparator.comparing(Permission::getModule).thenComparing(Permission::getPath));
+        permissionList.sort(Comparator.comparing(Permission::getModule).thenComparing(Permission::getId));
         if (permissionList.isEmpty()) {
             return treeNodeList;
         }
+
+        Map<String, TreeNode> treeNodeMap = new HashMap<>();
         for (Permission permission : permissionList) {
+            TreeNode parentTreeNode = treeNodeMap.get(permission.getModule());
+            if (parentTreeNode == null) {
+                parentTreeNode = new TreeNode(0L, permission.getModule());
+                parentTreeNode.setNodes(new ArrayList<>());
+                parentTreeNode.setStateChecked(true);
+                parentTreeNode.setStateSelected(true);
+                treeNodeMap.put(permission.getModule(), parentTreeNode);
+            }
+
             TreeNode treeNode = new TreeNode(permission.getId(), permission.getPath());
             boolean setFlag = rolePermissionIdList.contains(permission.getId());
             treeNode.setState(setFlag, permission.getDeletedFlag(), setFlag);
+            if (!treeNode.getStateChecked()) {
+                parentTreeNode.setStateChecked(false);
+                parentTreeNode.setStateSelected(false);
+            }
 
-            treeNodeList.add(treeNode);
+            parentTreeNode.getNodes().add(treeNode);
         }
 
-        return treeNodeList;
+        return new ArrayList<>(treeNodeMap.values());
     }
 
     @Transactional
