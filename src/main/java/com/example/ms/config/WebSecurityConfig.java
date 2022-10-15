@@ -1,7 +1,7 @@
 package com.example.ms.config;
 
-import com.example.ms.security.*;
 import com.example.ms.module.system.service.UserService;
+import com.example.ms.security.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -57,6 +57,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/login?logout")
 //                .deleteCookies("remember-me-cookie")
                 .permitAll()
+                .and()
+                .exceptionHandling().accessDeniedPage("/403")
                 .and()
                 .addFilterBefore(dynamicSecurityFilter(), FilterSecurityInterceptor.class);
         // remember me

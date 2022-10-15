@@ -19,4 +19,9 @@ public class IndexController {
         return "login";
     }
 
+    @GetMapping("/403")
+    public String page403() {
+        return "403";
+    }
+
 }
