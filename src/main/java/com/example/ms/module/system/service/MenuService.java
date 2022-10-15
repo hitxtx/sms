@@ -29,8 +29,11 @@ public class MenuService {
         Pageable pageable = PageRequest.of(param.getPageIndex() - 1, param.getPageSize(), Sort.Direction.ASC, "id");
         String keyword = param.getKeyword();
         if (keyword == null || "".equals(keyword)) {
+            if (param.getParentId() == null) {
+                return menuRepository.findMenuByDeletedFlagAndParentMenuIsNull(false, pageable);
+            }
             Menu parentMenu = new Menu();
-            parentMenu.setId(param.getParentId() == null ? 0 : param.getParentId());
+            parentMenu.setId(param.getParentId());
             return menuRepository.findByDeletedFlagAndParentMenu(false, parentMenu, pageable);
         }
         return menuRepository.findByDeletedFlagAndMenuNameLike(false, "%" + keyword + "%", pageable);
