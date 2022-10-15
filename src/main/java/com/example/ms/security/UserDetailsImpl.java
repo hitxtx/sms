@@ -1,6 +1,6 @@
 package com.example.ms.security;
 
-import com.example.ms.module.system.model.bo.User;
+import com.example.ms.module.system.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

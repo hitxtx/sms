@@ -1,6 +1,6 @@
 package com.example.ms.security;
 
-import com.example.ms.module.system.model.bo.User;
+import com.example.ms.module.system.entity.User;
 import com.example.ms.module.system.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

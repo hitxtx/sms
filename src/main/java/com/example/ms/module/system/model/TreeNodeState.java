@@ -1,4 +1,4 @@
-package com.example.ms.module.system.model.vo;
+package com.example.ms.module.system.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,7 +1,7 @@
 package com.example.ms.module.system.service;
 
-import com.example.ms.module.system.model.bo.Permission;
 import com.example.ms.model.SearchParam;
+import com.example.ms.module.system.entity.Permission;
 import com.example.ms.module.system.repository.PermissionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;

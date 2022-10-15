@@ -1,6 +1,6 @@
 package com.example.ms.module.system.repository;
 
-import com.example.ms.module.system.model.bo.Permission;
+import com.example.ms.module.system.entity.Permission;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

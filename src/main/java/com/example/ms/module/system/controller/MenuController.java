@@ -1,10 +1,10 @@
 package com.example.ms.module.system.controller;
 
-import com.example.ms.module.system.model.bo.Menu;
 import com.example.ms.model.PageResult;
 import com.example.ms.model.Result;
 import com.example.ms.model.SearchParam;
 import com.example.ms.model.SelectOption;
+import com.example.ms.module.system.entity.Menu;
 import com.example.ms.module.system.service.MenuService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

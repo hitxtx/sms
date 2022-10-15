@@ -1,4 +1,4 @@
-package com.example.ms.module.member.model.po;
+package com.example.ms.module.member.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;

@@ -1,6 +1,6 @@
 package com.example.ms;
 
-import com.example.ms.module.system.model.bo.User;
+import com.example.ms.module.system.entity.User;
 import com.example.ms.module.system.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

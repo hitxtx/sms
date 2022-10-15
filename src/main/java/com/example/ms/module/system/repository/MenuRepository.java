@@ -1,7 +1,7 @@
 package com.example.ms.module.system.repository;
 
 import com.example.ms.model.SelectOption;
-import com.example.ms.module.system.model.bo.Menu;
+import com.example.ms.module.system.entity.Menu;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

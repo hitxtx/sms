@@ -1,9 +1,9 @@
 package com.example.ms.common.startup;
 
 import com.example.ms.common.annotation.MenuMarker;
-import com.example.ms.module.system.model.bo.Menu;
-import com.example.ms.module.system.model.bo.Permission;
-import com.example.ms.module.system.model.bo.Role;
+import com.example.ms.module.system.entity.Menu;
+import com.example.ms.module.system.entity.Permission;
+import com.example.ms.module.system.entity.Role;
 import com.example.ms.module.system.repository.MenuRepository;
 import com.example.ms.module.system.repository.PermissionRepository;
 import com.example.ms.module.system.repository.RoleRepository;

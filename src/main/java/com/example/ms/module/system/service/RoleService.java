@@ -1,10 +1,10 @@
 package com.example.ms.module.system.service;
 
 import com.example.ms.model.SearchParam;
-import com.example.ms.module.system.model.bo.Menu;
-import com.example.ms.module.system.model.bo.Permission;
-import com.example.ms.module.system.model.bo.Role;
-import com.example.ms.module.system.model.vo.TreeNode;
+import com.example.ms.module.system.entity.Menu;
+import com.example.ms.module.system.entity.Permission;
+import com.example.ms.module.system.entity.Role;
+import com.example.ms.module.system.model.TreeNode;
 import com.example.ms.module.system.repository.RoleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;

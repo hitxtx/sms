@@ -3,7 +3,7 @@ package com.example.ms.module.member.controller;
 import com.example.ms.model.PageResult;
 import com.example.ms.model.Result;
 import com.example.ms.model.SearchParam;
-import com.example.ms.module.member.model.po.MemberLevel;
+import com.example.ms.module.member.entity.MemberLevel;
 import com.example.ms.module.member.service.MemberLevelService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

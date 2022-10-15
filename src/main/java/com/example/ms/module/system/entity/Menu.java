@@ -1,4 +1,4 @@
-package com.example.ms.module.system.model.bo;
+package com.example.ms.module.system.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

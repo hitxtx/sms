@@ -1,4 +1,4 @@
-package com.example.ms.module.system.model.bo;
+package com.example.ms.module.system.entity;
 
 import lombok.Data;
 

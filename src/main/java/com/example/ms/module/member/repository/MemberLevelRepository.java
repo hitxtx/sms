@@ -1,6 +1,6 @@
 package com.example.ms.module.member.repository;
 
-import com.example.ms.module.member.model.po.MemberLevel;
+import com.example.ms.module.member.entity.MemberLevel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

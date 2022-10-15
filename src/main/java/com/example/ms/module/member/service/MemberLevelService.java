@@ -1,7 +1,7 @@
 package com.example.ms.module.member.service;
 
 import com.example.ms.model.SearchParam;
-import com.example.ms.module.member.model.po.MemberLevel;
+import com.example.ms.module.member.entity.MemberLevel;
 import com.example.ms.module.member.repository.MemberLevelRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;

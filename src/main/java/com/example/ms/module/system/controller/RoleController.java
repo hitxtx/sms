@@ -1,10 +1,10 @@
 package com.example.ms.module.system.controller;
 
-import com.example.ms.module.system.model.bo.Role;
 import com.example.ms.model.PageResult;
 import com.example.ms.model.Result;
 import com.example.ms.model.SearchParam;
-import com.example.ms.module.system.model.vo.TreeNode;
+import com.example.ms.module.system.entity.Role;
+import com.example.ms.module.system.model.TreeNode;
 import com.example.ms.module.system.service.RoleService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

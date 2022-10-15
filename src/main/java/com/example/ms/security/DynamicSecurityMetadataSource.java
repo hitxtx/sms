@@ -1,6 +1,6 @@
 package com.example.ms.security;
 
-import com.example.ms.module.system.model.bo.Permission;
+import com.example.ms.module.system.entity.Permission;
 import com.example.ms.module.system.repository.PermissionRepository;
 import com.sun.xml.internal.ws.util.UtilException;
 import org.springframework.beans.factory.annotation.Autowired;
