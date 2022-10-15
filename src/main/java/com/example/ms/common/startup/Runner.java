@@ -6,6 +6,7 @@ import com.example.ms.module.system.model.bo.Permission;
 import com.example.ms.module.system.model.bo.Role;
 import com.example.ms.module.system.repository.MenuRepository;
 import com.example.ms.module.system.repository.PermissionRepository;
+import com.example.ms.module.system.repository.RoleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -30,8 +31,17 @@ import java.util.*;
 @Component
 public class Runner implements ApplicationRunner {
 
+    private static final String BASE_PACKAGE = "com.example.ms.module";
+    private static final String RESOURCE_PATTERN = "/**/*Controller.class";
+
+    private RoleRepository roleRepository;
     private MenuRepository menuRepository;
     private PermissionRepository permissionRepository;
+
+    @Autowired
+    public void setRoleRepository(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+    }
 
     @Autowired
     public void setMenuRepository(MenuRepository menuRepository) {
@@ -42,9 +52,6 @@ public class Runner implements ApplicationRunner {
     public void setPermissionRepository(PermissionRepository permissionRepository) {
         this.permissionRepository = permissionRepository;
     }
-
-    private static final String BASE_PACKAGE = "com.example.ms.module";
-    private static final String RESOURCE_PATTERN = "/**/*Controller.class";
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -151,6 +158,18 @@ public class Runner implements ApplicationRunner {
 
         updatePermissions(permissionMap);
 
+//        updateSuperRole();
+
+    }
+
+    private void updateSuperRole() {
+        Role role = roleRepository.findByRoleCode("SUPER");
+
+        List<Menu> menuList = menuRepository.findAll();
+        List<Permission> permissionList = permissionRepository.findAll();
+        role.setMenus(menuList);
+        role.setPermissions(permissionList);
+        roleRepository.saveAndFlush(role);
     }
 
     public void updateMenus(Map<String, Menu> menuMap) {

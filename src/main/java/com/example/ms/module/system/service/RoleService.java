@@ -1,9 +1,9 @@
 package com.example.ms.module.system.service;
 
+import com.example.ms.model.SearchParam;
 import com.example.ms.module.system.model.bo.Menu;
 import com.example.ms.module.system.model.bo.Permission;
 import com.example.ms.module.system.model.bo.Role;
-import com.example.ms.model.SearchParam;
 import com.example.ms.module.system.model.vo.TreeNode;
 import com.example.ms.module.system.repository.RoleRepository;
 import lombok.AllArgsConstructor;
@@ -95,7 +95,7 @@ public class RoleService {
         List<TreeNode> treeNodeList = new ArrayList<>();
 
         Role role = roleRepository.getById(id);
-        Set<Menu> roleMenuList = role.getMenus();
+        List<Menu> roleMenuList = role.getMenus();
         List<Long> roleMenuIdList = roleMenuList.stream().map(Menu::getId).collect(Collectors.toList());
         List<Menu> menuList = menuService.list(0L);
         if (menuList.isEmpty()) {
@@ -125,7 +125,7 @@ public class RoleService {
     @Transactional
     public void assignRoleMenu(Long id, List<Long> menuIds) {
         Role role = roleRepository.getById(id);
-        role.setMenus(new HashSet<>());
+        role.setMenus(new ArrayList<>());
         if (menuIds != null && !menuIds.isEmpty()) {
             for (Long menuId : menuIds) {
                 role.getMenus().add(menuService.getById(menuId));
@@ -138,7 +138,7 @@ public class RoleService {
         List<TreeNode> treeNodeList = new ArrayList<>();
 
         Role role = roleRepository.getById(id);
-        Set<Permission> rolePermissionList = role.getPermissions();
+        List<Permission> rolePermissionList = role.getPermissions();
         List<Long> rolePermissionIdList = rolePermissionList.stream().map(Permission::getId).collect(Collectors.toList());
         List<Permission> permissionList = permissionService.listAll();
         permissionList.sort(Comparator.comparing(Permission::getModule).thenComparing(Permission::getPath));
@@ -159,7 +159,7 @@ public class RoleService {
     @Transactional
     public void assignRolePermission(Long id, List<Long> permissionIds) {
         Role role = roleRepository.getById(id);
-        role.setPermissions(new HashSet<>());
+        role.setPermissions(new ArrayList<>());
         if (permissionIds != null && !permissionIds.isEmpty()) {
             for (Long permissionId : permissionIds) {
                 role.getPermissions().add(permissionService.getById(permissionId));

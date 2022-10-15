@@ -4,7 +4,7 @@ import com.example.ms.common.annotation.MenuMarker;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@MenuMarker(value = "仪表盘", icon = "fa-dashboard")
+@MenuMarker(value = "仪表盘", icon = "fa-tachometer-alt")
 @Controller
 public class IndexController {
 
