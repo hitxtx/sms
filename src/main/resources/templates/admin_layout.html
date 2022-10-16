@@ -8,7 +8,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" th:href="@{/images/favicon.ico}" type="image/x-icon"/>
-    <title th:replace="${title}">TITLE</title>
+    <!--    <title th:replace="${title}">TITLE</title>-->
+    <title th:text="${menuActive != null and menuActive.menuName != null ? menuActive.menuName : 'X'}">TITLE</title>
     <!--/*--> css <!--*/-->
     <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
     <link rel="stylesheet" th:href="@{/plugins/jsgrid/jsgrid.min.css}">
@@ -149,7 +150,7 @@
                              alt="User Image">
                         <p>
                             <span sec:authentication="principal.user.nickname"></span>
-                            <small>Member since <i sec:authentication="principal.user.createdTime"></i></small>
+                            <small>注册于 <i sec:authentication="principal.user.createdTime"></i></small>
                         </p>
                     </li>
                     <!-- Menu Body -->
