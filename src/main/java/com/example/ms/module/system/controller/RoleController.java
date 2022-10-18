@@ -59,25 +59,25 @@ public class RoleController {
     }
 
     @GetMapping("/menu/treeview")
-    public Result roleMenuTreeview(Long id) {
+    public Result menuTreeview(Long id) {
         List<TreeNode> treeNodeList = roleService.roleMenuTreeNodes(id);
         return Result.success(treeNodeList);
     }
 
-    @PostMapping("/menu/assign")
-    public Result assignRoleMenu(Long id, @RequestParam List<Long> menuIds) {
+    @PostMapping("/assign/menu")
+    public Result assignMenu(Long id, @RequestParam List<Long> menuIds) {
         roleService.assignRoleMenu(id, menuIds);
         return Result.success();
     }
 
     @GetMapping("/permission/treeview")
-    public Result rolePermissionTreeview(Long id) {
+    public Result permissionTreeview(Long id) {
         List<TreeNode> treeNodeList = roleService.rolePermissionTreeNodes(id);
         return Result.success(treeNodeList);
     }
 
-    @PostMapping("/permission/assign")
-    public Result assignRolePermission(Long id, @RequestParam List<Long> permissionIds) {
+    @PostMapping("/assign/permission")
+    public Result assignPermission(Long id, @RequestParam List<Long> permissionIds) {
         roleService.assignRolePermission(id, permissionIds);
         return Result.success();
     }

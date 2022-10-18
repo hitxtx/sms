@@ -59,13 +59,13 @@ public class UserController {
     }
 
     @GetMapping("/role/treeview")
-    public Result userRoleTreeview(Long id) {
+    public Result roleTreeview(Long id) {
         List<TreeNode> treeNodeList = userService.userRoleTreeNodes(id);
         return Result.success(treeNodeList);
     }
 
-    @PostMapping("/role/assign")
-    public Result assignUserRole(Long id, @RequestParam List<Long> roleIds) {
+    @PostMapping("/assign/role")
+    public Result assignRole(Long id, @RequestParam List<Long> roleIds) {
         userService.assignUserRole(id, roleIds);
         return Result.success();
     }

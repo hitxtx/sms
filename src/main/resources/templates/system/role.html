@@ -152,18 +152,9 @@
         let searchData = function (filter) {
             let defer = $.Deferred();
             filter.keyword = $("#keyword").val();
-            $.ajax({
-                type: "POST",
-                url: _root + "system/role/search",
-                data: filter,
-                dataType: "json"
-            }).done(function (data) {
-                if (data.success) {
-                    defer.resolve(data.data);
-                } else {
-                    toastr.error(data.message);
-                }
-            })
+            $.doAjax("POST", _root + "system/role/search", filter).then(data => {
+                defer.resolve(data.data);
+            });
             return defer.promise();
         };
         $searchBtn.on("click", function () {
@@ -198,19 +189,13 @@
                 $form.addClass('was-validated');
                 return false;
             }
-            $.ajax({
-                type: "POST",
-                url: _root + $createForm.attr("action"),
-                data: $form.serializeArray(),
-            }).done(function (data) {
+            $.doAjax("POST", _root + $createForm.attr("action"), $form.serializeObject()).then(data => {
                 createModal("hide");
                 if (data.success) {
                     $searchBtn.click();
                 } else {
                     toastr.warning(data.message);
                 }
-            }).fail(function (err) {
-                toastr.error(err);
             });
         });
 
@@ -230,19 +215,13 @@
                 $form.addClass('was-validated');
                 return false;
             }
-            $.ajax({
-                type: "POST",
-                url: _root + "system/role/delete",
-                data: $form.serializeArray(),
-            }).done(function (data) {
+            $.doAjax("POST", _root + "system/role/delete", $form.serializeObject()).then(data => {
                 deleteModal("hide");
                 if (data.success) {
                     $searchBtn.click();
                 } else {
                     toastr.warning(data.message);
                 }
-            }).fail(function (err) {
-                toastr.error(err);
             });
         });
 
@@ -254,41 +233,38 @@
 
             $("#assignMenuId").val(id);
             $("#assignMenuModal").modal(display === "show" ? "show" : "hide");
-
-            $.ajax({
-                type: "GET",
-                url: _root + "system/role/menu/treeview",
-                data: $assignMenuForm.serializeArray(),
-            }).done(function (data) {
-                if (data.success) {
-                    $('#assignMenuTreeview').treeview({
-                        data: data.data,
-                        levels: 1,
-                        highlightSelected: false,
-                        multiSelect: true,
-                        showCheckbox: true,
-                        color: '#0000ff',
-                        onNodeChecked: function (event, data) {
-                            if (data !== null && data.nodes !== null) {
-                                for (let i = 0, len = data.nodes.length; i < len; i++) {
-                                    let node = data.nodes[i];
-                                    $('#assignMenuTreeview').treeview('checkNode', [node.nodeId, {silent: true}]);
+            if ("show" === display) {
+                $.doAjax("GET", _root + "system/role/menu/treeview", $assignMenuForm.serializeObject()).then(data => {
+                    if (data.success) {
+                        $('#assignMenuTreeview').treeview({
+                            data: data.data,
+                            levels: 1,
+                            highlightSelected: false,
+                            multiSelect: true,
+                            showCheckbox: true,
+                            color: '#0000ff',
+                            onNodeChecked: function (event, data) {
+                                if (data !== null && data.nodes !== null) {
+                                    for (let i = 0, len = data.nodes.length; i < len; i++) {
+                                        let node = data.nodes[i];
+                                        $('#assignMenuTreeview').treeview('checkNode', [node.nodeId, {silent: true}]);
+                                    }
+                                }
+                            },
+                            onNodeUnchecked: function (event, data) {
+                                if (data !== null && data.nodes !== null) {
+                                    for (let i = 0, len = data.nodes.length; i < len; i++) {
+                                        let node = data.nodes[i];
+                                        $('#assignMenuTreeview').treeview('uncheckNode', [node.nodeId, {silent: true}]);
+                                    }
                                 }
                             }
-                        },
-                        onNodeUnchecked: function (event, data) {
-                            if (data !== null && data.nodes !== null) {
-                                for (let i = 0, len = data.nodes.length; i < len; i++) {
-                                    let node = data.nodes[i];
-                                    $('#assignMenuTreeview').treeview('uncheckNode', [node.nodeId, {silent: true}]);
-                                }
-                            }
-                        }
-                    });
-                } else {
-                    toastr.warning(data.message);
-                }
-            })
+                        });
+                    } else {
+                        toastr.warning(data.message);
+                    }
+                });
+            }
         };
         $assignMenuBtn.on("click", function () {
             let selectedNodes = $('#assignMenuTreeview').treeview('getChecked');
@@ -301,11 +277,11 @@
                     params.push(selectedNodes[i].id);
                 }
             }
-            $.ajax({
-                type: "POST",
-                url: _root + "system/role/menu/assign",
-                data: "id=" + $("#assignMenuId").val() + "&menuIds=" + params.join(","),
-            }).done(function (data) {
+            // "id=" + $("#assignMenuId").val() + "&menuIds=" + params.join(",")
+            $.doAjax("POST", _root + "system/role/assign/menu", {
+                "id": $("#assignMenuId").val(),
+                "menuIds": params.join(",")
+            }).then(data => {
                 if (data.success) {
                     assignMenuModal("hide");
                     toastr.success(data.message);
@@ -324,40 +300,38 @@
             $("#assignPermissionId").val(id);
             $("#assignPermissionModal").modal(display === "show" ? "show" : "hide");
 
-            $.ajax({
-                type: "GET",
-                url: _root + "system/role/permission/treeview",
-                data: $assignPermissionForm.serializeArray(),
-            }).done(function (data) {
-                if (data.success) {
-                    $('#assignPermissionTreeview').treeview({
-                        data: data.data,
-                        levels: 1,
-                        highlightSelected: false,
-                        multiSelect: true,
-                        showCheckbox: true,
-                        color: '#0000ff',
-                        onNodeChecked: function (event, data) {
-                            if (data !== null && data.nodes !== null) {
-                                for (let i = 0, len = data.nodes.length; i < len; i++) {
-                                    let node = data.nodes[i];
-                                    $('#assignPermissionTreeview').treeview('checkNode', [node.nodeId, {silent: true}]);
+            if ("show" === display) {
+                $.doAjax("GET", _root + "system/role/permission/treeview", $assignPermissionForm.serializeObject()).then(data => {
+                    if (data.success) {
+                        $('#assignPermissionTreeview').treeview({
+                            data: data.data,
+                            levels: 1,
+                            highlightSelected: false,
+                            multiSelect: true,
+                            showCheckbox: true,
+                            color: '#0000ff',
+                            onNodeChecked: function (event, data) {
+                                if (data !== null && data.nodes !== null) {
+                                    for (let i = 0, len = data.nodes.length; i < len; i++) {
+                                        let node = data.nodes[i];
+                                        $('#assignPermissionTreeview').treeview('checkNode', [node.nodeId, {silent: true}]);
+                                    }
+                                }
+                            },
+                            onNodeUnchecked: function (event, data) {
+                                if (data !== null && data.nodes !== null) {
+                                    for (let i = 0, len = data.nodes.length; i < len; i++) {
+                                        let node = data.nodes[i];
+                                        $('#assignPermissionTreeview').treeview('uncheckNode', [node.nodeId, {silent: true}]);
+                                    }
                                 }
                             }
-                        },
-                        onNodeUnchecked: function (event, data) {
-                            if (data !== null && data.nodes !== null) {
-                                for (let i = 0, len = data.nodes.length; i < len; i++) {
-                                    let node = data.nodes[i];
-                                    $('#assignPermissionTreeview').treeview('uncheckNode', [node.nodeId, {silent: true}]);
-                                }
-                            }
-                        }
-                    });
-                } else {
-                    toastr.warning(data.message);
-                }
-            })
+                        });
+                    } else {
+                        toastr.warning(data.message);
+                    }
+                });
+            }
         };
         $assignPermissionBtn.on("click", function () {
             let selectedNodes = $('#assignPermissionTreeview').treeview('getChecked');
@@ -370,11 +344,11 @@
                     params.push(selectedNodes[i].id);
                 }
             }
-            $.ajax({
-                type: "POST",
-                url: _root + "system/role/permission/assign",
-                data: "id=" + $("#assignPermissionId").val() + "&permissionIds=" + params.join(","),
-            }).done(function (data) {
+            // "id=" + $("#assignMenuId").val() + "&permissionIds=" + params.join(",")
+            $.doAjax("POST", _root + "system/role/assign/permission", {
+                "id": $("#assignPermissionId").val(),
+                "permissionIds": params.join(",")
+            }).then(data => {
                 if (data.success) {
                     assignPermissionModal("hide");
                     toastr.success(data.message);

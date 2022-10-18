@@ -140,18 +140,9 @@
         let searchData = function (filter) {
             let defer = $.Deferred();
             filter.keyword = $("#keyword").val();
-            $.ajax({
-                type: "POST",
-                url: _root + "system/menu/search",
-                data: filter,
-                dataType: "json"
-            }).done(function (data) {
-                if (data.success) {
-                    defer.resolve(data.data);
-                } else {
-                    toastr.error(data.message);
-                }
-            })
+            $.doAjax("POST", _root + "system/menu/search", filter).then(data => {
+                defer.resolve(data.data);
+            });
             return defer.promise();
         };
         let createModal = function (display, title, row) {
@@ -250,19 +241,13 @@
                 $form.addClass('was-validated');
                 return false;
             }
-            $.ajax({
-                type: "POST",
-                url: _root + $createForm.attr("action"),
-                data: $form.serializeArray(),
-            }).done(function (data) {
+            $.doAjax("POST", _root + $createForm.attr("action"), $form.serializeObject()).then(data => {
                 createModal("hide");
                 if (data.success) {
                     $searchBtn.click();
                 } else {
                     toastr.warning(data.message);
                 }
-            }).fail(function (err) {
-                toastr.error(err);
             });
         });
         $deleteBtn.on("click", function () {
@@ -271,19 +256,13 @@
                 $form.addClass('was-validated');
                 return false;
             }
-            $.ajax({
-                type: "POST",
-                url: _root + "system/menu/delete",
-                data: $form.serializeArray(),
-            }).done(function (data) {
+            $.doAjax("POST", _root + "system/menu/delete", $form.serializeObject()).then(data => {
                 deleteModal("hide");
                 if (data.success) {
                     $searchBtn.click();
                 } else {
                     toastr.warning(data.message);
                 }
-            }).fail(function (err) {
-                toastr.error(err);
             });
         });
 
