@@ -145,7 +145,7 @@ public class Runner implements ApplicationRunner {
                         permission.setDeletedFlag(false);
                         permission.setCreatedTime(new Date());
 
-                        permissionMap.put(permission.getMethod(), permission);
+                        permissionMap.put(permission.getModule() + ":" + permission.getMethod(), permission);
                     });
                 }
             }
@@ -212,7 +212,8 @@ public class Runner implements ApplicationRunner {
     public void updatePermissions(Map<String, Permission> permissionMap) {
         List<Permission> permissionList = permissionRepository.findAll();
         for (Permission oldPermission : permissionList) {
-            Permission newPermission = permissionMap.get(oldPermission.getMethod());
+            String key = oldPermission.getModule() + ":" + oldPermission.getMethod();
+            Permission newPermission = permissionMap.get(key);
             if (newPermission == null) {
                 // 解除角色关联
                 Set<Role> roles = oldPermission.getRoles();
@@ -221,7 +222,7 @@ public class Runner implements ApplicationRunner {
                     role.getPermissions().remove(oldPermission);
                 }
                 // 删除
-                permissionRepository.updateDeletedFlag(true, oldPermission.getId());
+                permissionRepository.delete(oldPermission);
             } else {
                 // 更新
                 if (!oldPermission.equals(newPermission)) {
@@ -233,7 +234,7 @@ public class Runner implements ApplicationRunner {
                     permissionRepository.saveAndFlush(oldPermission);
                 }
 
-                permissionMap.remove(oldPermission.getMethod()); // 移除更新记录
+                permissionMap.remove(key); // 移除更新记录
             }
         }
         // 新增
