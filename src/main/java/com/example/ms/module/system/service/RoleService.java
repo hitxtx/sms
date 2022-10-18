@@ -62,6 +62,7 @@ public class RoleService {
         }
         Role oldRole = optional.get();
         role.setDeletedFlag(oldRole.getDeletedFlag());
+        role.setCreatedTime(oldRole.getCreatedTime());
         role.setUpdatedTime(new Date());
         role.setMenus(oldRole.getMenus());
         role.setPermissions(oldRole.getPermissions());
